@@ -1,0 +1,57 @@
+import "server-only";
+
+// Acceso a la base de datos con una sola función `query`.
+// - Producción: Postgres (Neon, Supabase, Vercel Postgres…) vía DATABASE_URL.
+// - Desarrollo: PGlite, un Postgres embebido que guarda los datos en .data/pglite.
+// El SQL es el mismo en ambos casos.
+
+type Row = Record<string, unknown>;
+type Runner = (text: string, params: unknown[]) => Promise<Row[]>;
+
+const globalForDb = globalThis as unknown as { __runner?: Promise<Runner> };
+
+async function createRunner(): Promise<Runner> {
+  const url = process.env.DATABASE_URL;
+  if (url) {
+    const { default: postgres } = await import("postgres");
+    const sql = postgres(url, { max: 5, prepare: false });
+    return async (text, params) => (await sql.unsafe(text, params as never[])) as unknown as Row[];
+  }
+  const { PGlite } = await import("@electric-sql/pglite");
+  const { mkdirSync } = await import("node:fs");
+  const dir = process.env.PGLITE_DIR ?? ".data/pglite";
+  mkdirSync(dir, { recursive: true });
+  const db = new PGlite(dir);
+  return async (text, params) => (await db.query<Row>(text, params)).rows;
+}
+
+const SCHEMA = `
+CREATE TABLE IF NOT EXISTS orders (
+  id            TEXT PRIMARY KEY,
+  status        TEXT NOT NULL DEFAULT 'pendiente',
+  customer      JSONB NOT NULL,
+  items         JSONB NOT NULL,
+  subtotal      INTEGER NOT NULL,
+  shipping      INTEGER NOT NULL,
+  total         INTEGER NOT NULL,
+  payment_ref   TEXT,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+  paid_at       TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS orders_created_at ON orders (created_at DESC);
+`;
+
+async function getRunner() {
+  if (!globalForDb.__runner) {
+    globalForDb.__runner = createRunner().then(async (run) => {
+      for (const stmt of SCHEMA.split(";").map((s) => s.trim()).filter(Boolean)) await run(stmt, []);
+      return run;
+    });
+  }
+  return globalForDb.__runner;
+}
+
+export async function query<T extends Row = Row>(text: string, params: unknown[] = []): Promise<T[]> {
+  const run = await getRunner();
+  return (await run(text, params)) as T[];
+}

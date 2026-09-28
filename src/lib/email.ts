@@ -1,0 +1,82 @@
+import "server-only";
+import { store } from "./config";
+import { formatCLP } from "./products";
+import type { Order } from "./orders";
+
+// Correos transaccionales. Con RESEND_API_KEY se envían por Resend;
+// sin ella se imprimen en la consola (útil en desarrollo).
+
+type Mail = { to: string; subject: string; html: string; text: string };
+
+async function send(mail: Mail) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.EMAIL_FROM ?? `${store.name} <onboarding@resend.dev>`;
+  if (!apiKey) {
+    console.log(`[correo no enviado: falta RESEND_API_KEY]\nPara: ${mail.to}\nAsunto: ${mail.subject}\n\n${mail.text}`);
+    return;
+  }
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ from, to: [mail.to], subject: mail.subject, html: mail.html, text: mail.text }),
+  });
+  if (!res.ok) console.error(`Resend respondió ${res.status}: ${await res.text()}`);
+}
+
+const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+
+function itemsText(order: Order) {
+  return order.items.map((i) => `- ${i.name} × ${i.qty}: ${formatCLP(i.unitPrice * i.qty)}`).join("\n");
+}
+
+function itemsHtml(order: Order) {
+  const rows = order.items
+    .map(
+      (i) =>
+        `<tr><td style="padding:6px 0">${esc(i.name)} × ${i.qty}</td><td style="padding:6px 0;text-align:right">${formatCLP(i.unitPrice * i.qty)}</td></tr>`,
+    )
+    .join("");
+  return `<table style="width:100%;border-collapse:collapse;font-size:14px">${rows}
+    <tr><td style="padding:6px 0;border-top:1px solid #ddd">Envío</td><td style="padding:6px 0;border-top:1px solid #ddd;text-align:right">${order.shipping ? formatCLP(order.shipping) : "Gratis"}</td></tr>
+    <tr><td style="padding:6px 0;font-weight:bold">Total</td><td style="padding:6px 0;text-align:right;font-weight:bold">${formatCLP(order.total)}</td></tr>
+  </table>`;
+}
+
+function layout(title: string, body: string) {
+  return `<div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#17201b">
+    <h1 style="font-size:20px;margin:0 0 16px">${esc(store.name)}</h1>
+    <h2 style="font-size:17px;margin:0 0 12px">${title}</h2>
+    ${body}
+    <p style="font-size:12px;color:#777;margin-top:24px">Productos exclusivamente para investigación in vitro y uso de laboratorio. No aptos para consumo humano o animal.</p>
+  </div>`;
+}
+
+export async function sendOrderEmails(order: Order) {
+  const c = order.customer;
+  const address = `${c.address}, ${c.comuna}, ${c.region}`;
+
+  const customerMail: Mail = {
+    to: c.email,
+    subject: `Pedido ${order.id} confirmado · ${store.name}`,
+    text: `Hola ${c.name},\n\nRecibimos tu pago. Este es el detalle de tu pedido ${order.id}:\n\n${itemsText(order)}\nEnvío: ${order.shipping ? formatCLP(order.shipping) : "Gratis"}\nTotal: ${formatCLP(order.total)}\n\nDespacho a: ${address}\n\nTe avisaremos por este medio cuando salga con su número de seguimiento.\n\n${store.name} · ${store.email}`,
+    html: layout(
+      `Recibimos tu pago, ${esc(c.name)}`,
+      `<p>Este es el detalle de tu pedido <strong>${order.id}</strong>:</p>${itemsHtml(order)}
+       <p style="margin-top:16px"><strong>Despacho a:</strong><br>${esc(address)}</p>
+       <p>Te avisaremos cuando salga con su número de seguimiento.</p>`,
+    ),
+  };
+
+  const storeMail: Mail = {
+    to: process.env.ORDERS_NOTIFY_EMAIL ?? store.email,
+    subject: `Nuevo pedido ${order.id} · ${formatCLP(order.total)}`,
+    text: `Pedido ${order.id} pagado.\n\nCliente: ${c.name}\nRUT: ${c.rut}\nCorreo: ${c.email}\nTeléfono: ${c.phone}\nDirección: ${address}\n\n${itemsText(order)}\nEnvío: ${order.shipping ? formatCLP(order.shipping) : "Gratis"}\nTotal: ${formatCLP(order.total)}\nReferencia de pago: ${order.paymentRef ?? "-"}`,
+    html: layout(
+      `Nuevo pedido ${order.id}`,
+      `<p><strong>${esc(c.name)}</strong> · RUT ${esc(c.rut)}<br>${esc(c.email)} · ${esc(c.phone)}<br>${esc(address)}</p>${itemsHtml(order)}
+       <p style="font-size:12px;color:#777">Referencia de pago: ${esc(order.paymentRef ?? "-")}</p>`,
+    ),
+  };
+
+  await Promise.all([send(customerMail), send(storeMail)]);
+}
