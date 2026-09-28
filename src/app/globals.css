@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #05070d;
-  --color-surface: #0b101c;
-  --color-surface-2: #111829;
+  --color-bg: #07100d;
+  --color-surface: #0d1814;
+  --color-surface-2: #13221c;
   --color-line: rgb(255 255 255 / 0.08);
-  --color-fg: #e8edf7;
-  --color-muted: #8b95ab;
-  --color-accent: #22d3ee;
-  --color-accent-2: #a78bfa;
-  --color-lime: #a3e635;
+  --color-fg: #edf4ef;
+  --color-muted: #8fa39a;
+  --color-accent: #34d399;
+  --color-accent-2: #f5c451;
+  --color-lime: #6ee7b7;
   --font-sans: var(--font-inter), system-ui, sans-serif;
   --font-display: var(--font-display), var(--font-inter), system-ui, sans-serif;
 }
@@ -19,7 +19,7 @@ body { background: var(--color-bg); color: var(--color-fg); }
 
 @layer base {
   *, ::before, ::after { border-color: var(--color-line); }
-  ::selection { background: rgb(34 211 238 / 0.35); }
+  ::selection { background: rgb(52 211 153 / 0.35); }
 }
 
 @layer components {
@@ -29,7 +29,7 @@ body { background: var(--color-bg); color: var(--color-fg); }
     backdrop-filter: blur(12px);
   }
   .text-gradient {
-    background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2) 60%, #f0abfc);
+    background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2) 70%, #fde68a);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -43,12 +43,12 @@ body { background: var(--color-bg); color: var(--color-fg); }
     border-radius: 9999px;
     padding: 0.8rem 1.6rem;
     font-weight: 600;
-    color: #04111a;
+    color: #04140d;
     background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2));
-    box-shadow: 0 0 0 0 rgb(34 211 238 / 0);
+    box-shadow: 0 0 0 0 rgb(52 211 153 / 0);
     transition: transform 0.2s, box-shadow 0.3s, filter 0.2s;
   }
-  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 40px -8px rgb(34 211 238 / 0.6); }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 40px -8px rgb(52 211 153 / 0.6); }
   .btn-primary:disabled { opacity: 0.6; transform: none; }
   .btn-ghost {
     display: inline-flex;
@@ -60,7 +60,7 @@ body { background: var(--color-bg); color: var(--color-fg); }
     border: 1px solid rgb(255 255 255 / 0.15);
     transition: border-color 0.2s, background 0.2s;
   }
-  .btn-ghost:hover { border-color: var(--color-accent); background: rgb(34 211 238 / 0.06); }
+  .btn-ghost:hover { border-color: var(--color-accent); background: rgb(52 211 153 / 0.06); }
   .field {
     margin-top: 0.35rem;
     width: 100%;
@@ -71,7 +71,7 @@ body { background: var(--color-bg); color: var(--color-fg); }
     color: var(--color-fg);
     transition: border-color 0.2s, box-shadow 0.2s;
   }
-  .field:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px rgb(34 211 238 / 0.15); }
+  .field:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px rgb(52 211 153 / 0.15); }
 }
 
 /* Fondo con cuadrícula y brillos */

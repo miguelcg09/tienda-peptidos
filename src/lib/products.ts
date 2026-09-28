@@ -28,8 +28,8 @@ export const categories = [
 export type Category = (typeof categories)[number];
 
 export const categoryMeta: Record<Category, { icon: string; blurb: string; color: string }> = {
-  "Reparación tisular": { icon: "🧬", blurb: "Regeneración y matriz celular", color: "#22d3ee" },
-  Metabolismo: { icon: "🔥", blurb: "Señalización GLP-1 y GIP", color: "#a3e635" },
+  "Reparación tisular": { icon: "🧬", blurb: "Regeneración y matriz celular", color: "#34d399" },
+  Metabolismo: { icon: "🔥", blurb: "Señalización GLP-1 y GIP", color: "#f5c451" },
   "Hormona de crecimiento": { icon: "💪", blurb: "Eje GH / IGF-1", color: "#fb923c" },
   Cognición: { icon: "🧠", blurb: "Neuropéptidos", color: "#f472b6" },
   Accesorios: { icon: "🧪", blurb: "Diluyentes y reconstitución", color: "#94a3b8" },
@@ -63,7 +63,7 @@ export const products: Product[] = [
       "Análogo sintético de la región activa de la timosina beta-4, utilizado en investigación sobre migración celular y angiogénesis.",
     purity: "≥ 99% (HPLC)",
     form: "Polvo liofilizado",
-    color: "#0891b2",
+    color: "#0d9488",
     featured: true,
     variants: [
       { id: "tb-500-5", label: "5 mg", price: 39990 },

@@ -11,7 +11,7 @@ import { store } from "@/lib/config";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const display = Space_Grotesk({ subsets: ["latin"], variable: "--font-display", weight: ["500", "700"] });
 
-export const viewport = { themeColor: "#05070d" };
+export const viewport = { themeColor: "#07100d" };
 
 export const metadata: Metadata = {
   title: { default: `${store.name} · ${store.tagline}`, template: `%s · ${store.name}` },

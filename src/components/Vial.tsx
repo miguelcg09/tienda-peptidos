@@ -27,7 +27,7 @@ export function Vial({ color, label, className = "" }: { color: string; label: s
       <rect x="38" y="8" width="44" height="6" rx="3" fill="#fff" opacity="0.25" />
       <rect x="44" y="34" width="32" height="12" fill="#b6c2d4" />
       <rect x="26" y="46" width="68" height="144" rx="14" fill={`url(#g${id})`} stroke="#ffffff" strokeOpacity="0.35" />
-      <rect x="26" y="90" width="68" height="62" fill="#0b1020" />
+      <rect x="26" y="90" width="68" height="62" fill="#0a1611" />
       <rect x="26" y="90" width="68" height="6" fill={color} />
       <text x="60" y="121" textAnchor="middle" fontSize={label.length > 9 ? 8 : 11} fontWeight="700" fill="#fff" fontFamily="system-ui">
         {text}
