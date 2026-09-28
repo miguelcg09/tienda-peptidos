@@ -1,198 +1,209 @@
 import Link from "next/link";
-import { categories, categoryMeta, products } from "@/lib/products";
-import { ProductCard } from "@/components/ProductCard";
+import { formatCLP, products } from "@/lib/products";
+import { store } from "@/lib/config";
 import { Vial } from "@/components/Vial";
 import { Reveal } from "@/components/Reveal";
 import { VialCarousel } from "@/components/VialCarousel";
+import { CatalogTabs } from "@/components/CatalogTabs";
 
-const stats = [
-  { value: "≥ 98%", label: "Pureza por HPLC" },
-  { value: "COA", label: "Por cada lote" },
-  { value: "24–72 h", label: "Despacho a todo Chile" },
+const buySteps = [
+  { title: "Elige tu péptido", text: "Filtra por categoría y compara presentaciones en la misma página." },
+  { title: "Paga en pesos", text: "Tarjeta, Webpay o transferencia. Sin cuentas ni registros previos." },
+  { title: "Recíbelo con su COA", text: "Vial sellado, embalaje protector y el certificado del lote." },
 ];
 
-const steps = [
-  { n: "01", title: "Síntesis", text: "Péptidos sintetizados en fase sólida y liofilizados en viales sellados." },
-  { n: "02", title: "Análisis", text: "Cada lote se verifica por HPLC y espectrometría de masas." },
-  { n: "03", title: "Certificado", text: "Publicamos el certificado de análisis (COA) del lote que recibes." },
-  { n: "04", title: "Despacho", text: "Embalaje protector y envío rápido con seguimiento a todo Chile." },
+const checks = [
+  "Identidad confirmada por espectrometría de masas",
+  "Pureza cuantificada por HPLC en cada lote",
+  "Liofilizado y sellado bajo atmósfera inerte",
+  "Trazabilidad: número de lote en cada vial",
 ];
 
 const faqs = [
-  { q: "¿Los productos son aptos para consumo humano?", a: "No. Todos los productos se venden exclusivamente para investigación in vitro y uso de laboratorio." },
-  { q: "¿Cómo se despachan?", a: "En viales sellados y liofilizados, dentro de embalaje protector. Recomendamos refrigerar al recibir." },
+  { q: "¿Son aptos para consumo humano?", a: "No. Se venden exclusivamente para investigación in vitro y uso de laboratorio." },
+  { q: "¿Cómo llegan?", a: "En viales sellados y liofilizados, dentro de embalaje protector. Recomendamos refrigerar al recibir." },
   { q: "¿Qué medios de pago aceptan?", a: "Tarjetas de crédito y débito, Webpay y transferencia bancaria, en pesos chilenos." },
-  { q: "¿Entregan certificado de análisis?", a: "Sí, cada producto cuenta con su COA por lote, disponible a solicitud." },
+  { q: "¿Puedo ver el certificado antes de comprar?", a: "Sí, escríbenos con el producto que te interesa y te enviamos el COA del lote disponible." },
+  { q: "¿Hacen envíos a regiones?", a: "A todo Chile, con seguimiento. Sobre $80.000 el envío es gratis." },
+  { q: "¿Tienen stock permanente?", a: "Los productos publicados están en stock en Chile; si algo se agota, lo retiramos del catálogo." },
 ];
 
 export default function Home() {
-  const featured = products.filter((p) => p.featured);
-  const hero = featured.slice(0, 3);
+  const spotlight = products.find((p) => p.slug === "bpc-157") ?? products[0];
+  const spotlightFrom = Math.min(...spotlight.variants.map((v) => v.price));
 
   return (
     <>
-      {/* Hero */}
+      {/* Portada: titular centrado y producto destacado debajo */}
       <section className="relative overflow-hidden">
         <div className="bg-grid absolute inset-0" />
-        <div className="glow animate-pulse-glow -left-40 top-10 h-96 w-96 bg-accent/25" />
-        <div className="glow animate-pulse-glow -right-32 top-40 h-[28rem] w-[28rem] bg-accent-2/25 [animation-delay:3s]" />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 md:grid-cols-[1.1fr_1fr] md:py-28">
-          <div>
-            <Reveal>
-              <span className="glass inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium text-fg/90">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime" />
-                Grado investigación · Stock en Chile
-              </span>
-            </Reveal>
-            <Reveal delay={80}>
-              <h1 className="mt-6 font-display text-5xl font-bold leading-[1.02] tracking-tight md:text-7xl">
-                Péptidos <span className="text-gradient">premium</span> para tu laboratorio
-              </h1>
-            </Reveal>
-            <Reveal delay={160}>
-              <p className="mt-6 max-w-lg text-lg text-muted">
-                Alta pureza, certificado de análisis por lote y despacho rápido a todo Chile.
-              </p>
-            </Reveal>
-            <Reveal delay={240}>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="/productos" className="btn-primary">Ver catálogo →</Link>
-                <Link href="#calidad" className="btn-ghost">Nuestra calidad</Link>
-              </div>
-            </Reveal>
-            <Reveal delay={320}>
-              <dl className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t pt-6">
-                {stats.map((s) => (
-                  <div key={s.label}>
-                    <dt className="font-display text-2xl font-bold">{s.value}</dt>
-                    <dd className="mt-1 text-xs text-muted">{s.label}</dd>
-                  </div>
+        <div className="glow animate-pulse-glow left-1/2 top-0 h-80 w-[50rem] -translate-x-1/2 bg-accent/20" />
+        <div className="relative mx-auto max-w-6xl px-4 pb-10 pt-16 text-center md:pt-24">
+          <Reveal>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">Laboratorio · Chile</p>
+          </Reveal>
+          <Reveal delay={80}>
+            <h1 className="mx-auto mt-5 max-w-4xl font-display text-5xl font-bold leading-[1.02] tracking-tight md:text-7xl">
+              Reactivos peptídicos con <span className="text-gradient">certificado por lote</span>
+            </h1>
+          </Reveal>
+          <Reveal delay={160}>
+            <p className="mx-auto mt-6 max-w-xl text-lg text-muted">
+              Compra en pesos, recibe en 24–72 h y revisa el análisis del lote exacto que llega a tu mesa de trabajo.
+            </p>
+          </Reveal>
+          <Reveal delay={240}>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Link href="#catalogo" className="btn-primary">Explorar catálogo</Link>
+              <Link href="#garantia" className="btn-ghost">Cómo verificamos</Link>
+            </div>
+          </Reveal>
+        </div>
+
+        <Reveal delay={320} className="relative mx-auto max-w-5xl px-4 pb-16">
+          <div className="glass grid items-center gap-6 rounded-[2rem] p-6 md:grid-cols-[200px_1fr_auto] md:p-8">
+            <div className="relative mx-auto grid h-52 w-40 place-items-center">
+              <div className="absolute bottom-4 h-16 w-32 rounded-full opacity-60 blur-2xl" style={{ background: spotlight.color }} />
+              <Vial color={spotlight.color} label={spotlight.name} className="animate-float relative h-full" />
+            </div>
+            <div className="text-center md:text-left">
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent-2">Destacado de la semana</p>
+              <h2 className="mt-2 font-display text-3xl font-bold">{spotlight.name}</h2>
+              <p className="mt-2 text-muted">{spotlight.short}</p>
+              <ul className="mt-4 flex flex-wrap justify-center gap-2 text-xs md:justify-start">
+                <li className="rounded-full border px-3 py-1">{spotlight.purity}</li>
+                <li className="rounded-full border px-3 py-1">{spotlight.form}</li>
+                {spotlight.variants.map((v) => (
+                  <li key={v.id} className="rounded-full border px-3 py-1">{v.label}</li>
                 ))}
-              </dl>
-            </Reveal>
+              </ul>
+            </div>
+            <div className="text-center md:text-right">
+              <p className="text-xs text-muted">Desde</p>
+              <p className="font-display text-3xl font-bold">{formatCLP(spotlightFrom)}</p>
+              <Link href={`/productos/${spotlight.slug}`} className="btn-primary mt-3 w-full md:w-auto">Ver producto</Link>
+            </div>
           </div>
-          <div className="relative flex h-[360px] items-end justify-center md:h-[480px]">
-            <div className="absolute bottom-6 h-24 w-80 rounded-[100%] bg-accent/20 blur-3xl" />
-            {hero.map((p, i) => (
-              <div
-                key={p.slug}
-                className="animate-float relative -mx-3"
-                style={{ animationDelay: `${i * 0.8}s`, zIndex: i === 1 ? 2 : 1 }}
-              >
-                <Vial color={p.color} label={p.name} className={i === 1 ? "h-80 md:h-[26rem]" : "h-60 md:h-80"} />
-              </div>
-            ))}
-          </div>
-        </div>
+        </Reveal>
       </section>
 
-      {/* Categorías */}
-      <section id="categorias" className="mx-auto max-w-6xl scroll-mt-28 px-4 py-16">
-        <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Explora</p>
-          <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">Categorías</h2>
-        </Reveal>
-        <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-5">
-          {categories.map((c, i) => (
-            <Reveal key={c} delay={i * 60}>
-              <Link
-                href={`/productos?categoria=${encodeURIComponent(c)}`}
-                className="shine group flex h-full flex-col rounded-2xl border bg-surface p-5 transition hover:-translate-y-1 hover:border-white/20"
-              >
-                <span
-                  className="grid h-12 w-12 place-items-center rounded-xl text-2xl transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
-                  style={{ background: `${categoryMeta[c].color}1f`, boxShadow: `inset 0 0 0 1px ${categoryMeta[c].color}40` }}
-                >
-                  {categoryMeta[c].icon}
+      {/* Cómo comprar: tres pasos en línea */}
+      <section className="mx-auto max-w-6xl px-4 py-12">
+        <ol className="grid gap-4 md:grid-cols-3">
+          {buySteps.map((s, i) => (
+            <Reveal key={s.title} delay={i * 90}>
+              <li className="flex gap-4 rounded-2xl border bg-surface p-5">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-accent to-accent-2 font-display font-bold text-on-accent">
+                  {i + 1}
                 </span>
-                <span className="mt-4 font-semibold">{c}</span>
-                <span className="mt-1 text-xs text-muted">{categoryMeta[c].blurb}</span>
-              </Link>
+                <div>
+                  <p className="font-semibold">{s.title}</p>
+                  <p className="mt-1 text-sm text-muted">{s.text}</p>
+                </div>
+              </li>
             </Reveal>
           ))}
-        </div>
+        </ol>
       </section>
 
-      {/* Destacados */}
-      <section className="mx-auto max-w-6xl px-4 py-16">
-        <Reveal className="flex items-end justify-between">
+      {/* Catálogo con pestañas */}
+      <section id="catalogo" className="mx-auto max-w-6xl scroll-mt-28 px-4 py-16">
+        <Reveal className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Lo más pedido</p>
-            <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">Más vendidos</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Catálogo</p>
+            <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">Elige por línea de investigación</h2>
           </div>
-          <Link href="/productos" className="text-sm font-medium text-accent hover:underline">Ver todos →</Link>
+          <p className="max-w-sm text-sm text-muted">
+            {products.length} productos en stock en Chile. Cada ficha incluye pureza, formato y presentaciones disponibles.
+          </p>
         </Reveal>
-        <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-          {featured.map((p, i) => (
-            <Reveal key={p.slug} delay={i * 80} className="h-full">
-              <ProductCard product={p} />
-            </Reveal>
-          ))}
+        <div className="mt-10">
+          <CatalogTabs />
         </div>
       </section>
 
-      {/* Carrusel 3D */}
-      <section className="relative overflow-hidden py-16">
-        <div className="glow left-1/2 top-1/2 h-80 w-[40rem] -translate-x-1/2 -translate-y-1/2 bg-accent-2/15" />
-        <Reveal className="relative mx-auto max-w-6xl px-4 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Catálogo</p>
-          <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">Toda la línea en 360°</h2>
+      {/* Garantía: texto largo a la izquierda, certificado ilustrado a la derecha */}
+      <section id="garantia" className="relative overflow-hidden scroll-mt-28 py-20">
+        <div className="glow -left-40 top-1/2 h-96 w-96 -translate-y-1/2 bg-accent-2/15" />
+        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 md:grid-cols-[1.2fr_1fr]">
+          <Reveal>
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Garantía de análisis</p>
+            <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">
+              El certificado viaja <span className="text-gradient">con el vial</span>
+            </h2>
+            <p className="mt-5 text-muted">
+              No publicamos promedios ni fichas genéricas. Cada lote que despachamos tiene su propio informe, con la
+              fecha del análisis y el número que aparece impreso en la etiqueta.
+            </p>
+            <ul className="mt-6 space-y-3">
+              {checks.map((c) => (
+                <li key={c} className="flex items-start gap-3 text-sm">
+                  <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-accent/15 text-xs text-accent">✓</span>
+                  {c}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+          <Reveal delay={120}>
+            {/* Ilustración de un certificado de análisis (reemplazar por uno real) */}
+            <div className="glass rotate-2 rounded-2xl p-6 shadow-2xl transition-transform duration-500 hover:rotate-0">
+              <div className="flex items-center justify-between border-b pb-3">
+                <p className="font-display font-bold">Certificado de análisis</p>
+                <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent">Aprobado</span>
+              </div>
+              <dl className="mt-4 grid grid-cols-2 gap-y-3 text-sm">
+                <dt className="text-muted">Producto</dt><dd className="text-right font-medium">{spotlight.name}</dd>
+                <dt className="text-muted">Lote</dt><dd className="text-right font-medium">HX-2409-A</dd>
+                <dt className="text-muted">Pureza (HPLC)</dt><dd className="text-right font-medium text-accent">99,4%</dd>
+                <dt className="text-muted">Masa (MS)</dt><dd className="text-right font-medium">Conforme</dd>
+                <dt className="text-muted">Aspecto</dt><dd className="text-right font-medium">Polvo blanco</dd>
+              </dl>
+              <div className="mt-5 h-16 rounded-lg bg-gradient-to-r from-accent/20 via-accent-2/20 to-transparent" aria-hidden />
+              <p className="mt-3 text-[10px] text-muted">Ejemplo ilustrativo. El COA real se entrega con cada pedido.</p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Vitrina 3D */}
+      <section className="relative overflow-hidden py-12">
+        <Reveal className="relative mx-auto max-w-6xl px-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Vitrina</p>
+          <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">Gira la línea completa</h2>
         </Reveal>
-        <div className="relative mt-6">
+        <div className="relative mt-2">
           <VialCarousel items={products.slice(0, 8)} />
         </div>
       </section>
 
-      {/* Calidad */}
-      <section id="calidad" className="mx-auto max-w-6xl scroll-mt-28 px-4 py-16">
+      {/* Preguntas: dos columnas de tarjetas */}
+      <section id="faq" className="mx-auto max-w-6xl scroll-mt-28 px-4 py-16">
         <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Proceso</p>
-          <h2 className="mt-2 max-w-xl font-display text-3xl font-bold md:text-4xl">
-            Calidad verificable, <span className="text-gradient">lote a lote</span>
-          </h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Antes de comprar</p>
+          <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">Lo que más nos preguntan</h2>
         </Reveal>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
-          {steps.map((s, i) => (
-            <Reveal key={s.n} delay={i * 90} className="h-full">
-              <div className="group relative h-full overflow-hidden rounded-3xl border bg-surface p-6 transition hover:border-accent/40">
-                <div className="absolute -right-6 -top-6 font-display text-8xl font-bold text-white/[0.03] transition group-hover:text-accent/10">{s.n}</div>
-                <p className="font-display text-sm text-accent">{s.n}</p>
-                <p className="mt-3 text-lg font-semibold">{s.title}</p>
-                <p className="mt-2 text-sm text-muted">{s.text}</p>
+        <div className="mt-8 grid gap-4 md:grid-cols-2">
+          {faqs.map((f, i) => (
+            <Reveal key={f.q} delay={i * 50} className="h-full">
+              <div className="h-full rounded-2xl border bg-surface p-5">
+                <p className="font-semibold">{f.q}</p>
+                <p className="mt-2 text-sm text-muted">{f.a}</p>
               </div>
             </Reveal>
           ))}
         </div>
       </section>
 
-      {/* FAQ */}
-      <section id="faq" className="mx-auto max-w-3xl scroll-mt-28 px-4 py-16">
+      {/* Contacto */}
+      <section className="mx-auto max-w-6xl px-4 pt-4">
         <Reveal>
-          <h2 className="text-center font-display text-3xl font-bold md:text-4xl">Preguntas frecuentes</h2>
-        </Reveal>
-        <div className="mt-8 space-y-3">
-          {faqs.map((f, i) => (
-            <Reveal key={f.q} delay={i * 60}>
-              <details className="group rounded-2xl border bg-surface px-5 py-4 transition open:border-accent/40">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium">
-                  {f.q}
-                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border text-muted transition-transform duration-300 group-open:rotate-45 group-open:text-accent">+</span>
-                </summary>
-                <p className="mt-3 text-sm text-muted">{f.a}</p>
-              </details>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="mx-auto max-w-6xl px-4 pt-8">
-        <Reveal>
-          <div className="relative overflow-hidden rounded-[2rem] border bg-gradient-to-br from-accent/15 via-surface to-accent-2/15 px-6 py-14 text-center">
-            <div className="bg-grid absolute inset-0 opacity-60" />
-            <h2 className="relative font-display text-3xl font-bold md:text-5xl">¿Listo para tu próxima investigación?</h2>
-            <p className="relative mx-auto mt-4 max-w-md text-muted">Envío gratis sobre $80.000 a todo Chile.</p>
-            <Link href="/productos" className="btn-primary relative mt-8">Comprar ahora →</Link>
+          <div className="relative overflow-hidden rounded-[2rem] border bg-surface px-6 py-12 md:flex md:items-center md:justify-between md:px-12">
+            <div className="glow -right-20 -top-20 h-64 w-64 bg-accent/20" />
+            <div className="relative">
+              <h2 className="font-display text-2xl font-bold md:text-3xl">¿Necesitas un péptido que no ves aquí?</h2>
+              <p className="mt-2 max-w-md text-muted">Cotizamos síntesis a pedido y compras por volumen para laboratorios.</p>
+            </div>
+            <a href={`mailto:${store.email}`} className="btn-primary relative mt-6 md:mt-0">Escríbenos</a>
           </div>
         </Reveal>
       </section>

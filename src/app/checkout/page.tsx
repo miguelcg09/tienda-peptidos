@@ -72,14 +72,14 @@ export default function Checkout() {
           </label>
           <label className="text-sm">Comuna<input name="comuna" required className={input} /></label>
         </fieldset>
-        <label className="flex gap-3 rounded-xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100">
+        <label className="flex gap-3 rounded-xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-900 dark:text-amber-100">
           <input type="checkbox" name="researchAck" required className="mt-1" />
           <span>
             Declaro ser mayor de 18 años y que los productos serán usados exclusivamente con fines de investigación,
             no para consumo humano o animal. Acepto los <Link href="/terminos" className="underline">términos y condiciones</Link>.
           </span>
         </label>
-        {error && <p className="rounded-lg bg-red-500/10 p-3 text-sm text-red-300">{error}</p>}
+        {error && <p className="rounded-lg bg-red-500/10 p-3 text-sm text-red-700 dark:text-red-300">{error}</p>}
         <button disabled={loading} className="btn-primary w-full">
           {loading ? "Redirigiendo al pago…" : `Pagar ${formatCLP(total)}`}
         </button>

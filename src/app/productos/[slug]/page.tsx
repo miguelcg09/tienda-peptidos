@@ -28,29 +28,52 @@ export default async function ProductPage({ params }: Props) {
       <nav className="text-sm text-muted">
         <Link href="/productos" className="hover:text-accent">Productos</Link> / {product.name}
       </nav>
-      <div className="mt-6 grid gap-10 md:grid-cols-2">
-        <div className="relative grid aspect-square place-items-center overflow-hidden rounded-[2rem] border bg-surface">
-          <div className="bg-grid absolute inset-0" />
-          <div className="absolute bottom-10 left-1/2 h-1/2 w-2/3 -translate-x-1/2 rounded-full opacity-50 blur-3xl" style={{ background: product.color }} />
-          <Vial color={product.color} label={product.name} className="animate-float relative h-4/5" />
-        </div>
+      <div className="mt-6 grid gap-10 md:grid-cols-[1fr_380px]">
         <div>
-          <p className="text-sm font-medium uppercase tracking-wide text-muted">{product.category}</p>
-          <h1 className="mt-1 font-display text-3xl font-bold md:text-4xl">{product.name}</h1>
-          <p className="mt-3 text-muted">{product.description}</p>
-          <div className="mt-6">
-            <AddToCart product={product} />
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">{product.category}</p>
+          <h1 className="mt-2 font-display text-4xl font-bold md:text-5xl">{product.name}</h1>
+          <p className="mt-3 text-lg text-muted">{product.short}</p>
+
+          <div className="relative mt-8 grid h-72 place-items-center overflow-hidden rounded-[2rem] border bg-surface md:h-96">
+            <div className="bg-grid absolute inset-0" />
+            <div className="absolute bottom-10 left-1/2 h-1/2 w-1/2 -translate-x-1/2 rounded-full opacity-50 blur-3xl" style={{ background: product.color }} />
+            <Vial color={product.color} label={product.name} className="animate-float relative h-4/5" />
+            <span className="absolute left-4 top-4 rounded-full border bg-surface/70 px-3 py-1 text-xs font-semibold text-lime backdrop-blur">
+              {product.purity}
+            </span>
           </div>
-          <dl className="mt-8 grid grid-cols-2 gap-4 rounded-2xl border p-5 text-sm">
-            <div><dt className="text-muted">Pureza</dt><dd className="font-medium">{product.purity}</dd></div>
-            <div><dt className="text-muted">Formato</dt><dd className="font-medium">{product.form}</dd></div>
-            {product.cas && <div><dt className="text-muted">CAS</dt><dd className="font-medium">{product.cas}</dd></div>}
-            <div><dt className="text-muted">Almacenamiento</dt><dd className="font-medium">2–8 °C, protegido de la luz</dd></div>
+
+          <dl className="mt-6 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+            {[
+              ["Pureza", product.purity],
+              ["Formato", product.form],
+              ["CAS", product.cas ?? "—"],
+              ["Almacenar", "2–8 °C, sin luz"],
+            ].map(([k, v]) => (
+              <div key={k} className="rounded-2xl border bg-surface p-4">
+                <dt className="text-xs text-muted">{k}</dt>
+                <dd className="mt-1 font-medium">{v}</dd>
+              </div>
+            ))}
           </dl>
-          <p className="mt-6 rounded-xl border border-amber-400/30 bg-amber-400/10 p-4 text-xs text-amber-200">
+
+          <h2 className="mt-10 font-display text-xl font-bold">Descripción</h2>
+          <p className="mt-3 text-muted">{product.description}</p>
+        </div>
+
+        <aside className="h-fit space-y-4 md:sticky md:top-32">
+          <div className="glass rounded-3xl p-6">
+            <AddToCart product={product} />
+            <ul className="mt-5 space-y-2 border-t pt-4 text-xs text-muted">
+              <li>✓ Envío a todo Chile, gratis sobre $80.000</li>
+              <li>✓ Certificado de análisis del lote incluido</li>
+              <li>✓ Pago con tarjeta, Webpay o transferencia</li>
+            </ul>
+          </div>
+          <p className="rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-xs text-amber-800 dark:text-amber-200">
             <strong>Solo para investigación.</strong> {RESEARCH_DISCLAIMER}
           </p>
-        </div>
+        </aside>
       </div>
       {related.length > 0 && (
         <section className="mt-20">

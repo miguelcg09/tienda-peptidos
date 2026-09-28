@@ -7,8 +7,8 @@ import { store } from "@/lib/config";
 
 const links = [
   { href: "/productos", label: "Productos" },
-  { href: "/#categorias", label: "Categorías" },
-  { href: "/#calidad", label: "Calidad" },
+  { href: "/#catalogo", label: "Catálogo" },
+  { href: "/#garantia", label: "Garantía" },
   { href: "/#faq", label: "FAQ" },
 ];
 
@@ -48,7 +48,7 @@ export function Header() {
       </div>
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
         <Link href="/" className="group flex items-center gap-2.5 font-display text-lg font-bold tracking-tight">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-2 text-sm text-bg transition-transform group-hover:rotate-12">
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-2 text-sm text-on-accent transition-transform group-hover:rotate-12">
             ⬡
           </span>
           {store.name}
@@ -70,7 +70,7 @@ export function Header() {
           </svg>
           Carrito
           {count > 0 && (
-            <span className={`absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-accent px-1 text-xs font-bold text-bg transition-transform ${bump ? "scale-125" : ""}`}>
+            <span className={`absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-accent px-1 text-xs font-bold text-on-accent transition-transform ${bump ? "scale-125" : ""}`}>
               {count}
             </span>
           )}

@@ -32,7 +32,7 @@ export function CartDrawer() {
               <div className="px-5 pt-4 text-sm text-muted">
                 <p>
                 Te faltan <strong>{formatCLP(missing)}</strong> para envío gratis.</p>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/5">
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-tint/5">
                   <div className="h-full rounded-full bg-gradient-to-r from-accent to-accent-2 transition-all duration-500" style={{ width: `${Math.min(100, (subtotal / store.freeShippingFrom) * 100)}%` }} />
                 </div>
               </div>
@@ -44,7 +44,7 @@ export function CartDrawer() {
                 const { product, variant } = found;
                 return (
                   <li key={line.variantId} className="flex gap-4 py-4">
-                    <div className="h-20 w-14 shrink-0 rounded-lg bg-white/5 p-1">
+                    <div className="h-20 w-14 shrink-0 rounded-lg bg-tint/5 p-1">
                       <Vial color={product.color} label={product.name} className="h-full w-full" />
                     </div>
                     <div className="flex-1">
@@ -54,7 +54,7 @@ export function CartDrawer() {
                         <button onClick={() => setQty(line.variantId, line.qty - 1)} className="h-7 w-7 rounded-lg border hover:border-accent" aria-label="Quitar uno">−</button>
                         <span className="w-6 text-center text-sm">{line.qty}</span>
                         <button onClick={() => setQty(line.variantId, line.qty + 1)} className="h-7 w-7 rounded-lg border hover:border-accent" aria-label="Agregar uno">+</button>
-                        <button onClick={() => remove(line.variantId)} className="ml-auto text-xs text-muted hover:text-red-400">Eliminar</button>
+                        <button onClick={() => remove(line.variantId)} className="ml-auto text-xs text-muted hover:text-red-500">Eliminar</button>
                       </div>
                     </div>
                     <p className="text-sm font-semibold">{formatCLP(variant.price * line.qty)}</p>

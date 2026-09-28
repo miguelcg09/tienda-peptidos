@@ -24,7 +24,7 @@ export function AddToCart({ product }: { product: Product }) {
                 key={v.id}
                 onClick={() => setVariantId(v.id)}
                 className={`rounded-full border px-4 py-2 text-sm transition ${
-                  v.id === variantId ? "border-accent bg-accent/10 text-accent" : "hover:border-white/30"
+                  v.id === variantId ? "border-accent bg-accent/10 text-accent" : "hover:border-tint/30"
                 }`}
               >
                 {v.label}

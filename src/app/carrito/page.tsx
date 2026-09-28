@@ -36,7 +36,7 @@ export default function Carrito() {
                 <div className="flex-1">
                   <Link href={`/productos/${product.slug}`} className="font-medium hover:text-accent">{product.name}</Link>
                   <p className="text-sm text-muted">{variant.label} · {formatCLP(variant.price)}</p>
-                  <button onClick={() => remove(line.variantId)} className="mt-1 text-xs text-muted hover:text-red-400">Eliminar</button>
+                  <button onClick={() => remove(line.variantId)} className="mt-1 text-xs text-muted hover:text-red-500">Eliminar</button>
                 </div>
                 <div className="flex items-center rounded-full border">
                   <button onClick={() => setQty(line.variantId, line.qty - 1)} className="px-3 py-1" aria-label="Menos">−</button>

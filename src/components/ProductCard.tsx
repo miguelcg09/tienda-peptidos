@@ -9,16 +9,16 @@ export function ProductCard({ product }: { product: Product }) {
     <Tilt className="h-full">
       <Link
         href={`/productos/${product.slug}`}
-        className="shine group relative flex h-full flex-col rounded-3xl border bg-surface p-4 transition-colors hover:border-white/20"
+        className="shine group relative flex h-full flex-col rounded-3xl border bg-surface p-4 transition-colors hover:border-tint/20"
         style={{ ["--c" as string]: product.color }}
       >
-        <div className="relative grid aspect-square place-items-center overflow-hidden rounded-2xl bg-gradient-to-b from-white/[0.04] to-transparent">
+        <div className="relative grid aspect-square place-items-center overflow-hidden rounded-2xl bg-gradient-to-b from-tint/[0.04] to-transparent">
           <div
             className="absolute bottom-0 left-1/2 h-2/3 w-2/3 -translate-x-1/2 rounded-full opacity-40 blur-3xl transition-opacity duration-500 group-hover:opacity-80"
             style={{ background: product.color }}
           />
           <Vial color={product.color} label={product.name} className="relative h-4/5 transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-105" />
-          <span className="absolute left-3 top-3 rounded-full border border-white/10 bg-black/40 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-lime backdrop-blur">
+          <span className="absolute left-3 top-3 rounded-full border border-tint/10 bg-surface/70 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-lime backdrop-blur">
             {product.purity.replace(" (HPLC)", "")}
           </span>
         </div>
@@ -30,7 +30,7 @@ export function ProductCard({ product }: { product: Product }) {
             {product.variants.length > 1 && <span className="text-xs font-normal text-muted">Desde </span>}
             {formatCLP(from)}
           </p>
-          <span className="grid h-9 w-9 place-items-center rounded-full border transition-all duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-bg">
+          <span className="grid h-9 w-9 place-items-center rounded-full border transition-all duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-on-accent">
             →
           </span>
         </div>
