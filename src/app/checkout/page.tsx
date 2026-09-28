@@ -21,7 +21,7 @@ export default function Checkout() {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 text-center">
         <h1 className="text-2xl font-bold">No hay productos en tu carrito</h1>
-        <Link href="/productos" className="mt-6 inline-block text-brand underline">Ver productos</Link>
+        <Link href="/productos" className="mt-6 inline-block text-accent underline">Ver productos</Link>
       </div>
     );
   }
@@ -49,12 +49,12 @@ export default function Checkout() {
     }
   }
 
-  const input = "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-brand focus:outline-none";
+  const input = "field";
 
   return (
     <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 md:grid-cols-[1fr_360px]">
       <form onSubmit={onSubmit} className="space-y-8">
-        <h1 className="text-3xl font-bold">Finalizar compra</h1>
+        <h1 className="font-display text-3xl font-bold md:text-4xl">Finalizar compra</h1>
         <fieldset className="grid gap-4 sm:grid-cols-2">
           <legend className="mb-2 font-semibold">Datos de contacto</legend>
           <label className="text-sm sm:col-span-2">Nombre completo<input name="name" required className={input} /></label>
@@ -67,26 +67,26 @@ export default function Checkout() {
           <label className="text-sm sm:col-span-2">Dirección<input name="address" required placeholder="Calle, número, depto." className={input} /></label>
           <label className="text-sm">Región
             <select name="region" required defaultValue="Metropolitana" className={input}>
-              {regiones.map((r) => <option key={r}>{r}</option>)}
+              {regiones.map((r) => <option key={r} className="bg-surface">{r}</option>)}
             </select>
           </label>
           <label className="text-sm">Comuna<input name="comuna" required className={input} /></label>
         </fieldset>
-        <label className="flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+        <label className="flex gap-3 rounded-xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100">
           <input type="checkbox" name="researchAck" required className="mt-1" />
           <span>
             Declaro ser mayor de 18 años y que los productos serán usados exclusivamente con fines de investigación,
             no para consumo humano o animal. Acepto los <Link href="/terminos" className="underline">términos y condiciones</Link>.
           </span>
         </label>
-        {error && <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
-        <button disabled={loading} className="w-full rounded-full bg-brand py-3 font-medium text-white hover:bg-brand-dark disabled:opacity-60">
+        {error && <p className="rounded-lg bg-red-500/10 p-3 text-sm text-red-300">{error}</p>}
+        <button disabled={loading} className="btn-primary w-full">
           {loading ? "Redirigiendo al pago…" : `Pagar ${formatCLP(total)}`}
         </button>
-        <p className="text-center text-xs text-slate-500">Serás redirigido a la pasarela de pago segura.</p>
+        <p className="text-center text-xs text-muted">Serás redirigido a la pasarela de pago segura.</p>
       </form>
 
-      <aside className="h-fit rounded-2xl bg-mist p-6">
+      <aside className="h-fit rounded-2xl bg-surface border p-6">
         <h2 className="font-semibold">Tu pedido</h2>
         <ul className="mt-4 space-y-3 text-sm">
           {lines.map((l) => {

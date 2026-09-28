@@ -1,45 +1,83 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useCart } from "./CartProvider";
 import { store } from "@/lib/config";
 
+const links = [
+  { href: "/productos", label: "Productos" },
+  { href: "/#categorias", label: "Categorías" },
+  { href: "/#calidad", label: "Calidad" },
+  { href: "/#faq", label: "FAQ" },
+];
+
 export function Header() {
   const { count, setOpen } = useCart();
+  const [scrolled, setScrolled] = useState(false);
+  const [bump, setBump] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Pequeño rebote del contador al agregar productos
+  useEffect(() => {
+    if (count === 0) return;
+    setBump(true);
+    const t = setTimeout(() => setBump(false), 300);
+    return () => clearTimeout(t);
+  }, [count]);
+
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
-      <div className="bg-ink px-4 py-2 text-center text-xs text-white">
-        Envío gratis sobre $80.000 a todo Chile · Solo para uso en investigación
+    <header className={`sticky top-0 z-30 transition-colors duration-300 ${scrolled ? "border-b bg-bg/75 backdrop-blur-xl" : "bg-transparent"}`}>
+      <div className="overflow-hidden border-b bg-gradient-to-r from-accent/10 via-accent-2/10 to-accent/10 py-2 text-xs text-fg/80">
+        <div className="flex w-max animate-marquee gap-12 whitespace-nowrap">
+          {Array.from({ length: 2 }).flatMap((_, k) =>
+            [
+              "🚚 Envío gratis sobre $80.000 a todo Chile",
+              "🔬 Pureza ≥ 98% verificada por HPLC",
+              "📄 Certificado de análisis por lote",
+              "⚠️ Solo para uso en investigación",
+            ].map((t) => <span key={`${k}-${t}`}>{t}</span>),
+          )}
+        </div>
       </div>
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
-        <Link href="/" className="flex items-center gap-2 text-lg font-bold tracking-tight">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand text-sm text-white">H</span>
+        <Link href="/" className="group flex items-center gap-2.5 font-display text-lg font-bold tracking-tight">
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-2 text-sm text-bg transition-transform group-hover:rotate-12">
+            ⬡
+          </span>
           {store.name}
         </Link>
-        <nav className="hidden gap-6 text-sm font-medium text-slate-600 md:flex">
-          <Link href="/productos" className="hover:text-brand">Productos</Link>
-          <Link href="/#calidad" className="hover:text-brand">Calidad</Link>
-          <Link href="/#faq" className="hover:text-brand">Preguntas frecuentes</Link>
-          <Link href="/terminos" className="hover:text-brand">Términos</Link>
+        <nav className="hidden gap-8 text-sm text-muted md:flex">
+          {links.map((l) => (
+            <Link key={l.href} href={l.href} className="relative transition-colors hover:text-fg after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-accent after:transition-all hover:after:w-full">
+              {l.label}
+            </Link>
+          ))}
         </nav>
         <button
           onClick={() => setOpen(true)}
-          className="relative rounded-full border border-slate-200 px-4 py-2 text-sm font-medium hover:border-brand"
+          className="glass relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition hover:border-accent/60"
           aria-label="Abrir carrito"
         >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+            <path d="M6 7h12l-1 13H7L6 7Z" /><path d="M9 7a3 3 0 0 1 6 0" />
+          </svg>
           Carrito
           {count > 0 && (
-            <span className="absolute -right-2 -top-2 grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1 text-xs text-white">
+            <span className={`absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-accent px-1 text-xs font-bold text-bg transition-transform ${bump ? "scale-125" : ""}`}>
               {count}
             </span>
           )}
         </button>
       </div>
-      <nav className="flex gap-5 overflow-x-auto px-4 pb-3 text-sm text-slate-600 md:hidden">
-        <Link href="/productos">Productos</Link>
-        <Link href="/#calidad">Calidad</Link>
-        <Link href="/#faq">FAQ</Link>
-        <Link href="/terminos">Términos</Link>
+      <nav className="flex gap-6 overflow-x-auto px-4 pb-3 text-sm text-muted md:hidden">
+        {links.map((l) => <Link key={l.href} href={l.href}>{l.label}</Link>)}
       </nav>
     </header>
   );

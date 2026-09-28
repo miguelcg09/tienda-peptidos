@@ -24,28 +24,30 @@ export default async function ProductPage({ params }: Props) {
   const related = products.filter((p) => p.category === product.category && p.slug !== product.slug).slice(0, 4);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12">
-      <nav className="text-sm text-slate-500">
-        <Link href="/productos" className="hover:text-brand">Productos</Link> / {product.name}
+    <div className="mx-auto max-w-6xl px-4 py-12 animate-fade">
+      <nav className="text-sm text-muted">
+        <Link href="/productos" className="hover:text-accent">Productos</Link> / {product.name}
       </nav>
       <div className="mt-6 grid gap-10 md:grid-cols-2">
-        <div className="grid aspect-square place-items-center rounded-3xl bg-mist">
-          <Vial color={product.color} label={product.name} className="h-4/5" />
+        <div className="relative grid aspect-square place-items-center overflow-hidden rounded-[2rem] border bg-surface">
+          <div className="bg-grid absolute inset-0" />
+          <div className="absolute bottom-10 left-1/2 h-1/2 w-2/3 -translate-x-1/2 rounded-full opacity-50 blur-3xl" style={{ background: product.color }} />
+          <Vial color={product.color} label={product.name} className="animate-float relative h-4/5" />
         </div>
         <div>
-          <p className="text-sm font-medium uppercase tracking-wide text-slate-400">{product.category}</p>
-          <h1 className="mt-1 text-3xl font-bold">{product.name}</h1>
-          <p className="mt-3 text-slate-600">{product.description}</p>
+          <p className="text-sm font-medium uppercase tracking-wide text-muted">{product.category}</p>
+          <h1 className="mt-1 font-display text-3xl font-bold md:text-4xl">{product.name}</h1>
+          <p className="mt-3 text-muted">{product.description}</p>
           <div className="mt-6">
             <AddToCart product={product} />
           </div>
           <dl className="mt-8 grid grid-cols-2 gap-4 rounded-2xl border p-5 text-sm">
-            <div><dt className="text-slate-500">Pureza</dt><dd className="font-medium">{product.purity}</dd></div>
-            <div><dt className="text-slate-500">Formato</dt><dd className="font-medium">{product.form}</dd></div>
-            {product.cas && <div><dt className="text-slate-500">CAS</dt><dd className="font-medium">{product.cas}</dd></div>}
-            <div><dt className="text-slate-500">Almacenamiento</dt><dd className="font-medium">2–8 °C, protegido de la luz</dd></div>
+            <div><dt className="text-muted">Pureza</dt><dd className="font-medium">{product.purity}</dd></div>
+            <div><dt className="text-muted">Formato</dt><dd className="font-medium">{product.form}</dd></div>
+            {product.cas && <div><dt className="text-muted">CAS</dt><dd className="font-medium">{product.cas}</dd></div>}
+            <div><dt className="text-muted">Almacenamiento</dt><dd className="font-medium">2–8 °C, protegido de la luz</dd></div>
           </dl>
-          <p className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-900">
+          <p className="mt-6 rounded-xl border border-amber-400/30 bg-amber-400/10 p-4 text-xs text-amber-200">
             <strong>Solo para investigación.</strong> {RESEARCH_DISCLAIMER}
           </p>
         </div>

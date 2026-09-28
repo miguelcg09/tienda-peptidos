@@ -6,8 +6,8 @@ export const metadata: Metadata = { title: "Términos y condiciones" };
 // Texto base: debe revisarlo un abogado antes de publicar.
 export default function Terminos() {
   return (
-    <article className="mx-auto max-w-3xl px-4 py-12 text-slate-700 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-ink [&_p]:mt-3">
-      <h1 className="text-3xl font-bold text-ink">Términos y condiciones</h1>
+    <article className="mx-auto max-w-3xl px-4 py-12 text-fg/80 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-fg [&_p]:mt-3">
+      <h1 className="font-display text-3xl font-bold md:text-4xl text-fg">Términos y condiciones</h1>
 
       <h2>1. Uso exclusivo para investigación</h2>
       <p>{RESEARCH_DISCLAIMER}</p>

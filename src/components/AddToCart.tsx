@@ -8,12 +8,13 @@ export function AddToCart({ product }: { product: Product }) {
   const { add } = useCart();
   const [variantId, setVariantId] = useState(product.variants[0].id);
   const [qty, setQty] = useState(1);
+  const [added, setAdded] = useState(false);
   const variant = product.variants.find((v) => v.id === variantId)!;
 
   return (
     <div>
-      <p className="text-3xl font-bold">{formatCLP(variant.price)}</p>
-      <p className="text-xs text-slate-500">IVA incluido</p>
+      <p key={variant.id} className="animate-fade font-display text-4xl font-bold">{formatCLP(variant.price)}</p>
+      <p className="text-xs text-muted">IVA incluido</p>
       {product.variants.length > 1 && (
         <div className="mt-6">
           <p className="text-sm font-medium">Presentación</p>
@@ -22,8 +23,8 @@ export function AddToCart({ product }: { product: Product }) {
               <button
                 key={v.id}
                 onClick={() => setVariantId(v.id)}
-                className={`rounded-full border px-4 py-2 text-sm ${
-                  v.id === variantId ? "border-brand bg-brand text-white" : "border-slate-300 hover:border-brand"
+                className={`rounded-full border px-4 py-2 text-sm transition ${
+                  v.id === variantId ? "border-accent bg-accent/10 text-accent" : "hover:border-white/30"
                 }`}
               >
                 {v.label}
@@ -33,16 +34,20 @@ export function AddToCart({ product }: { product: Product }) {
         </div>
       )}
       <div className="mt-6 flex gap-3">
-        <div className="flex items-center rounded-full border border-slate-300">
-          <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-4 py-2" aria-label="Menos">−</button>
+        <div className="flex items-center rounded-full border">
+          <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-4 py-2 text-muted hover:text-fg" aria-label="Menos">−</button>
           <span className="w-6 text-center">{qty}</span>
-          <button onClick={() => setQty(Math.min(99, qty + 1))} className="px-4 py-2" aria-label="Más">+</button>
+          <button onClick={() => setQty(Math.min(99, qty + 1))} className="px-4 py-2 text-muted hover:text-fg" aria-label="Más">+</button>
         </div>
         <button
-          onClick={() => add(variantId, qty)}
-          className="flex-1 rounded-full bg-brand py-3 font-medium text-white hover:bg-brand-dark"
+          onClick={() => {
+            add(variantId, qty);
+            setAdded(true);
+            setTimeout(() => setAdded(false), 1500);
+          }}
+          className="btn-primary flex-1"
         >
-          Agregar al carrito
+          {added ? "✓ Agregado" : "Agregar al carrito"}
         </button>
       </div>
     </div>

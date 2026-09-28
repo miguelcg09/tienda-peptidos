@@ -20,26 +20,26 @@ export function ResearchGate() {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] grid place-items-center bg-black/60 p-4">
-      <div className="max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-        <h2 className="text-lg font-semibold">Aviso importante</h2>
-        <p className="mt-3 text-sm text-slate-600">{RESEARCH_DISCLAIMER}</p>
-        <p className="mt-3 text-sm text-slate-600">
+    <div className="animate-fade fixed inset-0 z-[60] grid place-items-center bg-black/70 p-4 backdrop-blur-md">
+      <div className="relative max-w-md overflow-hidden rounded-3xl border bg-surface p-7 shadow-2xl">
+        <div className="glow -right-20 -top-20 h-48 w-48 bg-accent-2/30" />
+        <p className="relative text-xs font-semibold uppercase tracking-[0.2em] text-accent">Aviso importante</p>
+        <h2 className="relative mt-2 font-display text-2xl font-bold">Solo para investigación</h2>
+        <p className="relative mt-3 text-sm text-muted">{RESEARCH_DISCLAIMER}</p>
+        <p className="relative mt-3 text-sm text-muted">
           Al continuar declaras ser mayor de 18 años y que adquirirás los productos solo con fines de investigación.
         </p>
-        <div className="mt-6 flex gap-3">
+        <div className="relative mt-6 flex gap-3">
           <button
             onClick={() => {
               try { localStorage.setItem(KEY, "1"); } catch {}
               setShow(false);
             }}
-            className="flex-1 rounded-full bg-brand py-2.5 text-sm font-medium text-white"
+            className="btn-primary flex-1 text-sm"
           >
             Entiendo y acepto
           </button>
-          <a href="https://www.google.cl" className="flex-1 rounded-full border py-2.5 text-center text-sm font-medium">
-            Salir
-          </a>
+          <a href="https://www.google.cl" className="btn-ghost flex-1 text-sm">Salir</a>
         </div>
       </div>
     </div>

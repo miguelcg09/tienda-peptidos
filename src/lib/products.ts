@@ -27,6 +27,14 @@ export const categories = [
 ] as const;
 export type Category = (typeof categories)[number];
 
+export const categoryMeta: Record<Category, { icon: string; blurb: string; color: string }> = {
+  "Reparación tisular": { icon: "🧬", blurb: "Regeneración y matriz celular", color: "#22d3ee" },
+  Metabolismo: { icon: "🔥", blurb: "Señalización GLP-1 y GIP", color: "#a3e635" },
+  "Hormona de crecimiento": { icon: "💪", blurb: "Eje GH / IGF-1", color: "#fb923c" },
+  Cognición: { icon: "🧠", blurb: "Neuropéptidos", color: "#f472b6" },
+  Accesorios: { icon: "🧪", blurb: "Diluyentes y reconstitución", color: "#94a3b8" },
+};
+
 // Catálogo de ejemplo: reemplazar nombres, descripciones y precios por los reales.
 export const products: Product[] = [
   {
