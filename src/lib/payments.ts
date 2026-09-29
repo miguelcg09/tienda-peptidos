@@ -16,7 +16,7 @@ interface PaymentProvider {
   createPayment(req: CheckoutRequest): Promise<CheckoutResult>;
 }
 
-const siteUrl = () => process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const siteUrl = () => (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "");
 
 // Proveedor de pruebas: no cobra nada, redirige directo a la página de éxito.
 const mockProvider: PaymentProvider = {
