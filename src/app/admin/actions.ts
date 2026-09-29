@@ -148,7 +148,13 @@ export async function saveSettingsAction(form: FormData) {
     shippingNote: str(form, "shippingNote"),
     palette: getPalette(str(form, "palette")).id,
     disclaimer: str(form, "disclaimer"),
+    legalName: str(form, "legalName"),
+    legalRut: str(form, "legalRut"),
+    legalAddress: str(form, "legalAddress"),
+    legalUpdated: str(form, "legalUpdated"),
     terminos: String(form.get("terminos") ?? "").trim(),
+    envios: String(form.get("envios") ?? "").trim(),
+    privacidad: String(form.get("privacidad") ?? "").trim(),
   };
   await saveSettings(patch);
   refreshStore();

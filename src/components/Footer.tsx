@@ -1,7 +1,7 @@
 import Link from "next/link";
-import type { Settings } from "@/lib/config";
+import type { StoreSettings } from "@/lib/config";
 
-export function Footer({ settings }: { settings: Settings }) {
+export function Footer({ settings }: { settings: StoreSettings }) {
   return (
     <footer className="relative mt-28 overflow-hidden border-t bg-surface">
       <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-3">
@@ -16,6 +16,8 @@ export function Footer({ settings }: { settings: Settings }) {
             <li><Link href="/carrito" className="hover:text-accent">Carrito</Link></li>
             <li><Link href="/pedido" className="hover:text-accent">Seguir mi pedido</Link></li>
             <li><Link href="/terminos" className="hover:text-accent">Términos y condiciones</Link></li>
+            <li><Link href="/envios" className="hover:text-accent">Envíos y devoluciones</Link></li>
+            <li><Link href="/privacidad" className="hover:text-accent">Privacidad</Link></li>
           </ul>
         </div>
         <div className="text-sm">
@@ -26,7 +28,10 @@ export function Footer({ settings }: { settings: Settings }) {
       </div>
       <div className="relative border-t px-4 py-6 text-center text-xs text-muted">
         <p className="mx-auto max-w-3xl">{settings.disclaimer}</p>
-        <p className="mt-2">© {new Date().getFullYear()} {settings.name}</p>
+        <p className="mt-2">
+          © {new Date().getFullYear()} {settings.name}
+          {settings.legalName && <> · {settings.legalName}{settings.legalRut && <> · RUT {settings.legalRut}</>}{settings.legalAddress && <> · {settings.legalAddress}</>}</>}
+        </p>
       </div>
     </footer>
   );

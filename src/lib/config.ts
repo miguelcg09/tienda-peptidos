@@ -1,4 +1,6 @@
 // Valores por defecto de la tienda. Los reales se editan en /admin/ajustes y se guardan en la base de datos.
+import { enviosDefault, legalUpdatedDefault, privacidadDefault, terminosDefault } from "./legal";
+
 export type Settings = {
   name: string;
   tagline: string;
@@ -9,8 +11,18 @@ export type Settings = {
   shippingNote: string; // línea de despacho en la ficha (plazos, couriers)
   palette: string; // id de la paleta de colores (ver src/lib/palettes.ts)
   disclaimer: string;
-  terminos: string; // texto plano; las líneas en blanco separan párrafos, "## " inicia un título
+  legalName: string; // razón social o nombre del vendedor (aparece en los textos legales y el pie)
+  legalRut: string;
+  legalAddress: string;
+  legalUpdated: string; // fecha de vigencia que muestran los documentos legales
+  terminos: string; // texto plano; las líneas en blanco separan párrafos, "## " inicia un título, "- " una lista
+  envios: string; // política de envíos y devoluciones, mismo formato
+  privacidad: string; // política de privacidad, mismo formato
 };
+
+// Lo que reciben los componentes de cliente: sin los textos legales largos (se ven en sus páginas).
+export type StoreSettings = Omit<Settings, "terminos" | "envios" | "privacidad">;
+export const toStoreSettings = ({ terminos: _t, envios: _e, privacidad: _p, ...rest }: Settings): StoreSettings => rest;
 
 export const defaultSettings: Settings = {
   name: "Helix Research",
@@ -23,22 +35,13 @@ export const defaultSettings: Settings = {
   palette: "ambar",
   disclaimer:
     "Todos los productos se venden exclusivamente para investigación in vitro y uso de laboratorio. No aptos para consumo humano o animal, ni para uso diagnóstico o terapéutico.",
-  terminos: `## 1. Uso exclusivo para investigación
-Todos los productos se venden exclusivamente para investigación in vitro y uso de laboratorio. No aptos para consumo humano o animal, ni para uso diagnóstico o terapéutico.
-
-El comprador declara ser mayor de 18 años, contar con la formación necesaria para manipular compuestos de laboratorio y asume toda responsabilidad por el uso, almacenamiento y disposición de los productos adquiridos.
-
-## 2. Información de los productos
-Las descripciones tienen fines exclusivamente informativos y científicos. Nada de lo publicado en este sitio constituye indicación médica, recomendación de dosis ni afirmación sobre efectos en seres humanos.
-
-## 3. Precios y pagos
-Los precios están expresados en pesos chilenos (CLP) e incluyen IVA. Los pagos se procesan mediante una pasarela de pago externa; la tienda no almacena datos de tarjetas.
-
-## 4. Despacho
-Realizamos envíos a todo Chile. Los plazos son referenciales y dependen de la empresa de transporte.
-
-## 5. Cambios y devoluciones
-Por tratarse de productos de laboratorio sellados, solo se aceptan devoluciones de productos con falla o error en el despacho, informados dentro de 10 días desde la recepción, sin perjuicio de los derechos que establece la Ley 19.496.`,
+  legalName: "",
+  legalRut: "",
+  legalAddress: "",
+  legalUpdated: legalUpdatedDefault,
+  terminos: terminosDefault,
+  envios: enviosDefault,
+  privacidad: privacidadDefault,
 };
 
 // Compatibilidad con código antiguo: usar getSettings() en el servidor o useStore().settings en el cliente.

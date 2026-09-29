@@ -2,13 +2,13 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { findVariantIn, type Product, type Variant } from "@/lib/products";
-import type { Settings } from "@/lib/config";
+import type { StoreSettings } from "@/lib/config";
 
 export type CartLine = { variantId: string; qty: number };
 
 type StoreContextValue = {
   catalog: Product[];
-  settings: Settings;
+  settings: StoreSettings;
   find: (variantId: string) => { product: Product; variant: Variant } | undefined;
   lines: CartLine[];
   count: number;
@@ -33,7 +33,7 @@ export function StoreProvider({
   children,
 }: {
   catalog: Product[];
-  settings: Settings;
+  settings: StoreSettings;
   children: React.ReactNode;
 }) {
   const [lines, setLines] = useState<CartLine[]>([]);

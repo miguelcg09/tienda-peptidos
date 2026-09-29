@@ -65,7 +65,7 @@ export default function Checkout() {
           <input type="checkbox" name="researchAck" required className="mt-1" />
           <span>
             Declaro ser mayor de 18 años y que los productos serán usados exclusivamente con fines de investigación,
-            no para consumo humano o animal. Acepto los <Link href="/terminos" className="underline">términos y condiciones</Link>.
+            no para consumo humano o animal. Acepto los <Link href="/terminos" className="underline">términos y condiciones</Link>, la <Link href="/envios" className="underline">política de envíos y devoluciones</Link> y la <Link href="/privacidad" className="underline">política de privacidad</Link>.
           </span>
         </label>
         {error && <p className="rounded-lg bg-red-500/10 p-3 text-sm text-red-700 dark:text-red-300">{error}</p>}

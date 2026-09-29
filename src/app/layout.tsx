@@ -9,6 +9,7 @@ import { ResearchGate } from "@/components/ResearchGate";
 import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { getPalette, paletteCss } from "@/lib/palettes";
+import { toStoreSettings } from "@/lib/config";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const display = Space_Grotesk({ subsets: ["latin"], variable: "--font-display", weight: ["500", "700"] });
@@ -49,7 +50,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* Paleta elegida en /admin/ajustes */}
         <style dangerouslySetInnerHTML={{ __html: paletteCss(palette) }} />
         <div className="grain" aria-hidden />
-        <StoreProvider catalog={catalog} settings={settings}>
+        <StoreProvider catalog={catalog} settings={toStoreSettings(settings)}>
           <Header />
           <main>{children}</main>
           <Footer settings={settings} />

@@ -18,7 +18,7 @@ Abre http://localhost:3000.
 - Carrito lateral y página de carrito (se guarda en el navegador).
 - Checkout con validación de RUT, región/comuna y aceptación de uso para investigación.
 - Dirección de despacho: región y comuna se eligen de la lista oficial (`src/lib/comunas.ts`, 346 comunas). Mientras el cliente escribe la calle, `/api/geo` sugiere direcciones con Photon (OpenStreetMap, gratis y sin clave), filtradas por la comuna elegida; la comuna solo se completa si coincide con una oficial. Como en Chile OpenStreetMap tiene pocos números de casa, si solo aparece la calle se conserva el número escrito. No hace falta elegir una sugerencia: al salir del campo (o con "Ver en el mapa") se ubica lo escrito y aparece un mapa (Leaflet + OpenStreetMap) con un marcador arrastrable; si la calle no está en el mapa, el marcador parte en el centro de la comuna. Botón "Usar mi ubicación" (GPS). El pedido guarda referencia (depto., casa) y coordenadas; en `/admin/pedidos` hay un enlace al punto en el mapa. `GEO_PROVIDER=mock` devuelve resultados fijos para probar sin red.
-- Aviso de ingreso (+18 y solo investigación), rótulos en fichas y términos y condiciones base.
+- Aviso de ingreso (+18 y solo investigación), rótulos en fichas y documentos legales completos en `/terminos`, `/envios` y `/privacidad` (borradores para Chile en `src/lib/legal.ts`, editables desde el panel, con marcadores como `{{razon_social}}` o `{{envio}}` que se reemplazan con los datos de Ajustes). Deben ser revisados por un abogado antes de vender.
 - Capa de pagos intercambiable (`src/lib/payments.ts`):
   - `mock`: modo de prueba, no cobra.
   - `dlocalgo`: dLocal Go. El cliente paga en CLP con medios chilenos y la liquidación llega en USD al extranjero.
@@ -30,7 +30,7 @@ Abre http://localhost:3000.
 - Panel de administración en `/admin` (clave `ADMIN_PASSWORD`, sesión de 30 días):
   - **Productos**: crear, editar, precios, precio anterior (muestra el descuento) y stock por presentación, fotos, textos de las pestañas de la ficha (investigación, reconstitución), enlace al COA, destacar, ocultar o borrar.
   - **Pedidos**: ver detalle, marcar despachado con número de seguimiento (avisa por correo al cliente), notas internas, borrar pedidos de prueba.
-  - **Ajustes**: nombre, contacto, costo de envío, mínimo de envío gratis, línea de despacho de la ficha, aviso de investigación y términos.
+  - **Ajustes**: nombre, contacto, costo de envío, mínimo de envío gratis, línea de despacho de la ficha, datos legales del vendedor (razón social, RUT, domicilio), aviso de investigación, términos, envíos y devoluciones y privacidad.
 - Catálogo y ajustes viven en la base de datos (`src/lib/catalog.ts`, `src/lib/settings.ts`). La primera vez se cargan los productos de ejemplo de `src/lib/products.ts`.
 - Fotos de producto: con `BLOB_READ_WRITE_TOKEN` (Vercel Blob) se pueden subir desde el panel; sin él, se pega la URL de una imagen. Sin foto se muestra una ilustración del vial.
 
