@@ -21,6 +21,7 @@ export default async function Ajustes({ searchParams }: { searchParams: Promise<
           <label className="text-sm">Lema (bajo el nombre)<input name="tagline" defaultValue={s.tagline} className="field" /></label>
           <label className="text-sm">Correo de contacto<input name="email" type="email" defaultValue={s.email} className="field" /></label>
           <label className="text-sm">WhatsApp<input name="whatsapp" defaultValue={s.whatsapp} className="field" /></label>
+          <label className="text-sm">Instagram (usuario o enlace, opcional)<input name="instagram" defaultValue={s.instagram} placeholder="@helixresearch" className="field" /></label>
         </fieldset>
 
         <fieldset className="grid gap-3 sm:grid-cols-2">
@@ -49,6 +50,20 @@ export default async function Ajustes({ searchParams }: { searchParams: Promise<
           <label className="text-sm sm:col-span-2">Línea de despacho en la ficha de producto (plazos, empresas de transporte)
             <input name="shippingNote" defaultValue={s.shippingNote} className="field" />
           </label>
+        </fieldset>
+
+        <fieldset className="grid gap-4 sm:grid-cols-2">
+          <legend className="mb-2 font-semibold">Pago por transferencia</legend>
+          <p className="text-xs text-muted sm:col-span-2">
+            Con cuenta y titular completos, el checkout ofrece "Transferencia bancaria": el pedido queda pendiente y tú lo confirmas en Pedidos cuando veas el abono.
+            Si los dejas vacíos, la opción no aparece. El pago con tarjeta se activa aparte, con la pasarela (PAYMENT_PROVIDER en Vercel).
+          </p>
+          <label className="text-sm">Banco<input name="bankName" defaultValue={s.bankName} placeholder="Banco Estado" className="field" /></label>
+          <label className="text-sm">Tipo de cuenta<input name="bankAccountType" defaultValue={s.bankAccountType} placeholder="Cuenta corriente / Cuenta RUT" className="field" /></label>
+          <label className="text-sm">Número de cuenta<input name="bankAccount" defaultValue={s.bankAccount} className="field" /></label>
+          <label className="text-sm">Titular<input name="bankHolder" defaultValue={s.bankHolder} className="field" /></label>
+          <label className="text-sm">RUT del titular<input name="bankRut" defaultValue={s.bankRut} className="field" /></label>
+          <label className="text-sm">Correo para comprobantes<input name="bankEmail" type="email" defaultValue={s.bankEmail} placeholder="pagos@tudominio.cl" className="field" /></label>
         </fieldset>
 
         <fieldset className="grid gap-4 sm:grid-cols-2">

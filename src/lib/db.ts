@@ -87,6 +87,30 @@ CREATE TABLE IF NOT EXISTS settings (
   key   TEXT PRIMARY KEY,
   value JSONB NOT NULL
 );
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS discount INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS coupon TEXT;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method TEXT NOT NULL DEFAULT 'tarjeta';
+ALTER TABLE products ADD COLUMN IF NOT EXISTS lot TEXT;
+ALTER TABLE products ADD COLUMN IF NOT EXISTS lot_date TEXT;
+CREATE TABLE IF NOT EXISTS coupons (
+  code         TEXT PRIMARY KEY,
+  kind         TEXT NOT NULL,
+  value        INTEGER NOT NULL,
+  min_subtotal INTEGER NOT NULL DEFAULT 0,
+  max_uses     INTEGER,
+  uses         INTEGER NOT NULL DEFAULT 0,
+  expires_at   TEXT,
+  active       BOOLEAN NOT NULL DEFAULT true,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS subscribers (
+  id           SERIAL PRIMARY KEY,
+  email        TEXT NOT NULL,
+  source       TEXT NOT NULL DEFAULT 'boletin',
+  product_slug TEXT NOT NULL DEFAULT '',
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (email, product_slug)
+);
 `;
 
 async function getRunner() {

@@ -12,7 +12,7 @@ import { faqs } from "@/lib/faqs";
 
 const buySteps = [
   { title: "Elige tu péptido", text: "Filtra por categoría y compara presentaciones en la misma página." },
-  { title: "Paga en pesos", text: "Tarjeta, Webpay o transferencia. Sin cuentas ni registros previos." },
+  { title: "Paga en pesos", text: "Transferencia bancaria o tarjeta, según lo disponible. Sin cuentas ni registros previos." },
   { title: "Recíbelo con su COA", text: "Vial sellado, embalaje protector y el certificado del lote." },
 ];
 
@@ -186,6 +186,7 @@ export default async function Home() {
               </dl>
               <div className="mt-5 h-16 rounded-lg border border-dashed" aria-hidden />
               <p className="mt-3 text-[10px] text-muted">Ejemplo ilustrativo. El COA real se entrega con cada pedido.</p>
+              <Link href="/certificados" className="btn-ghost mt-4 w-full text-sm">Ver certificados por lote</Link>
             </div>
           </Reveal>
         </div>

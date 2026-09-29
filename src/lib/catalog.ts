@@ -18,6 +18,8 @@ type ProductRow = {
   reconstitution: string | null;
   research: string | null;
   coa_url: string | null;
+  lot: string | null;
+  lot_date: string | null;
   featured: boolean;
   visible: boolean;
   sort: number;
@@ -65,6 +67,8 @@ function toProduct(r: ProductRow, variants: VariantRow[]): Product {
     reconstitution: r.reconstitution ?? undefined,
     research: r.research ?? undefined,
     coaUrl: r.coa_url ?? undefined,
+    lot: r.lot ?? undefined,
+    lotDate: r.lot_date ?? undefined,
     featured: r.featured,
     visible: r.visible,
     sort: Number(r.sort),
@@ -111,18 +115,19 @@ export async function findVariant(variantId: string) {
 export async function upsertProduct(p: Omit<Product, "variants">) {
   await query(
     `INSERT INTO products (slug, name, category, short, description, purity, form, cas, color, image_url, featured, visible, sort,
-                           mechanism, storage, reconstitution, research, coa_url)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+                           mechanism, storage, reconstitution, research, coa_url, lot, lot_date)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
      ON CONFLICT (slug) DO UPDATE SET
        name = EXCLUDED.name, category = EXCLUDED.category, short = EXCLUDED.short, description = EXCLUDED.description,
        purity = EXCLUDED.purity, form = EXCLUDED.form, cas = EXCLUDED.cas, color = EXCLUDED.color,
        image_url = EXCLUDED.image_url, featured = EXCLUDED.featured, visible = EXCLUDED.visible, sort = EXCLUDED.sort,
        mechanism = EXCLUDED.mechanism, storage = EXCLUDED.storage, reconstitution = EXCLUDED.reconstitution,
-       research = EXCLUDED.research, coa_url = EXCLUDED.coa_url`,
+       research = EXCLUDED.research, coa_url = EXCLUDED.coa_url, lot = EXCLUDED.lot, lot_date = EXCLUDED.lot_date`,
     [
       p.slug, p.name, p.category, p.short, p.description, p.purity, p.form, p.cas ?? null, p.color, p.imageUrl ?? null,
       Boolean(p.featured), p.visible, p.sort,
       p.mechanism ?? null, p.storage ?? null, p.reconstitution ?? null, p.research ?? null, p.coaUrl ?? null,
+      p.lot ?? null, p.lotDate ?? null,
     ],
   );
 }

@@ -15,8 +15,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     id: order.id,
     status: order.status,
     items: order.items,
+    discount: order.discount,
     shipping: order.shipping,
     total: order.total,
+    paymentMethod: order.paymentMethod,
     emailHint: order.customer.email.replace(/^(.).+(@.+)$/, "$1***$2"),
     createdAt: order.createdAt,
     ...(verified

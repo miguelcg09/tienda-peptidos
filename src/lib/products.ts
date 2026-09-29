@@ -22,6 +22,8 @@ export type Product = {
   reconstitution?: string; // pestaña "Reconstitución"
   research?: string; // pestaña "Investigación"
   coaUrl?: string; // enlace al certificado de análisis (PDF o imagen)
+  lot?: string; // número de lote actual (el que va impreso en la etiqueta)
+  lotDate?: string; // fecha del análisis del lote (AAAA-MM-DD)
   variants: Variant[];
   featured?: boolean;
   visible: boolean;

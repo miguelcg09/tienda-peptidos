@@ -30,7 +30,7 @@ export async function GET() {
       RESEND_API_KEY: Boolean(process.env.RESEND_API_KEY),
       ORDERS_NOTIFY_EMAIL: Boolean(process.env.ORDERS_NOTIFY_EMAIL),
       NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL ?? null,
-      PAYMENT_PROVIDER: process.env.PAYMENT_PROVIDER ?? "mock",
+      PAYMENT_PROVIDER: process.env.PAYMENT_PROVIDER || "ninguno (tarjeta desactivada)",
     },
   });
 }

@@ -11,7 +11,9 @@ import { Effects } from "@/components/Effects";
 import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { getPalette, paletteCss } from "@/lib/palettes";
-import { toStoreSettings } from "@/lib/config";
+import { hasBankData, toStoreSettings } from "@/lib/config";
+import { cardProviderName } from "@/lib/payments";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit", weight: ["400", "500", "600", "700"] });
 
@@ -45,6 +47,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const [catalog, settings] = await Promise.all([getProducts(), getSettings()]);
   const palette = getPalette(settings.palette);
+  const provider = cardProviderName();
+  const storeSettings = toStoreSettings(settings, { card: provider !== null, test: provider === "mock", transfer: hasBankData(settings) });
   return (
     <html lang="es-CL" className={outfit.variable}>
       <body className="font-sans antialiased">
@@ -53,12 +57,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <div className="grain" aria-hidden />
         <ScrollProgress />
         <Effects />
-        <StoreProvider catalog={catalog} settings={toStoreSettings(settings)}>
+        <StoreProvider catalog={catalog} settings={storeSettings}>
           <Header />
           <main>{children}</main>
-          <Footer settings={settings} />
+          <Footer settings={storeSettings} />
           <CartDrawer />
           <ResearchGate />
+          <WhatsAppButton />
         </StoreProvider>
       </body>
     </html>

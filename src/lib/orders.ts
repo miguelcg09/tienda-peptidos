@@ -2,6 +2,7 @@ import "server-only";
 import { query } from "./db";
 
 export type OrderStatus = "pendiente" | "pagado" | "despachado" | "fallido";
+export type PaymentMethod = "tarjeta" | "transferencia";
 
 export type OrderItem = {
   variantId: string;
@@ -29,8 +30,11 @@ export type Order = {
   customer: OrderCustomer;
   items: OrderItem[];
   subtotal: number;
+  discount: number; // descuento del cupón (CLP)
+  coupon: string | null;
   shipping: number;
   total: number;
+  paymentMethod: PaymentMethod;
   paymentRef: string | null;
   createdAt: string;
   paidAt: string | null;
@@ -45,8 +49,11 @@ type OrderRow = {
   customer: OrderCustomer | string;
   items: OrderItem[] | string;
   subtotal: number;
+  discount: number | null;
+  coupon: string | null;
   shipping: number;
   total: number;
+  payment_method: string | null;
   payment_ref: string | null;
   created_at: string | Date;
   paid_at: string | Date | null;
@@ -65,6 +72,9 @@ function toOrder(r: OrderRow): Order {
     customer: asJson(r.customer),
     items: asJson(r.items),
     subtotal: Number(r.subtotal),
+    discount: Number(r.discount ?? 0),
+    coupon: r.coupon ?? null,
+    paymentMethod: r.payment_method === "transferencia" ? "transferencia" : "tarjeta",
     shipping: Number(r.shipping),
     total: Number(r.total),
     paymentRef: r.payment_ref,
@@ -86,9 +96,9 @@ export async function createOrder(
   input: Omit<Order, "status" | "paymentRef" | "createdAt" | "paidAt" | "tracking" | "shippedAt" | "note">,
 ) {
   const [row] = await query<OrderRow>(
-    `INSERT INTO orders (id, customer, items, subtotal, shipping, total)
-     VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-    [input.id, JSON.stringify(input.customer), JSON.stringify(input.items), input.subtotal, input.shipping, input.total],
+    `INSERT INTO orders (id, customer, items, subtotal, discount, coupon, shipping, total, payment_method)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+    [input.id, JSON.stringify(input.customer), JSON.stringify(input.items), input.subtotal, input.discount, input.coupon, input.shipping, input.total, input.paymentMethod],
   );
   return toOrder(row);
 }

@@ -64,9 +64,18 @@ export default async function EditarProducto({ params }: { params: Promise<{ slu
           <label className="text-sm">Reconstitución (instrucciones de laboratorio)
             <textarea name="reconstitution" rows={3} defaultValue={product.reconstitution ?? ""} className="field" />
           </label>
-          <label className="text-sm">Enlace al certificado de análisis (PDF o imagen, opcional)
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="text-sm">Número de lote actual (el de la etiqueta)
+              <input name="lot" defaultValue={product.lot ?? ""} placeholder="HX-2409-A" className="field" />
+            </label>
+            <label className="text-sm">Fecha del análisis del lote
+              <input name="lotDate" type="date" defaultValue={product.lotDate ?? ""} className="field" />
+            </label>
+          </div>
+          <label className="text-sm">Enlace al certificado de análisis del lote (PDF o imagen, opcional)
             <input name="coaUrl" defaultValue={product.coaUrl ?? ""} placeholder="https://…" className="field" />
           </label>
+          <p className="-mt-2 text-xs text-muted">Con lote y enlace, el producto aparece en la página pública de Certificados, donde los clientes buscan por número de lote.</p>
         </fieldset>
 
         <fieldset className="grid gap-4 sm:grid-cols-[120px_1fr]">

@@ -8,8 +8,9 @@ import { useCart } from "./CartProvider";
 const links = [
   { href: "/productos", label: "Productos" },
   { href: "/#catalogo", label: "Catálogo" },
-  { href: "/#garantia", label: "Garantía" },
-  { href: "/#faq", label: "FAQ" },
+  { href: "/certificados", label: "Certificados" },
+  { href: "/calculadora", label: "Calculadora" },
+  { href: "/guias", label: "Guías" },
 ];
 
 export function Header() {

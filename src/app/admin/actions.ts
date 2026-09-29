@@ -4,11 +4,13 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/admin";
 import { categories, slugify, type Category, type Product, type Variant } from "@/lib/products";
-import { deleteProduct, setProductVisible, setVariants, upsertProduct } from "@/lib/catalog";
-import { deleteOrder, getOrder, markShipped, setOrderNote } from "@/lib/orders";
+import { decrementStock, deleteProduct, getProduct, setProductVisible, setVariants, upsertProduct } from "@/lib/catalog";
+import { deleteOrder, getOrder, markPaid, markShipped, setOrderNote } from "@/lib/orders";
 import { getSettings, saveSettings } from "@/lib/settings";
 import { defaultSettings } from "@/lib/config";
-import { sendShippedEmail } from "@/lib/email";
+import { sendBackInStockEmails, sendOrderEmails, sendShippedEmail } from "@/lib/email";
+import { deleteCoupon, normalizeCode, saveCoupon, setCouponActive } from "@/lib/coupons";
+import { clearStockWatchers, deleteSubscriber, stockWatchers } from "@/lib/subscribers";
 import type { Settings } from "@/lib/config";
 import { getPalette } from "@/lib/palettes";
 
@@ -64,6 +66,8 @@ export async function saveProduct(form: FormData) {
     reconstitution: str(form, "reconstitution") || undefined,
     research: str(form, "research") || undefined,
     coaUrl: str(form, "coaUrl") || undefined,
+    lot: str(form, "lot") || undefined,
+    lotDate: /^\d{4}-\d{2}-\d{2}$/.test(str(form, "lotDate")) ? str(form, "lotDate") : undefined,
     featured: form.get("featured") === "on",
     visible: form.get("visible") === "on",
     sort: num(form, "sort", 0),
@@ -92,8 +96,19 @@ export async function saveProduct(form: FormData) {
   }
   if (variants.length === 0) throw new Error("Agrega al menos una presentación con precio");
 
+  const before = original ? await getProduct(slug, { includeHidden: true }) : null;
   await upsertProduct(product);
   await setVariants(slug, variants);
+
+  // Si el producto estaba agotado y vuelve a tener stock, se avisa a quienes lo pidieron.
+  const wasOut = Boolean(before && before.variants.length > 0 && before.variants.every((v) => v.stock === 0));
+  if (wasOut && product.visible && variants.some((v) => v.stock !== 0)) {
+    const watchers = await stockWatchers(slug);
+    if (watchers.length > 0) {
+      await sendBackInStockEmails({ name, slug }, watchers.map((w) => w.email), await getSettings());
+      await clearStockWatchers(slug);
+    }
+  }
   refreshStore();
   redirect("/admin/productos");
 }
@@ -153,6 +168,13 @@ export async function saveSettingsAction(form: FormData) {
     legalRut: str(form, "legalRut"),
     legalAddress: str(form, "legalAddress"),
     legalUpdated: str(form, "legalUpdated"),
+    instagram: str(form, "instagram"),
+    bankName: str(form, "bankName"),
+    bankAccountType: str(form, "bankAccountType"),
+    bankAccount: str(form, "bankAccount"),
+    bankHolder: str(form, "bankHolder"),
+    bankRut: str(form, "bankRut"),
+    bankEmail: str(form, "bankEmail"),
     terminos: String(form.get("terminos") ?? "").trim(),
     envios: String(form.get("envios") ?? "").trim(),
     privacidad: String(form.get("privacidad") ?? "").trim(),
@@ -168,4 +190,54 @@ export async function resetLegalAction() {
   await saveSettings({ terminos: defaultSettings.terminos, envios: defaultSettings.envios, privacidad: defaultSettings.privacidad });
   refreshStore();
   redirect("/admin/ajustes?guardado=1");
+}
+
+// Pedido por transferencia: al ver el abono se confirma aquí. Descuenta stock y envía la confirmación al cliente.
+export async function confirmTransfer(form: FormData) {
+  await requireAdmin();
+  const paid = await markPaid(str(form, "id"), "transferencia");
+  if (paid) {
+    await decrementStock(paid.items);
+    await sendOrderEmails(paid, await getSettings());
+  }
+  refreshStore();
+  revalidatePath("/admin/pedidos");
+}
+
+export async function saveCouponAction(form: FormData) {
+  await requireAdmin();
+  const code = normalizeCode(str(form, "code"));
+  if (!code) throw new Error("Escribe un código (letras y números)");
+  const kind = str(form, "kind") === "monto" ? "monto" : "porcentaje";
+  const value = num(form, "value");
+  if (value <= 0 || (kind === "porcentaje" && value > 100)) throw new Error("El valor del cupón no es válido");
+  await saveCoupon({
+    code,
+    kind,
+    value,
+    minSubtotal: Math.max(0, num(form, "minSubtotal")),
+    maxUses: str(form, "maxUses") ? Math.max(1, num(form, "maxUses")) : null,
+    expiresAt: /^\d{4}-\d{2}-\d{2}$/.test(str(form, "expiresAt")) ? str(form, "expiresAt") : null,
+    active: true,
+  });
+  revalidatePath("/admin/cupones");
+  redirect("/admin/cupones?guardado=1");
+}
+
+export async function toggleCoupon(code: string, active: boolean) {
+  await requireAdmin();
+  await setCouponActive(code, active);
+  revalidatePath("/admin/cupones");
+}
+
+export async function removeCoupon(code: string) {
+  await requireAdmin();
+  await deleteCoupon(code);
+  revalidatePath("/admin/cupones");
+}
+
+export async function removeSubscriber(id: number) {
+  await requireAdmin();
+  await deleteSubscriber(id);
+  revalidatePath("/admin/suscriptores");
 }

@@ -26,7 +26,9 @@ async function send(mail: Mail, settings: Settings) {
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 
 function itemsText(order: Order) {
-  return order.items.map((i) => `- ${i.name} × ${i.qty}: ${formatCLP(i.unitPrice * i.qty)}`).join("\n");
+  const lines = order.items.map((i) => `- ${i.name} × ${i.qty}: ${formatCLP(i.unitPrice * i.qty)}`);
+  if (order.discount > 0) lines.push(`- Descuento${order.coupon ? ` (${order.coupon})` : ""}: -${formatCLP(order.discount)}`);
+  return lines.join("\n");
 }
 
 function itemsHtml(order: Order) {
@@ -36,7 +38,10 @@ function itemsHtml(order: Order) {
         `<tr><td style="padding:6px 0">${esc(i.name)} × ${i.qty}</td><td style="padding:6px 0;text-align:right">${formatCLP(i.unitPrice * i.qty)}</td></tr>`,
     )
     .join("");
-  return `<table style="width:100%;border-collapse:collapse;font-size:14px">${rows}
+  const discount = order.discount > 0
+    ? `<tr><td style="padding:6px 0">Descuento${order.coupon ? ` (${esc(order.coupon)})` : ""}</td><td style="padding:6px 0;text-align:right">-${formatCLP(order.discount)}</td></tr>`
+    : "";
+  return `<table style="width:100%;border-collapse:collapse;font-size:14px">${rows}${discount}
     <tr><td style="padding:6px 0;border-top:1px solid #ddd">Envío</td><td style="padding:6px 0;border-top:1px solid #ddd;text-align:right">${order.shipping ? formatCLP(order.shipping) : "Gratis"}</td></tr>
     <tr><td style="padding:6px 0;font-weight:bold">Total</td><td style="padding:6px 0;text-align:right;font-weight:bold">${formatCLP(order.total)}</td></tr>
   </table>`;
@@ -104,5 +109,75 @@ export async function sendShippedEmail(order: Order, settings: Settings) {
       ),
     },
     settings,
+  );
+}
+
+// Datos bancarios para pagar por transferencia (se configuran en /admin/ajustes).
+function bankLines(s: Settings) {
+  return [
+    ["Banco", s.bankName],
+    ["Tipo de cuenta", s.bankAccountType],
+    ["Número de cuenta", s.bankAccount],
+    ["Titular", s.bankHolder],
+    ["RUT", s.bankRut],
+    ["Correo", s.bankEmail],
+  ].filter(([, v]) => v.trim());
+}
+
+// Pedido creado con "transferencia": el cliente recibe los datos y la tienda un aviso de pedido pendiente.
+export async function sendTransferEmails(order: Order, settings: Settings) {
+  const c = order.customer;
+  const bank = bankLines(settings);
+  const bankText = [...bank, ["Comentario", `Pedido ${order.id}`]].map(([k, v]) => `${k}: ${v}`).join("\n");
+  const bankHtml = `<table style="font-size:14px;border-collapse:collapse">${[...bank, ["Comentario", `Pedido ${order.id}`]]
+    .map(([k, v]) => `<tr><td style="padding:4px 12px 4px 0;color:#666">${esc(k)}</td><td style="padding:4px 0;font-weight:600">${esc(v)}</td></tr>`)
+    .join("")}</table>`;
+  const contact = settings.bankEmail || settings.email;
+
+  const customerMail: Mail = {
+    to: c.email,
+    subject: `Pedido ${order.id} recibido · cómo pagar por transferencia · ${settings.name}`,
+    text: `Hola ${c.name},\n\nRecibimos tu pedido ${order.id}. Para confirmarlo, transfiere ${formatCLP(order.total)} a:\n\n${bankText}\n\nEnvía el comprobante respondiendo a este correo (${contact})${settings.whatsapp ? ` o por WhatsApp al ${settings.whatsapp}` : ""}. Reservamos tu pedido por 48 horas y lo despachamos apenas confirmemos el abono.\n\nDetalle:\n${itemsText(order)}\nEnvío: ${order.shipping ? formatCLP(order.shipping) : "Gratis"}\nTotal: ${formatCLP(order.total)}\n\nDespacho a: ${addressOf(order)}\nEstado del pedido: ${trackUrl(order)}\n\n${settings.name} · ${settings.email}`,
+    html: layout(
+      settings,
+      `Recibimos tu pedido, ${esc(c.name)}`,
+      `<p>Para confirmar el pedido <strong>${order.id}</strong>, transfiere <strong>${formatCLP(order.total)}</strong> a:</p>${bankHtml}
+       <p>Envía el comprobante respondiendo a este correo (${esc(contact)})${settings.whatsapp ? ` o por WhatsApp al ${esc(settings.whatsapp)}` : ""}. Reservamos tu pedido por 48 horas y lo despachamos apenas confirmemos el abono.</p>
+       ${itemsHtml(order)}
+       <p style="margin-top:16px"><strong>Despacho a:</strong><br>${esc(addressOf(order))}</p>
+       <p><a href="${trackUrl(order)}">Ver el estado de tu pedido</a></p>`,
+    ),
+  };
+
+  const storeMail: Mail = {
+    to: process.env.ORDERS_NOTIFY_EMAIL ?? settings.email,
+    subject: `Pedido ${order.id} pendiente de transferencia · ${formatCLP(order.total)}`,
+    text: `Pedido ${order.id} creado con pago por transferencia. Cuando veas el abono, confírmalo en el panel (Pedidos > Confirmar pago recibido).\n\nCliente: ${c.name}\nRUT: ${c.rut}\nCorreo: ${c.email}\nTeléfono: ${c.phone}\nDirección: ${addressOf(order)}\n\n${itemsText(order)}\nEnvío: ${order.shipping ? formatCLP(order.shipping) : "Gratis"}\nTotal: ${formatCLP(order.total)}`,
+    html: layout(
+      settings,
+      `Pedido ${order.id} pendiente de transferencia`,
+      `<p>Cuando veas el abono de <strong>${formatCLP(order.total)}</strong>, confírmalo en el panel (Pedidos &gt; Confirmar pago recibido).</p>
+       <p><strong>${esc(c.name)}</strong> · RUT ${esc(c.rut)}<br>${esc(c.email)} · ${esc(c.phone)}<br>${esc(addressOf(order))}</p>${itemsHtml(order)}`,
+    ),
+  };
+
+  await Promise.all([send(customerMail, settings), send(storeMail, settings)]);
+}
+
+// Aviso a quienes pidieron "avísame cuando vuelva" un producto.
+export async function sendBackInStockEmails(product: { name: string; slug: string }, emails: string[], settings: Settings) {
+  const url = `${(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "")}/productos/${product.slug}`;
+  await Promise.all(
+    emails.map((to) =>
+      send(
+        {
+          to,
+          subject: `${product.name} volvió a estar disponible · ${settings.name}`,
+          text: `Hola,\n\nNos pediste que te avisáramos: ${product.name} ya está disponible otra vez.\n\n${url}\n\n${settings.name} · ${settings.email}`,
+          html: layout(settings, `${esc(product.name)} volvió a estar disponible`, `<p>Nos pediste que te avisáramos: <strong>${esc(product.name)}</strong> ya está disponible otra vez.</p><p><a href="${url}">Ver producto</a></p>`),
+        },
+        settings,
+      ),
+    ),
   );
 }

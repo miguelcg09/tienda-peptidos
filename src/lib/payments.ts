@@ -71,9 +71,16 @@ const providers: Record<string, PaymentProvider> = {
   dlocalgo: dlocalGoProvider,
 };
 
+// Pasarela de tarjetas configurada: "dlocalgo" (real), "mock" (pruebas) o ninguna (solo transferencia).
+export function cardProviderName(): "mock" | "dlocalgo" | null {
+  const name = (process.env.PAYMENT_PROVIDER ?? "").trim();
+  if (!name || name === "none") return null;
+  if (!providers[name]) throw new Error(`Proveedor de pago desconocido: ${name}`);
+  return name as "mock" | "dlocalgo";
+}
+
 export function getPaymentProvider(): PaymentProvider {
-  const name = process.env.PAYMENT_PROVIDER ?? "mock";
-  const provider = providers[name];
-  if (!provider) throw new Error(`Proveedor de pago desconocido: ${name}`);
-  return provider;
+  const name = cardProviderName();
+  if (!name) throw new Error("El pago con tarjeta no está habilitado (PAYMENT_PROVIDER vacío)");
+  return providers[name];
 }

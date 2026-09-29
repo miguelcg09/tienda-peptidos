@@ -19,9 +19,14 @@ Abre http://localhost:3000.
 - Checkout con validación de RUT, región/comuna y aceptación de uso para investigación.
 - Dirección de despacho: región y comuna se eligen de la lista oficial (`src/lib/comunas.ts`, 346 comunas). Mientras el cliente escribe la calle, `/api/geo` sugiere direcciones con Photon (OpenStreetMap, gratis y sin clave), filtradas por la comuna elegida; la comuna solo se completa si coincide con una oficial. Como en Chile OpenStreetMap tiene pocos números de casa, si solo aparece la calle se conserva el número escrito. No hace falta elegir una sugerencia: al salir del campo (o con "Ver en el mapa") se ubica lo escrito y aparece un mapa (Leaflet + OpenStreetMap) con un marcador arrastrable; si la calle no está en el mapa, el marcador parte en el centro de la comuna. Botón "Usar mi ubicación" (GPS). El pedido guarda referencia (depto., casa) y coordenadas; en `/admin/pedidos` hay un enlace al punto en el mapa. `GEO_PROVIDER=mock` devuelve resultados fijos para probar sin red.
 - Aviso de ingreso (+18 y solo investigación), rótulos en fichas y documentos legales breves en `/terminos`, `/envios` y `/privacidad` (versiones generales para Chile en `src/lib/legal.ts`, editables desde el panel, con marcadores como `{{razon_social}}` o `{{envio}}` que se reemplazan con los datos de Ajustes). Deben ser revisados por un abogado antes de vender.
-- Capa de pagos intercambiable (`src/lib/payments.ts`):
-  - `mock`: modo de prueba, no cobra.
-  - `dlocalgo`: dLocal Go. El cliente paga en CLP con medios chilenos y la liquidación llega en USD al extranjero.
+- Medios de pago en el checkout (se muestran solo los que estén disponibles):
+  - **Transferencia bancaria**: se activa al completar los datos bancarios en `/admin/ajustes`. El pedido queda pendiente, el cliente ve y recibe por correo los datos para transferir y tú lo confirmas en `/admin/pedidos` ("Confirmar pago recibido"), lo que descuenta el stock y envía la confirmación.
+  - **Tarjeta**: capa intercambiable (`src/lib/payments.ts`) elegida con `PAYMENT_PROVIDER`. `dlocalgo` es la pasarela real (pago en CLP, liquidación en USD al extranjero); `mock` es modo de prueba que no cobra. Si la variable está vacía, la tarjeta queda desactivada.
+  - Si no hay ninguno, el checkout ofrece pedir por WhatsApp o correo.
+- Cupones de descuento (`/admin/cupones`): porcentaje o monto fijo, compra mínima, usos máximos y vencimiento. El servidor los vuelve a validar al crear el pedido.
+- Correos de clientes: boletín en el pie y "Avísame cuando vuelva" en fichas agotadas (`/admin/suscriptores`, descarga en CSV). Al reponer stock desde el panel se avisa por correo a quienes esperaban.
+- Confianza: `/certificados` (búsqueda por número de lote, con fecha y enlace al COA; el lote y su fecha se cargan en cada producto), `/calculadora` (concentración y volumen de una alícuota, solo cálculo de laboratorio), `/guias` (cómo comprar, leer un COA y almacenar), búsqueda de productos y orden del catálogo.
+- Botón flotante de WhatsApp e Instagram en el pie, con los datos de Ajustes (el botón no aparece con el número de ejemplo).
 - Pedidos guardados en Postgres (`src/lib/orders.ts`). En desarrollo se usa un Postgres embebido (PGlite) en `.data/`; en producción, `DATABASE_URL`.
 - Correos de confirmación al cliente y aviso a la tienda (`src/lib/email.ts`) vía Resend. Sin `RESEND_API_KEY` se imprimen en consola.
 - Webhook de dLocal Go que verifica el pago contra su API (y que monto y moneda coincidan) antes de marcar el pedido como pagado. Endpoints y cabecera verificados contra el cliente oficial.
@@ -38,7 +43,8 @@ Abre http://localhost:3000.
 ## Qué hacer antes de vender
 
 - Desde `/admin/productos`: reemplazar los productos de ejemplo por los reales, con precios, stock y fotos.
-- Desde `/admin/ajustes`: datos de contacto, envío y términos (revisar los términos con un abogado).
+- Desde `/admin/ajustes`: datos de contacto, envío, datos bancarios para transferencias y términos (revisar los términos con un abogado).
+- Cargar el lote y la fecha de análisis de cada producto (y el enlace al COA) para que aparezcan en `/certificados`.
 - Confirmar los nombres de campos del webhook de dLocal Go contra su documentación (`src/app/api/webhooks/dlocalgo/route.ts`).
 
 ## Despliegue

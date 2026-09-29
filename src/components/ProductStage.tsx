@@ -5,6 +5,7 @@ import { formatCLP, type Product } from "@/lib/products";
 import type { Settings } from "@/lib/config";
 import { useCart } from "./CartProvider";
 import { ProductImage } from "./ProductImage";
+import { Newsletter } from "./Newsletter";
 
 type IndexItem = { id: string; label: string };
 
@@ -21,7 +22,8 @@ export function ProductStage({
   index: IndexItem[];
   children: ReactNode;
 }) {
-  const { add, lines } = useCart();
+  const { add, lines, settings: store } = useCart();
+  const { payments } = store;
   const [variantId, setVariantId] = useState(product.variants.find((v) => v.stock !== 0)?.id ?? product.variants[0]?.id ?? "");
   const [qty, setQty] = useState(1);
   const [cardVisible, setCardVisible] = useState(true);
@@ -43,6 +45,11 @@ export function ProductStage({
   const inCart = lines.find((l) => l.variantId === variant.id)?.qty ?? 0;
   const discount = variant.compareAt && variant.compareAt > variant.price ? variant.compareAt - variant.price : 0;
   const pct = discount ? Math.round((discount / variant.compareAt!) * 100) : 0;
+  const payLine =
+    payments.card && payments.transfer ? "Pago con tarjeta, Webpay o transferencia"
+    : payments.card ? "Pago seguro con tarjeta o Webpay"
+    : payments.transfer ? "Pago por transferencia bancaria"
+    : "Pedidos por WhatsApp o correo";
   const stockLine = soldOut
     ? "Sin stock por ahora"
     : variant.stock == null || variant.stock > 20
@@ -137,11 +144,18 @@ export function ProductStage({
               </button>
             </div>
 
+            {soldOut && (
+              <div className="mt-4 rounded-2xl border bg-surface-2 p-3 text-sm">
+                <p className="font-medium">¿Te avisamos cuando vuelva?</p>
+                <div className="mt-2"><Newsletter source="stock" product={product.slug} cta="Avísame" done="Listo: te escribimos cuando vuelva a estar disponible." compact /></div>
+              </div>
+            )}
+
             <ul className="mt-5 space-y-1.5 border-t pt-4 text-xs text-muted">
               <li>🚚 {settings.shippingNote}</li>
               <li>✓ Envío gratis sobre {formatCLP(settings.freeShippingFrom)}</li>
               <li>✓ Certificado de análisis del lote incluido</li>
-              <li>✓ Pago con tarjeta, Webpay o transferencia</li>
+              <li>✓ {payLine}</li>
             </ul>
             {product.coaUrl && (
               <a href={product.coaUrl} target="_blank" rel="noreferrer" className="btn-ghost mt-4 w-full text-sm">Ver certificado del lote</a>

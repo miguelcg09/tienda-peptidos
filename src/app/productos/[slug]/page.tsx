@@ -128,6 +128,13 @@ export default async function ProductPage({ params }: Props) {
             Cada lote se analiza por HPLC (pureza) y espectrometría de masas (identidad). El número de lote va impreso en la
             etiqueta del vial y el certificado correspondiente viaja con el pedido.
           </p>
+          {product.lot && (
+            <p className="mt-4 text-sm">
+              <strong>Lote actual:</strong> <span className="font-mono">{product.lot}</span>
+              {product.lotDate && <> · analizado el {new Date(`${product.lotDate}T12:00:00`).toLocaleDateString("es-CL", { day: "numeric", month: "long", year: "numeric" })}</>}
+              {" "}· <Link href={`/certificados?q=${encodeURIComponent(product.lot)}`} className="text-accent hover:underline">verificar en Certificados</Link>
+            </p>
+          )}
           {product.coaUrl ? (
             <a href={product.coaUrl} target="_blank" rel="noreferrer" className="btn-primary mt-5">Ver certificado del lote actual</a>
           ) : (
@@ -150,6 +157,7 @@ export default async function ProductPage({ params }: Props) {
           ) : (
             <Paragraphs text={product.reconstitution ?? defaultReconstitution} />
           )}
+          {!isAccessory && <p className="mt-4 text-sm"><Link href="/calculadora" className="text-accent hover:underline">Calcular la concentración y el volumen →</Link></p>}
           <p className="mt-4 text-xs text-muted">Información técnica de manipulación. No constituye indicación de uso ni de dosis.</p>
         </Section>
 

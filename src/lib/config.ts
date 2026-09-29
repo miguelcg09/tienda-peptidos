@@ -18,11 +18,23 @@ export type Settings = {
   terminos: string; // texto plano; las líneas en blanco separan párrafos, "## " inicia un título, "- " una lista
   envios: string; // política de envíos y devoluciones, mismo formato
   privacidad: string; // política de privacidad, mismo formato
+  instagram: string; // usuario o enlace de Instagram (opcional)
+  // Pago por transferencia: si hay cuenta y titular, el checkout ofrece la opción
+  bankName: string;
+  bankAccountType: string;
+  bankAccount: string;
+  bankHolder: string;
+  bankRut: string;
+  bankEmail: string; // correo al que el cliente envía el comprobante
 };
 
+// Medios de pago disponibles (se calculan en el servidor a partir del entorno y los ajustes).
+export type PaymentOptions = { card: boolean; test: boolean; transfer: boolean };
+export const hasBankData = (s: Pick<Settings, "bankAccount" | "bankHolder">) => Boolean(s.bankAccount.trim() && s.bankHolder.trim());
+
 // Lo que reciben los componentes de cliente: sin los textos legales largos (se ven en sus páginas).
-export type StoreSettings = Omit<Settings, "terminos" | "envios" | "privacidad">;
-export const toStoreSettings = ({ terminos: _t, envios: _e, privacidad: _p, ...rest }: Settings): StoreSettings => rest;
+export type StoreSettings = Omit<Settings, "terminos" | "envios" | "privacidad"> & { payments: PaymentOptions };
+export const toStoreSettings = ({ terminos: _t, envios: _e, privacidad: _p, ...rest }: Settings, payments: PaymentOptions): StoreSettings => ({ ...rest, payments });
 
 export const defaultSettings: Settings = {
   name: "Helix Research",
@@ -38,6 +50,13 @@ export const defaultSettings: Settings = {
   legalName: "",
   legalRut: "",
   legalAddress: "",
+  instagram: "",
+  bankName: "",
+  bankAccountType: "Cuenta corriente",
+  bankAccount: "",
+  bankHolder: "",
+  bankRut: "",
+  bankEmail: "",
   legalUpdated: legalUpdatedDefault,
   terminos: terminosDefault,
   envios: enviosDefault,
