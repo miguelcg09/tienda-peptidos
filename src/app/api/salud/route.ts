@@ -5,10 +5,19 @@ export const dynamic = "force-dynamic";
 
 // Diagnóstico rápido del despliegue. No expone valores, solo si cada pieza está configurada.
 export async function GET() {
-  let db: { ok: boolean; detail: string; pedidos?: number };
+  let db: { ok: boolean; detail: string; pedidos?: number; ultimos?: string[]; servidor?: string };
   try {
-    const [row] = await query<{ n: string | number }>("SELECT count(*) AS n FROM orders");
-    db = { ok: true, detail: `conectada vía ${databaseUrlVar() ?? "PGlite local"}`, pedidos: Number(row.n) };
+    const [row] = await query<{ n: number; db: string; host: string | null }>(
+      "SELECT count(*)::int AS n, current_database() AS db, inet_server_addr()::text AS host FROM orders",
+    );
+    const ultimos = await query<{ id: string }>("SELECT id FROM orders ORDER BY created_at DESC LIMIT 5");
+    db = {
+      ok: true,
+      detail: `conectada vía ${databaseUrlVar() ?? "PGlite local"}`,
+      pedidos: Number(row.n),
+      ultimos: ultimos.map((r) => r.id),
+      servidor: `${row.db} @ ${row.host ?? "?"}`,
+    };
   } catch (err) {
     db = { ok: false, detail: err instanceof Error ? err.message : String(err) };
   }
