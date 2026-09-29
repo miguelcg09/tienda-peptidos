@@ -8,6 +8,7 @@ import { CartDrawer } from "@/components/CartDrawer";
 import { ResearchGate } from "@/components/ResearchGate";
 import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
+import { getPalette, paletteCss } from "@/lib/palettes";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const display = Space_Grotesk({ subsets: ["latin"], variable: "--font-display", weight: ["500", "700"] });
@@ -15,12 +16,15 @@ const display = Space_Grotesk({ subsets: ["latin"], variable: "--font-display", 
 // El catálogo y los ajustes viven en la base de datos, así que todo se renderiza por petición.
 export const dynamic = "force-dynamic";
 
-export const viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#cfdccf" },
-    { media: "(prefers-color-scheme: dark)", color: "#061a11" },
-  ],
-};
+export async function generateViewport() {
+  const p = getPalette((await getSettings()).palette);
+  return {
+    themeColor: [
+      { media: "(prefers-color-scheme: light)", color: p.light.bg },
+      { media: "(prefers-color-scheme: dark)", color: p.dark.bg },
+    ],
+  };
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSettings();
@@ -32,9 +36,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const [catalog, settings] = await Promise.all([getProducts(), getSettings()]);
+  const palette = getPalette(settings.palette);
   return (
     <html lang="es-CL" className={`${inter.variable} ${display.variable}`}>
       <body className="font-sans antialiased">
+        {/* Paleta elegida en /admin/ajustes */}
+        <style dangerouslySetInnerHTML={{ __html: paletteCss(palette) }} />
         <div className="grain" aria-hidden />
         <StoreProvider catalog={catalog} settings={settings}>
           <Header />

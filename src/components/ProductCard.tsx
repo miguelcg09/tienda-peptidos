@@ -2,10 +2,12 @@ import Link from "next/link";
 import { formatCLP, type Product } from "@/lib/products";
 import { ProductImage } from "./ProductImage";
 import { Tilt } from "./Tilt";
+import { QuickAdd } from "./QuickAdd";
 
 export function ProductCard({ product }: { product: Product }) {
   const from = Math.min(...product.variants.map((v) => v.price));
   const soldOut = product.variants.every((v) => v.stock === 0);
+  const quick = product.variants.length === 1 ? product.variants.find((v) => v.stock !== 0) : undefined;
   return (
     <Tilt className="h-full">
       <Link
@@ -17,6 +19,7 @@ export function ProductCard({ product }: { product: Product }) {
           <span className="absolute left-3 top-3 rounded-full border border-tint/10 bg-surface/70 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-lime backdrop-blur">
             {soldOut ? "Agotado" : product.purity.replace(" (HPLC)", "")}
           </span>
+          {quick && <QuickAdd variantId={quick.id} />}
         </div>
         <p className="mt-4 text-[11px] font-medium uppercase tracking-widest text-muted">{product.category}</p>
         <h3 className="mt-1 font-display text-lg font-semibold">{product.name}</h3>

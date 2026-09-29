@@ -1,8 +1,10 @@
 import Link from "next/link";
-import { formatCLP } from "@/lib/products";
+import { categories, categoryMeta } from "@/lib/products";
 import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
-import { ProductImage } from "@/components/ProductImage";
+import { Spotlight } from "@/components/Spotlight";
+import { RotatingWord } from "@/components/RotatingWord";
+import { CountUp } from "@/components/CountUp";
 import { Reveal } from "@/components/Reveal";
 import { VialCarousel } from "@/components/VialCarousel";
 import { CatalogTabs } from "@/components/CatalogTabs";
@@ -24,60 +26,82 @@ const checks = [
 
 export default async function Home() {
   const [products, settings] = await Promise.all([getProducts(), getSettings()]);
-  const spotlight = products.find((p) => p.featured) ?? products[0];
+  const featured = products.filter((p) => p.featured).slice(0, 4);
+  const spotlight = featured[0] ?? products[0];
   if (!spotlight) return <p className="p-12 text-center text-muted">Aún no hay productos publicados.</p>;
-  const spotlightFrom = Math.min(...spotlight.variants.map((v) => v.price));
+  if (featured.length === 0) featured.push(spotlight);
+  const present = categories.filter((c) => products.some((p) => p.category === c));
+  const lines = present.map((c) => c.toLowerCase());
 
   return (
     <>
-      {/* Portada: titular centrado y producto destacado debajo */}
-      <section className="relative border-b bg-surface-2">
-        <div className="relative mx-auto max-w-6xl px-4 pb-10 pt-16 text-center md:pt-24">
-          <Reveal>
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">Laboratorio · Chile</p>
-          </Reveal>
-          <Reveal delay={80}>
-            <h1 className="mx-auto mt-5 max-w-4xl font-display text-5xl font-bold leading-[1.02] tracking-tight md:text-7xl">
-              Reactivos peptídicos con <span className="text-gradient">certificado por lote</span>
-            </h1>
-          </Reveal>
-          <Reveal delay={160}>
-            <p className="mx-auto mt-6 max-w-xl text-lg text-muted">
-              Compra en pesos, recibe en 24–72 h y revisa el análisis del lote exacto que llega a tu mesa de trabajo.
-            </p>
-          </Reveal>
-          <Reveal delay={240}>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link href="#catalogo" className="btn-primary">Explorar catálogo</Link>
-              <Link href="#garantia" className="btn-ghost">Cómo verificamos</Link>
-            </div>
+      {/* Portada: titular a la izquierda con palabra que rota, destacados rotativos a la derecha */}
+      <section className="relative overflow-hidden border-b bg-surface-2">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 md:grid-cols-[1.15fr_1fr] md:py-20">
+          <div>
+            <Reveal>
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">Laboratorio · Chile</p>
+            </Reveal>
+            <Reveal delay={80}>
+              <h1 className="mt-5 font-display text-5xl font-bold leading-[0.98] tracking-tight md:text-7xl">
+                Péptidos para investigar
+                <br />
+                <RotatingWord words={lines} className="text-accent" />
+              </h1>
+            </Reveal>
+            <Reveal delay={160}>
+              <p className="mt-6 max-w-lg text-lg text-muted">
+                Reactivos de grado investigación con certificado de análisis por lote. Compra en pesos y recibe en Chile en 24–72 h.
+              </p>
+            </Reveal>
+            <Reveal delay={240}>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link href="#catalogo" className="btn-primary">Explorar catálogo</Link>
+                <Link href="#garantia" className="btn-ghost">Cómo verificamos</Link>
+              </div>
+            </Reveal>
+            <Reveal delay={320}>
+              <dl className="mt-10 grid max-w-md grid-cols-3 gap-4 border-t pt-6">
+                {[
+                  { v: <CountUp value={98} prefix="≥ " suffix="%" />, l: "pureza mínima por HPLC" },
+                  { v: <CountUp value={products.length} />, l: "productos en stock" },
+                  { v: <CountUp value={100} suffix="%" />, l: "lotes con certificado" },
+                ].map((st, i) => (
+                  <div key={i}>
+                    <dd className="font-display text-3xl font-bold text-fg">{st.v}</dd>
+                    <dt className="mt-1 text-xs text-muted">{st.l}</dt>
+                  </div>
+                ))}
+              </dl>
+            </Reveal>
+          </div>
+          <Reveal delay={200}>
+            <Spotlight items={featured} />
           </Reveal>
         </div>
+      </section>
 
-        <Reveal delay={320} className="relative mx-auto max-w-5xl px-4 pb-16">
-          <div className="grid items-center gap-6 rounded-[2rem] border bg-surface p-6 shadow-sm md:grid-cols-[200px_1fr_auto] md:p-8">
-            <div className="relative mx-auto grid h-52 w-40 place-items-center rounded-3xl bg-surface-2">
-              <ProductImage product={spotlight} className="animate-float relative h-full w-full" />
-            </div>
-            <div className="text-center md:text-left">
-              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent-2">Destacado de la semana</p>
-              <h2 className="mt-2 font-display text-3xl font-bold">{spotlight.name}</h2>
-              <p className="mt-2 text-muted">{spotlight.short}</p>
-              <ul className="mt-4 flex flex-wrap justify-center gap-2 text-xs md:justify-start">
-                <li className="rounded-full border px-3 py-1">{spotlight.purity}</li>
-                <li className="rounded-full border px-3 py-1">{spotlight.form}</li>
-                {spotlight.variants.map((v) => (
-                  <li key={v.id} className="rounded-full border px-3 py-1">{v.label}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="text-center md:text-right">
-              <p className="text-xs text-muted">Desde</p>
-              <p className="font-display text-3xl font-bold">{formatCLP(spotlightFrom)}</p>
-              <Link href={`/productos/${spotlight.slug}`} className="btn-primary mt-3 w-full md:w-auto">Ver producto</Link>
-            </div>
-          </div>
-        </Reveal>
+      {/* Líneas de investigación: una tarjeta por categoría */}
+      <section className="mx-auto max-w-6xl px-4 pt-12">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {present.map((c, i) => (
+            <Reveal key={c} delay={i * 70}>
+              <Link
+                href={`/productos?categoria=${encodeURIComponent(c)}`}
+                className="group flex items-center gap-4 rounded-2xl border bg-surface p-4 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg"
+              >
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-xl" style={{ background: `${categoryMeta[c].color}26` }}>
+                  {categoryMeta[c].icon}
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate font-semibold">{c}</span>
+                  <span className="block text-xs text-muted">{products.filter((p) => p.category === c).length} productos · {categoryMeta[c].blurb}</span>
+                </span>
+                <span className="ml-auto text-muted transition group-hover:translate-x-1 group-hover:text-accent">→</span>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
       </section>
 
       {/* Cómo comprar: tres pasos en línea */}

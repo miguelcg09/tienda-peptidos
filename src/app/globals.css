@@ -19,36 +19,36 @@
 
 :root {
   color-scheme: light;
-  --bg: #cfdccf;
+  --bg: #f5f1ea;
   --surface: #ffffff;
-  --surface-2: #e3ebe1;
-  --line: rgb(20 50 32 / 0.18);
-  --fg: #132019;
-  --muted: #4c5f54;
-  --accent: #059669;
-  --accent-2: #c28a12;
-  --badge: #047857;
-  --tint: #17201b;
+  --surface-2: #ece6da;
+  --line: rgb(40 30 20 / 0.12);
+  --fg: #1c1915;
+  --muted: #6a635a;
+  --accent: #c94d17;
+  --accent-2: #0f7c8a;
+  --badge: #b45309;
+  --tint: #1c1915;
   --on-accent: #ffffff;
-  --glow: 5 150 105;
+  --glow: 201 77 23;
   --grain: 0.05;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --bg: #061a11;
-    --surface: #0c2619;
-    --surface-2: #123322;
-    --line: rgb(120 220 170 / 0.16);
-    --fg: #eef5ef;
-    --muted: #9bb3a5;
-    --accent: #34d399;
-    --accent-2: #f5c451;
-    --badge: #6ee7b7;
-    --tint: #fffaf0;
-    --on-accent: #0c1410;
-    --glow: 52 211 153;
+    --bg: #15130f;
+    --surface: #1e1b16;
+    --surface-2: #29251e;
+    --line: rgb(255 240 220 / 0.09);
+    --fg: #f5f0e8;
+    --muted: #a69d8f;
+    --accent: #ff8a3d;
+    --accent-2: #3fc8d6;
+    --badge: #fbbf24;
+    --tint: #fff5e8;
+    --on-accent: #1a1008;
+    --glow: 255 138 61;
     --grain: 0.07;
   }
 }
@@ -127,11 +127,14 @@ body { background: var(--color-bg); color: var(--color-fg); }
 @keyframes shine { from { transform: translateX(-120%) skewX(-20deg) } to { transform: translateX(220%) skewX(-20deg) } }
 @keyframes drawer-in { from { transform: translateX(100%) } to { transform: translateX(0) } }
 @keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
+@keyframes slide-up { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
+@keyframes grow { from { width: 0 } to { width: 100% } }
 
 .animate-float { animation: float 6s ease-in-out infinite; }
 .animate-marquee { animation: marquee 32s linear infinite; }
 .animate-drawer { animation: drawer-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .animate-fade { animation: fade-in 0.25s ease-out; }
+.animate-slide { animation: slide-up 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
 
 /* Aparición al hacer scroll (ver Reveal.tsx) */
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }

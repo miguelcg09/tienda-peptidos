@@ -7,6 +7,7 @@ export type Settings = {
   shippingCost: number; // CLP
   freeShippingFrom: number; // CLP
   shippingNote: string; // línea de despacho en la ficha (plazos, couriers)
+  palette: string; // id de la paleta de colores (ver src/lib/palettes.ts)
   disclaimer: string;
   terminos: string; // texto plano; las líneas en blanco separan párrafos, "## " inicia un título
 };
@@ -19,6 +20,7 @@ export const defaultSettings: Settings = {
   shippingCost: 4990,
   freeShippingFrom: 80000,
   shippingNote: "Despachamos el mismo día hábil si compras antes de las 16:00 · Envío con seguimiento a todo Chile",
+  palette: "ambar",
   disclaimer:
     "Todos los productos se venden exclusivamente para investigación in vitro y uso de laboratorio. No aptos para consumo humano o animal, ni para uso diagnóstico o terapéutico.",
   terminos: `## 1. Uso exclusivo para investigación

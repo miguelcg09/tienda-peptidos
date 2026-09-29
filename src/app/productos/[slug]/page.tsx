@@ -1,14 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { formatCLP } from "@/lib/products";
 import { getProduct, getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { faqs } from "@/lib/faqs";
-import { ProductImage } from "@/components/ProductImage";
-import { ProductPurchase } from "@/components/ProductPurchase";
-import { ProductTabs } from "@/components/ProductTabs";
+import { ProductStage } from "@/components/ProductStage";
 import { ProductCard } from "@/components/ProductCard";
+import { Reveal } from "@/components/Reveal";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -30,11 +28,25 @@ function Paragraphs({ text }: { text: string }) {
   );
 }
 
+function Section({ id, n, title, children }: { id: string; n: number; title: string; children: React.ReactNode }) {
+  return (
+    <Reveal>
+      <section id={id} className="scroll-mt-32 border-t py-10 first:border-t-0 first:pt-0">
+        <div className="flex items-baseline gap-4">
+          <span className="font-mono text-xs text-accent">{String(n).padStart(2, "0")}</span>
+          <h2 className="font-display text-2xl font-bold md:text-3xl">{title}</h2>
+        </div>
+        <div className="mt-5 md:pl-10">{children}</div>
+      </section>
+    </Reveal>
+  );
+}
+
 export default async function ProductPage({ params }: Props) {
   const product = await getProduct((await params).slug);
   if (!product) notFound();
   const [products, settings] = await Promise.all([getProducts(), getSettings()]);
-  const related = products.filter((p) => p.category === product.category && p.slug !== product.slug).slice(0, 4);
+  const related = products.filter((p) => p.slug !== product.slug).sort((a, b) => (a.category === product.category ? -1 : 1) - (b.category === product.category ? -1 : 1)).slice(0, 6);
   const isAccessory = product.category === "Accesorios";
 
   const specs = [
@@ -45,33 +57,45 @@ export default async function ProductPage({ params }: Props) {
     ["Almacenar", product.storage ?? "2–8 °C, sin luz"],
   ];
 
-  const tabs = [
-    {
-      id: "resumen",
-      label: "Resumen",
-      content: (
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">Resumen</p>
-          <p className="mt-3 text-lg leading-relaxed">{product.short}</p>
+  const index = [
+    { id: "resumen", label: "Resumen" },
+    { id: "certificado", label: "Certificado" },
+    { id: "reconstitucion", label: "Reconstitución" },
+    { id: "investigacion", label: "Investigación" },
+    { id: "preguntas", label: "Preguntas" },
+  ];
+
+  return (
+    <div className="animate-fade mx-auto max-w-6xl px-4 pb-24 pt-8">
+      <nav className="mb-5 flex flex-wrap gap-2 text-sm text-muted">
+        <Link href="/" className="hover:text-accent">Inicio</Link>
+        <span>/</span>
+        <Link href={`/productos?categoria=${encodeURIComponent(product.category)}`} className="hover:text-accent">{product.category}</Link>
+        <span>/</span>
+        <span className="text-fg">{product.name}</span>
+      </nav>
+
+      <ProductStage product={product} settings={settings} index={index}>
+        {/* Franja de datos técnicos */}
+        <dl className="mb-10 grid grid-cols-2 gap-y-4 rounded-2xl border bg-surface p-5 text-sm sm:grid-cols-[1.6fr_1fr_1fr_1fr_1fr] sm:divide-x sm:gap-y-0">
+          {specs.map(([k, v]) => (
+            <div key={k} className="sm:px-4 sm:first:pl-0 sm:last:pr-0">
+              <dt className="text-[11px] font-semibold uppercase tracking-widest text-muted">{k}</dt>
+              <dd className="mt-1 font-medium">{v}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <Section id="resumen" n={1} title="Resumen">
+          <p className="text-lg leading-relaxed">{product.short}</p>
           <Paragraphs text={product.description} />
           <p className="mt-6 rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-800 dark:text-amber-200">
             <strong>Solo para uso en investigación.</strong> {settings.disclaimer}
           </p>
-          <ul className="mt-6 grid gap-2 text-sm text-muted sm:grid-cols-3">
-            <li className="rounded-xl border bg-surface p-3">✓ Envío a todo Chile, gratis sobre {formatCLP(settings.freeShippingFrom)}</li>
-            <li className="rounded-xl border bg-surface p-3">✓ Certificado de análisis del lote incluido</li>
-            <li className="rounded-xl border bg-surface p-3">✓ Pago con tarjeta, Webpay o transferencia</li>
-          </ul>
-        </div>
-      ),
-    },
-    {
-      id: "coa",
-      label: "Certificado (COA)",
-      content: (
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">Certificado de análisis</p>
-          <p className="mt-3 leading-relaxed text-muted">
+        </Section>
+
+        <Section id="certificado" n={2} title="Certificado de análisis">
+          <p className="leading-relaxed text-muted">
             Cada lote se analiza por HPLC (pureza) y espectrometría de masas (identidad). El número de lote va impreso en la
             etiqueta del vial y el certificado correspondiente viaja con el pedido.
           </p>
@@ -89,89 +113,49 @@ export default async function ProductPage({ params }: Props) {
               <div key={k} className="rounded-xl border bg-surface p-3"><dt className="text-xs text-muted">{k}</dt><dd className="mt-1 font-medium">{v}</dd></div>
             ))}
           </dl>
-        </div>
-      ),
-    },
-    {
-      id: "reconstitucion",
-      label: "Reconstitución",
-      content: (
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">Preparación en laboratorio</p>
+        </Section>
+
+        <Section id="reconstitucion" n={3} title="Reconstitución">
           {isAccessory && !product.reconstitution ? (
-            <p className="mt-3 text-muted">Este producto se usa tal como viene; no requiere reconstitución.</p>
+            <p className="text-muted">Este producto se usa tal como viene; no requiere reconstitución.</p>
           ) : (
             <Paragraphs text={product.reconstitution ?? defaultReconstitution} />
           )}
           <p className="mt-4 text-xs text-muted">Información técnica de manipulación. No constituye indicación de uso ni de dosis.</p>
-        </div>
-      ),
-    },
-    {
-      id: "faq",
-      label: "Preguntas",
-      content: (
-        <div className="grid gap-3">
-          {faqs.map((f) => (
-            <div key={f.q} className="rounded-2xl border bg-surface p-4">
-              <p className="font-semibold">{f.q}</p>
-              <p className="mt-1 text-sm text-muted">{f.a}</p>
-            </div>
-          ))}
-        </div>
-      ),
-    },
-    {
-      id: "investigacion",
-      label: "Investigación",
-      content: (
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">Líneas de investigación</p>
+        </Section>
+
+        <Section id="investigacion" n={4} title="Líneas de investigación">
           <Paragraphs text={product.research ?? "Consulta la literatura científica publicada sobre este compuesto. Con gusto te orientamos sobre referencias."} />
           <p className="mt-4 text-xs text-muted">Resumen informativo de la literatura preclínica. No describe efectos en seres humanos.</p>
-        </div>
-      ),
-    },
-  ];
+        </Section>
 
-  return (
-    <div className="animate-fade mx-auto max-w-6xl px-4 pb-36 pt-10">
-      <nav className="flex flex-wrap gap-2 text-sm text-muted">
-        <Link href="/" className="hover:text-accent">Inicio</Link>
-        <span>›</span>
-        <Link href={`/productos?categoria=${encodeURIComponent(product.category)}`} className="hover:text-accent">{product.category}</Link>
-        <span>›</span>
-        <span className="text-fg">{product.name}</span>
-      </nav>
-
-      <div className="mt-6">
-        <ProductPurchase product={product} settings={settings} />
-      </div>
-
-      <div className="mt-10 grid gap-8 md:grid-cols-[360px_1fr]">
-        <div className="min-w-0 space-y-4">
-          <div className="relative grid aspect-square place-items-center overflow-hidden rounded-[2rem] border bg-surface-2">
-            <ProductImage product={product} className="relative h-4/5 w-4/5" />
-          </div>
-          <dl className="grid grid-cols-2 gap-3 text-sm">
-            {specs.map(([k, v]) => (
-              <div key={k} className="rounded-2xl border bg-surface p-4 first:col-span-2">
-                <dt className="text-[11px] font-semibold uppercase tracking-widest text-muted">{k}</dt>
-                <dd className="mt-1 font-medium">{v}</dd>
-              </div>
+        <Section id="preguntas" n={5} title="Preguntas frecuentes">
+          <div className="grid gap-3">
+            {faqs.map((f) => (
+              <details key={f.q} className="group rounded-2xl border bg-surface p-4">
+                <summary className="flex cursor-pointer list-none items-center justify-between font-semibold">
+                  {f.q}
+                  <span className="text-muted transition group-open:rotate-45">+</span>
+                </summary>
+                <p className="mt-2 text-sm text-muted">{f.a}</p>
+              </details>
             ))}
-          </dl>
-        </div>
-        <div className="min-w-0">
-          <ProductTabs tabs={tabs} />
-        </div>
-      </div>
+          </div>
+        </Section>
+      </ProductStage>
 
       {related.length > 0 && (
         <section className="mt-20">
-          <h2 className="font-display text-2xl font-bold">También en {product.category}</h2>
-          <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-            {related.map((p) => <ProductCard key={p.slug} product={p} />)}
+          <div className="flex items-end justify-between">
+            <h2 className="font-display text-2xl font-bold md:text-3xl">Seguir explorando</h2>
+            <Link href="/productos" className="text-sm text-accent hover:underline">Ver todo el catálogo →</Link>
+          </div>
+          <div className="-mx-4 mt-6 flex snap-x gap-4 overflow-x-auto px-4 pb-4">
+            {related.map((p) => (
+              <div key={p.slug} className="w-[240px] shrink-0 snap-start">
+                <ProductCard product={p} />
+              </div>
+            ))}
           </div>
         </section>
       )}

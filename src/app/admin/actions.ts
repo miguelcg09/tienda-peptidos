@@ -9,6 +9,7 @@ import { deleteOrder, getOrder, markShipped, setOrderNote } from "@/lib/orders";
 import { getSettings, saveSettings } from "@/lib/settings";
 import { sendShippedEmail } from "@/lib/email";
 import type { Settings } from "@/lib/config";
+import { getPalette } from "@/lib/palettes";
 
 const str = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
 const num = (f: FormData, k: string, fallback = 0) => {
@@ -145,6 +146,7 @@ export async function saveSettingsAction(form: FormData) {
     shippingCost: num(form, "shippingCost"),
     freeShippingFrom: num(form, "freeShippingFrom"),
     shippingNote: str(form, "shippingNote"),
+    palette: getPalette(str(form, "palette")).id,
     disclaimer: str(form, "disclaimer"),
     terminos: String(form.get("terminos") ?? "").trim(),
   };
