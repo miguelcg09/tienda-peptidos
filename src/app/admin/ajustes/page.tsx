@@ -1,5 +1,5 @@
 import { getSettings } from "@/lib/settings";
-import { saveSettingsAction } from "../actions";
+import { resetLegalAction, saveSettingsAction } from "../actions";
 import { palettes } from "@/lib/palettes";
 import { legalPlaceholders } from "@/lib/legal";
 
@@ -53,7 +53,7 @@ export default async function Ajustes({ searchParams }: { searchParams: Promise<
 
         <fieldset className="grid gap-4 sm:grid-cols-2">
           <legend className="mb-2 font-semibold">Datos legales del vendedor</legend>
-          <p className="text-xs text-muted sm:col-span-2">Aparecen en los documentos legales y en el pie de página. Si aún no existe la empresa, déjalos vacíos: los textos mostrarán "[por completar]".</p>
+          <p className="text-xs text-muted sm:col-span-2">Aparecen en el pie de página (y en los textos legales si usas los marcadores). Si aún no existe la empresa, déjalos vacíos.</p>
           <label className="text-sm">Razón social o nombre del vendedor<input name="legalName" defaultValue={s.legalName} placeholder="Helix Research SpA" className="field" /></label>
           <label className="text-sm">RUT<input name="legalRut" defaultValue={s.legalRut} placeholder="77.123.456-7" className="field" /></label>
           <label className="text-sm sm:col-span-2">Domicilio comercial<input name="legalAddress" defaultValue={s.legalAddress} placeholder="Calle 123, oficina 4, Providencia, Santiago" className="field" /></label>
@@ -65,7 +65,7 @@ export default async function Ajustes({ searchParams }: { searchParams: Promise<
           <p className="text-xs text-muted">
             Formato: una línea que empieza con "## " es un título, una línea en blanco separa párrafos y las líneas que empiezan con "- " forman una lista.
             Marcadores que se reemplazan solos: {legalPlaceholders.map(([k, v]) => `${k} (${v})`).join(", ")}.
-            Son borradores para Chile: haz que un abogado los revise antes de vender.
+            Son versiones breves y generales para Chile: haz que un abogado las revise antes de vender.
           </p>
           <label className="block text-sm">Aviso de uso para investigación (aparece en fichas, checkout, correos y pie de página)
             <textarea name="disclaimer" rows={3} defaultValue={s.disclaimer} className="field" />
@@ -82,6 +82,11 @@ export default async function Ajustes({ searchParams }: { searchParams: Promise<
         </fieldset>
 
         <button className="btn-primary">Guardar ajustes</button>
+      </form>
+
+      <form action={resetLegalAction} className="mt-6 flex flex-wrap items-center gap-3 text-sm text-muted">
+        <span>¿Editaste los textos legales y quieres volver a los sugeridos?</span>
+        <button className="rounded-full border px-4 py-1.5 text-fg transition hover:border-accent">Restaurar textos sugeridos</button>
       </form>
     </div>
   );

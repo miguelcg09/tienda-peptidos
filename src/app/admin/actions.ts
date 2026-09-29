@@ -7,6 +7,7 @@ import { categories, slugify, type Category, type Product, type Variant } from "
 import { deleteProduct, setProductVisible, setVariants, upsertProduct } from "@/lib/catalog";
 import { deleteOrder, getOrder, markShipped, setOrderNote } from "@/lib/orders";
 import { getSettings, saveSettings } from "@/lib/settings";
+import { defaultSettings } from "@/lib/config";
 import { sendShippedEmail } from "@/lib/email";
 import type { Settings } from "@/lib/config";
 import { getPalette } from "@/lib/palettes";
@@ -157,6 +158,14 @@ export async function saveSettingsAction(form: FormData) {
     privacidad: String(form.get("privacidad") ?? "").trim(),
   };
   await saveSettings(patch);
+  refreshStore();
+  redirect("/admin/ajustes?guardado=1");
+}
+
+// Vuelve a los textos legales sugeridos (útil si se guardaron versiones antiguas).
+export async function resetLegalAction() {
+  await requireAdmin();
+  await saveSettings({ terminos: defaultSettings.terminos, envios: defaultSettings.envios, privacidad: defaultSettings.privacidad });
   refreshStore();
   redirect("/admin/ajustes?guardado=1");
 }
