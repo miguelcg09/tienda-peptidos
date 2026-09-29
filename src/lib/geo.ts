@@ -67,8 +67,9 @@ const headers = { "User-Agent": "tienda-peptidos/1.0 (checkout)" };
 
 export async function searchPlaces(q: string): Promise<Place[]> {
   if (process.env.GEO_PROVIDER === "mock") return mockPlaces.filter((p) => plain(p.label).includes(plain(q).slice(0, 3)));
-  // Sesgo hacia Santiago para que las calles chilenas aparezcan primero.
-  const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8&lat=-33.45&lon=-70.66`;
+  // Solo Chile, solo calles y direcciones con número (layer), con sesgo hacia Santiago.
+  // Sin "lang": el nombre local ya es el español.
+  const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8&countrycode=CL&layer=house&layer=street&lat=-33.45&lon=-70.66`;
   const res = await fetch(url, { headers, next: { revalidate: 86400 } });
   if (!res.ok) throw new Error(`Photon respondió ${res.status}`);
   const data = (await res.json()) as { features: PhotonFeature[] };
