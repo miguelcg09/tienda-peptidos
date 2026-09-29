@@ -14,6 +14,7 @@ export function Footer({ settings }: { settings: Settings }) {
           <ul className="mt-3 space-y-2 text-muted">
             <li><Link href="/productos" className="hover:text-accent">Productos</Link></li>
             <li><Link href="/carrito" className="hover:text-accent">Carrito</Link></li>
+            <li><Link href="/pedido" className="hover:text-accent">Seguir mi pedido</Link></li>
             <li><Link href="/terminos" className="hover:text-accent">Términos y condiciones</Link></li>
           </ul>
         </div>

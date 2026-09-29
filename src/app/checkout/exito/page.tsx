@@ -8,7 +8,7 @@ import { formatCLP } from "@/lib/products";
 
 type Summary = {
   id: string;
-  status: "pendiente" | "pagado" | "fallido";
+  status: "pendiente" | "pagado" | "despachado" | "fallido";
   items: { variantId: string; name: string; qty: number; unitPrice: number }[];
   shipping: number;
   total: number;
@@ -23,24 +23,39 @@ function Exito() {
 
   useEffect(() => clear(), []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Con una pasarela real el pago se confirma por webhook unos segundos después:
+  // se vuelve a consultar cada 3 s durante 2 minutos mientras siga pendiente.
   useEffect(() => {
     if (!orderId) return;
-    fetch(`/api/orders/${encodeURIComponent(orderId)}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then(setSummary)
-      .catch(() => setSummary(null));
+    let tries = 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const load = () => {
+      fetch(`/api/orders/${encodeURIComponent(orderId)}`, { cache: "no-store" })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((s: Summary | null) => {
+          setSummary(s);
+          if (s?.status === "pendiente" && tries++ < 40) timer = setTimeout(load, 3000);
+        })
+        .catch(() => setSummary(null));
+    };
+    load();
+    return () => clearTimeout(timer);
   }, [orderId]);
 
   const pending = summary?.status === "pendiente";
+  const failed = summary?.status === "fallido";
 
   return (
     <div className="animate-fade mx-auto max-w-xl px-4 py-20 text-center">
-      <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-lime/15 text-3xl text-lime">
-        {pending ? "⏳" : "✓"}
+      <div className={`mx-auto grid h-16 w-16 place-items-center rounded-full text-3xl ${failed ? "bg-red-500/15 text-red-500" : "bg-lime/15 text-lime"}`}>
+        {failed ? "✕" : pending ? "⏳" : "✓"}
       </div>
       <h1 className="mt-6 font-display text-3xl font-bold">
-        {pending ? "Estamos confirmando tu pago" : "¡Gracias por tu compra!"}
+        {failed ? "El pago no se completó" : pending ? "Estamos confirmando tu pago" : "¡Gracias por tu compra!"}
       </h1>
+      {failed && (
+        <p className="mt-3 text-muted">No se realizó ningún cobro. Puedes volver al carrito e intentarlo con otro medio de pago.</p>
+      )}
       <p className="mt-3 text-muted">
         Tu pedido <strong className="text-fg">{orderId}</strong> fue recibido.
         {summary && <> Te enviaremos la confirmación y el número de seguimiento a <strong className="text-fg">{summary.emailHint}</strong>.</>}
@@ -66,7 +81,10 @@ function Exito() {
       {params.get("modo") === "prueba" && (
         <p className="mt-4 rounded-lg bg-amber-400/10 p-3 text-sm text-amber-800 dark:text-amber-200">Modo de prueba: no se realizó ningún cobro.</p>
       )}
-      <Link href="/productos" className="btn-primary mt-8">Seguir comprando</Link>
+      <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <Link href={failed ? "/carrito" : "/productos"} className="btn-primary">{failed ? "Volver al carrito" : "Seguir comprando"}</Link>
+        {orderId && !failed && <Link href={`/pedido?orden=${encodeURIComponent(orderId)}`} className="btn-ghost">Seguir mi pedido</Link>}
+      </div>
     </div>
   );
 }

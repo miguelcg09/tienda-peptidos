@@ -26,11 +26,17 @@ export async function generateViewport() {
   };
 }
 
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "");
+
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSettings();
+  const description = "Péptidos de grado investigación con certificado de análisis por lote. Compra en pesos, envíos a todo Chile.";
   return {
+    metadataBase: new URL(siteUrl),
     title: { default: `${s.name} · ${s.tagline}`, template: `%s · ${s.name}` },
-    description: "Péptidos de grado investigación con certificado de análisis. Envíos a todo Chile.",
+    description,
+    openGraph: { type: "website", siteName: s.name, locale: "es_CL", title: `${s.name} · ${s.tagline}`, description },
+    twitter: { card: "summary_large_image" },
   };
 }
 

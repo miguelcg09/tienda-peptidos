@@ -52,6 +52,7 @@ function layout(settings: Settings, title: string, body: string) {
 }
 
 const addressOf = (o: Order) => `${o.customer.address}, ${o.customer.comuna}, ${o.customer.region}`;
+const trackUrl = (o: Order) => `${(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "")}/pedido?orden=${o.id}`;
 
 export async function sendOrderEmails(order: Order, settings: Settings) {
   const c = order.customer;
@@ -60,13 +61,13 @@ export async function sendOrderEmails(order: Order, settings: Settings) {
   const customerMail: Mail = {
     to: c.email,
     subject: `Pedido ${order.id} confirmado · ${settings.name}`,
-    text: `Hola ${c.name},\n\nRecibimos tu pago. Este es el detalle de tu pedido ${order.id}:\n\n${itemsText(order)}\nEnvío: ${order.shipping ? formatCLP(order.shipping) : "Gratis"}\nTotal: ${formatCLP(order.total)}\n\nDespacho a: ${address}\n\nTe avisaremos por este medio cuando salga con su número de seguimiento.\n\n${settings.name} · ${settings.email}`,
+    text: `Hola ${c.name},\n\nRecibimos tu pago. Este es el detalle de tu pedido ${order.id}:\n\n${itemsText(order)}\nEnvío: ${order.shipping ? formatCLP(order.shipping) : "Gratis"}\nTotal: ${formatCLP(order.total)}\n\nDespacho a: ${address}\n\nTe avisaremos por este medio cuando salga con su número de seguimiento. Puedes ver el estado en ${trackUrl(order)}\n\n${settings.name} · ${settings.email}`,
     html: layout(
       settings,
       `Recibimos tu pago, ${esc(c.name)}`,
       `<p>Este es el detalle de tu pedido <strong>${order.id}</strong>:</p>${itemsHtml(order)}
        <p style="margin-top:16px"><strong>Despacho a:</strong><br>${esc(address)}</p>
-       <p>Te avisaremos cuando salga con su número de seguimiento.</p>`,
+       <p>Te avisaremos cuando salga con su número de seguimiento. También puedes <a href="${trackUrl(order)}">ver el estado de tu pedido</a> en cualquier momento.</p>`,
     ),
   };
 
@@ -97,7 +98,8 @@ export async function sendShippedEmail(order: Order, settings: Settings) {
         settings,
         `Tu pedido va en camino, ${esc(c.name)}`,
         `<p>Tu pedido <strong>${order.id}</strong> fue despachado a ${esc(addressOf(order))}.</p>
-         <p style="font-size:18px"><strong>Seguimiento:</strong> ${esc(tracking)}</p>${itemsHtml(order)}
+         <p style="font-size:18px"><strong>Seguimiento:</strong> ${esc(tracking)}</p>
+         <p><a href="${trackUrl(order)}">Ver el estado de tu pedido</a></p>${itemsHtml(order)}
          <p>Recomendamos refrigerar los viales al recibirlos.</p>`,
       ),
     },

@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
 import { getOrder } from "@/lib/orders";
 
-// Resumen público de un pedido para la página de confirmación (sin datos personales).
-export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+// Resumen público de un pedido (sin datos personales). Si además llega el correo
+// del comprador y coincide, se devuelve el seguimiento completo.
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const order = await getOrder(id);
+  const order = await getOrder(id.trim().toUpperCase());
   if (!order) return NextResponse.json({ error: "Pedido no encontrado" }, { status: 404 });
+
+  const email = new URL(req.url).searchParams.get("email")?.trim().toLowerCase();
+  const verified = Boolean(email) && email === order.customer.email.toLowerCase();
+
   return NextResponse.json({
     id: order.id,
     status: order.status,
@@ -13,5 +18,16 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     shipping: order.shipping,
     total: order.total,
     emailHint: order.customer.email.replace(/^(.).+(@.+)$/, "$1***$2"),
+    createdAt: order.createdAt,
+    ...(verified
+      ? {
+          verified: true,
+          paidAt: order.paidAt,
+          shippedAt: order.shippedAt,
+          tracking: order.tracking,
+          name: order.customer.name.split(" ")[0],
+          destination: `${order.customer.comuna}, ${order.customer.region}`,
+        }
+      : { verified: false }),
   });
 }

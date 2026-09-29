@@ -12,7 +12,14 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = await getProduct((await params).slug);
-  return { title: product?.name ?? "Producto", description: product?.short };
+  if (!product) return { title: "Producto" };
+  const description = `${product.short} ${product.purity}, ${product.form.toLowerCase()}. Certificado de análisis por lote. Solo para investigación.`;
+  return {
+    title: product.name,
+    description,
+    alternates: { canonical: `/productos/${product.slug}` },
+    openGraph: { type: "website", title: product.name, description, ...(product.imageUrl ? { images: [product.imageUrl] } : {}) },
+  };
 }
 
 const defaultReconstitution =
@@ -65,8 +72,30 @@ export default async function ProductPage({ params }: Props) {
     { id: "preguntas", label: "Preguntas" },
   ];
 
+  // Datos estructurados para Google (ficha de producto con precios por presentación)
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "");
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.short,
+    category: product.category,
+    ...(product.imageUrl ? { image: product.imageUrl } : {}),
+    brand: { "@type": "Brand", name: settings.name },
+    offers: product.variants.map((v) => ({
+      "@type": "Offer",
+      name: `${product.name} ${v.label}`,
+      sku: v.id,
+      price: v.price,
+      priceCurrency: "CLP",
+      availability: v.stock === 0 ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+      url: `${siteUrl}/productos/${product.slug}`,
+    })),
+  };
+
   return (
     <div className="animate-fade mx-auto max-w-6xl px-4 pb-24 pt-8">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <nav className="mb-5 flex flex-wrap gap-2 text-sm text-muted">
         <Link href="/" className="hover:text-accent">Inicio</Link>
         <span>/</span>

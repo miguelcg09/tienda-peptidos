@@ -27,7 +27,9 @@ const mockProvider: PaymentProvider = {
 
 // dLocal Go: el cliente paga en CLP con medios chilenos (Webpay, tarjetas,
 // transferencia) y el comercio recibe la liquidación en USD en el extranjero.
-// Verificar campos contra la documentación vigente: https://docs.dlocalgo.com
+// Endpoints, cabecera y campos verificados el 2026-09-29 contra el cliente oficial
+// (POST /v1/payments, GET /v1/payments/{id}, Authorization: Bearer apiKey:secretKey).
+// Referencia: https://docs.dlocalgo.com/integration-api
 const dlocalGoProvider: PaymentProvider = {
   async createPayment(req) {
     const apiKey = process.env.DLOCALGO_API_KEY;
@@ -54,10 +56,12 @@ const dlocalGoProvider: PaymentProvider = {
         success_url: `${siteUrl()}/checkout/exito?orden=${req.orderId}`,
         back_url: `${siteUrl()}/carrito`,
         notification_url: `${siteUrl()}/api/webhooks/dlocalgo`,
+        payer: { name: req.customer.name, email: req.customer.email, document: req.customer.rut.replace(/[^0-9kK]/g, "") },
       }),
     });
     if (!res.ok) throw new Error(`dLocal Go respondió ${res.status}: ${await res.text()}`);
-    const data = (await res.json()) as { redirect_url: string };
+    const data = (await res.json()) as { id?: string; redirect_url?: string };
+    if (!data.redirect_url) throw new Error("dLocal Go no devolvió redirect_url");
     return { redirectUrl: data.redirect_url };
   },
 };

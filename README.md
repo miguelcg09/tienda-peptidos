@@ -23,7 +23,9 @@ Abre http://localhost:3000.
   - `dlocalgo`: dLocal Go. El cliente paga en CLP con medios chilenos y la liquidación llega en USD al extranjero.
 - Pedidos guardados en Postgres (`src/lib/orders.ts`). En desarrollo se usa un Postgres embebido (PGlite) en `.data/`; en producción, `DATABASE_URL`.
 - Correos de confirmación al cliente y aviso a la tienda (`src/lib/email.ts`) vía Resend. Sin `RESEND_API_KEY` se imprimen en consola.
-- Webhook de dLocal Go que verifica el pago contra su API antes de marcar el pedido como pagado.
+- Webhook de dLocal Go que verifica el pago contra su API (y que monto y moneda coincidan) antes de marcar el pedido como pagado. Endpoints y cabecera verificados contra el cliente oficial.
+- Página pública "Seguir mi pedido" (`/pedido`): con el número de pedido muestra el estado; con el correo del comprador, además el número de seguimiento.
+- SEO: sitemap y robots automáticos, Open Graph con imagen generada por producto y datos estructurados (Product) en cada ficha.
 - Panel de administración en `/admin` (clave `ADMIN_PASSWORD`, sesión de 30 días):
   - **Productos**: crear, editar, precios, precio anterior (muestra el descuento) y stock por presentación, fotos, textos de las pestañas de la ficha (investigación, reconstitución), enlace al COA, destacar, ocultar o borrar.
   - **Pedidos**: ver detalle, marcar despachado con número de seguimiento (avisa por correo al cliente), notas internas, borrar pedidos de prueba.
