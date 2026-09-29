@@ -10,12 +10,23 @@ type Runner = (text: string, params: unknown[]) => Promise<Row[]>;
 
 const globalForDb = globalThis as unknown as { __runner?: Promise<Runner> };
 
+// Nombres que usan las integraciones de Vercel (Neon, Supabase, Vercel Postgres).
+const URL_VARS = ["DATABASE_URL", "POSTGRES_URL", "DATABASE_URL_UNPOOLED", "POSTGRES_PRISMA_URL"] as const;
+
+export function databaseUrlVar() {
+  return URL_VARS.find((k) => process.env[k]);
+}
+
 async function createRunner(): Promise<Runner> {
-  const url = process.env.DATABASE_URL;
+  const urlVar = databaseUrlVar();
+  const url = urlVar && process.env[urlVar];
   if (url) {
     const { default: postgres } = await import("postgres");
     const sql = postgres(url, { max: 5, prepare: false });
     return async (text, params) => (await sql.unsafe(text, params as never[])) as unknown as Row[];
+  }
+  if (process.env.VERCEL) {
+    throw new Error("Falta DATABASE_URL: conecta una base Postgres (Storage > Neon) y vuelve a desplegar.");
   }
   const { PGlite } = await import("@electric-sql/pglite");
   const { mkdirSync } = await import("node:fs");
@@ -43,10 +54,15 @@ CREATE INDEX IF NOT EXISTS orders_created_at ON orders (created_at DESC);
 
 async function getRunner() {
   if (!globalForDb.__runner) {
-    globalForDb.__runner = createRunner().then(async (run) => {
-      for (const stmt of SCHEMA.split(";").map((s) => s.trim()).filter(Boolean)) await run(stmt, []);
-      return run;
-    });
+    globalForDb.__runner = createRunner()
+      .then(async (run) => {
+        for (const stmt of SCHEMA.split(";").map((s) => s.trim()).filter(Boolean)) await run(stmt, []);
+        return run;
+      })
+      .catch((err) => {
+        globalForDb.__runner = undefined;
+        throw err;
+      });
   }
   return globalForDb.__runner;
 }
