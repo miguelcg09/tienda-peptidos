@@ -51,7 +51,7 @@ function layout(settings: Settings, title: string, body: string) {
   </div>`;
 }
 
-const addressOf = (o: Order) => `${o.customer.address}, ${o.customer.comuna}, ${o.customer.region}`;
+const addressOf = (o: Order) => `${o.customer.address}${o.customer.reference ? ` (${o.customer.reference})` : ""}, ${o.customer.comuna}, ${o.customer.region}`;
 const trackUrl = (o: Order) => `${(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "")}/pedido?orden=${o.id}`;
 
 export async function sendOrderEmails(order: Order, settings: Settings) {

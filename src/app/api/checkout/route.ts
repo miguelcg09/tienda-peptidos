@@ -61,6 +61,10 @@ export async function POST(req: Request) {
       address: customer.address.trim(),
       region: customer.region.trim(),
       comuna: customer.comuna.trim(),
+      ...(customer.reference?.trim() ? { reference: customer.reference.trim() } : {}),
+      ...(Number.isFinite(Number(customer.lat)) && Number.isFinite(Number(customer.lng)) && customer.lat && customer.lng
+        ? { lat: Number(customer.lat), lng: Number(customer.lng) }
+        : {}),
     },
     items,
     subtotal,

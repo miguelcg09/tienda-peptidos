@@ -5,12 +5,7 @@ import { useState } from "react";
 import { useCart } from "@/components/CartProvider";
 import { formatCLP } from "@/lib/products";
 import { isValidRut } from "@/lib/rut";
-
-const regiones = [
-  "Arica y Parinacota", "Tarapacá", "Antofagasta", "Atacama", "Coquimbo", "Valparaíso",
-  "Metropolitana", "O'Higgins", "Maule", "Ñuble", "Biobío", "La Araucanía", "Los Ríos",
-  "Los Lagos", "Aysén", "Magallanes",
-];
+import { AddressPicker } from "@/components/AddressPicker";
 
 export default function Checkout() {
   const { lines, subtotal, shipping, total, find } = useCart();
@@ -64,13 +59,7 @@ export default function Checkout() {
         </fieldset>
         <fieldset className="grid gap-4 sm:grid-cols-2">
           <legend className="mb-2 font-semibold">Dirección de despacho</legend>
-          <label className="text-sm sm:col-span-2">Dirección<input name="address" required placeholder="Calle, número, depto." className={input} /></label>
-          <label className="text-sm">Región
-            <select name="region" required defaultValue="Metropolitana" className={input}>
-              {regiones.map((r) => <option key={r} className="bg-surface">{r}</option>)}
-            </select>
-          </label>
-          <label className="text-sm">Comuna<input name="comuna" required className={input} /></label>
+          <AddressPicker />
         </fieldset>
         <label className="flex gap-3 rounded-xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-900 dark:text-amber-100">
           <input type="checkbox" name="researchAck" required className="mt-1" />

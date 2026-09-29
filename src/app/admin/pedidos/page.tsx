@@ -43,7 +43,18 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
                       {o.customer.name} · RUT {o.customer.rut}<br />
                       {o.customer.email} · {o.customer.phone}<br />
                       {o.customer.address}, {o.customer.comuna}, {o.customer.region}
+                      {o.customer.reference && <><br />Referencia: {o.customer.reference}</>}
                     </p>
+                    {o.customer.lat != null && o.customer.lng != null && (
+                      <a
+                        href={`https://www.google.com/maps?q=${o.customer.lat},${o.customer.lng}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-1 inline-block text-xs text-accent hover:underline"
+                      >
+                        📍 Ver punto de entrega en el mapa
+                      </a>
+                    )}
                     {o.paymentRef && <p className="mt-2 text-xs text-muted">Ref. pago: {o.paymentRef}</p>}
                     {o.status === "despachado" && (
                       <p className="mt-2 text-xs text-muted">

@@ -18,6 +18,9 @@ export type OrderCustomer = {
   address: string;
   region: string;
   comuna: string;
+  reference?: string; // depto., casa, referencia para el courier
+  lat?: number;
+  lng?: number;
 };
 
 export type Order = {
