@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/components/CartProvider";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
 import { ResearchGate } from "@/components/ResearchGate";
+import { ScrollProgress } from "@/components/ScrollProgress";
+import { Effects } from "@/components/Effects";
 import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { getPalette, paletteCss } from "@/lib/palettes";
 import { toStoreSettings } from "@/lib/config";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const display = Space_Grotesk({ subsets: ["latin"], variable: "--font-display", weight: ["500", "700"] });
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit", weight: ["400", "500", "600", "700"] });
 
 // El catálogo y los ajustes viven en la base de datos, así que todo se renderiza por petición.
 export const dynamic = "force-dynamic";
@@ -45,11 +46,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const [catalog, settings] = await Promise.all([getProducts(), getSettings()]);
   const palette = getPalette(settings.palette);
   return (
-    <html lang="es-CL" className={`${inter.variable} ${display.variable}`}>
+    <html lang="es-CL" className={outfit.variable}>
       <body className="font-sans antialiased">
         {/* Paleta elegida en /admin/ajustes */}
         <style dangerouslySetInnerHTML={{ __html: paletteCss(palette) }} />
         <div className="grain" aria-hidden />
+        <ScrollProgress />
+        <Effects />
         <StoreProvider catalog={catalog} settings={toStoreSettings(settings)}>
           <Header />
           <main>{children}</main>

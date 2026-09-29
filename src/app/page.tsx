@@ -36,19 +36,26 @@ export default async function Home() {
   return (
     <>
       {/* Portada: titular a la izquierda con palabra que rota, destacados rotativos a la derecha */}
-      <section className="relative overflow-hidden border-b bg-surface-2">
+      <section className="hero-spot relative overflow-hidden border-b bg-surface-2" data-spot>
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 md:grid-cols-[1.15fr_1fr] md:py-20">
           <div>
             <Reveal>
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">Laboratorio · Chile</p>
             </Reveal>
-            <Reveal delay={80}>
-              <h1 className="mt-5 font-display text-5xl font-bold leading-[0.98] tracking-tight md:text-7xl">
-                Péptidos para investigar
-                <br />
-                <RotatingWord words={lines} className="text-accent" />
-              </h1>
-            </Reveal>
+            <h1 className="mt-5 font-display text-5xl font-bold leading-[0.98] tracking-tight md:text-7xl">
+              {/* Cada palabra entra por separado, con un pequeño retraso entre una y otra */}
+              {"Péptidos para investigar".split(" ").map((w, i) => (
+                <span key={w} className="word-wrap mr-[0.25em]">
+                  <span className="word-in" style={{ animationDelay: `${120 + i * 110}ms` }}>{w}</span>
+                </span>
+              ))}
+              <br />
+              <span className="word-wrap">
+                <span className="word-in" style={{ animationDelay: "480ms" }}>
+                  <RotatingWord words={lines} className="text-accent" />
+                </span>
+              </span>
+            </h1>
             <Reveal delay={160}>
               <p className="mt-6 max-w-lg text-lg text-muted">
                 Reactivos de grado investigación con certificado de análisis por lote. Compra en pesos y recibe en Chile en 24–72 h.
@@ -59,6 +66,9 @@ export default async function Home() {
                 <Link href="#catalogo" className="btn-primary">Explorar catálogo</Link>
                 <Link href="#garantia" className="btn-ghost">Cómo verificamos</Link>
               </div>
+              <p className="mt-4 inline-flex items-center gap-2 rounded-full border bg-surface px-3 py-1 text-xs text-muted">
+                <span className="pulse-dot" aria-hidden /> Solo para uso en investigación · Envíos a todo Chile
+              </p>
             </Reveal>
             <Reveal delay={320}>
               <dl className="mt-10 grid max-w-md grid-cols-3 gap-4 border-t pt-6">
@@ -88,7 +98,7 @@ export default async function Home() {
             <Reveal key={c} delay={i * 70}>
               <Link
                 href={`/productos?categoria=${encodeURIComponent(c)}`}
-                className="group flex items-center gap-4 rounded-2xl border bg-surface p-4 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg"
+                className="group flex items-center gap-4 rounded-card border bg-surface p-4 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg"
               >
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-xl" style={{ background: `${categoryMeta[c].color}26` }}>
                   {categoryMeta[c].icon}
@@ -109,7 +119,7 @@ export default async function Home() {
         <ol className="grid gap-4 md:grid-cols-3">
           {buySteps.map((s, i) => (
             <Reveal key={s.title} delay={i * 90}>
-              <li className="flex gap-4 rounded-2xl border bg-surface p-5">
+              <li className="flex gap-4 rounded-card border bg-surface p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg">
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-accent to-accent-2 font-display font-bold text-on-accent">
                   {i + 1}
                 </span>
@@ -128,7 +138,7 @@ export default async function Home() {
         <Reveal className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Catálogo</p>
-            <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">Elige por línea de investigación</h2>
+            <h2 className="sweep mt-2 font-display text-3xl font-bold md:text-4xl">Elige por línea de investigación</h2>
           </div>
           <p className="max-w-sm text-sm text-muted">
             {products.length} productos en stock en Chile. Cada ficha incluye pureza, formato y presentaciones disponibles.
@@ -144,7 +154,7 @@ export default async function Home() {
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 md:grid-cols-[1.2fr_1fr]">
           <Reveal>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Garantía de análisis</p>
-            <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">
+            <h2 className="sweep mt-2 font-display text-3xl font-bold md:text-4xl">
               El certificado viaja <span className="text-gradient">con el vial</span>
             </h2>
             <p className="mt-5 text-muted">
@@ -162,7 +172,7 @@ export default async function Home() {
           </Reveal>
           <Reveal delay={120}>
             {/* Ilustración de un certificado de análisis (reemplazar por uno real) */}
-            <div className="rotate-2 rounded-2xl border bg-surface p-6 shadow-lg transition-transform duration-500 hover:rotate-0">
+            <div className="rotate-2 rounded-card border bg-surface p-6 shadow-lg transition-transform duration-500 hover:rotate-0">
               <div className="flex items-center justify-between border-b pb-3">
                 <p className="font-display font-bold">Certificado de análisis</p>
                 <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent">Aprobado</span>
@@ -185,7 +195,7 @@ export default async function Home() {
       <section className="relative overflow-hidden py-12">
         <Reveal className="relative mx-auto max-w-6xl px-4">
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Vitrina</p>
-          <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">Gira la línea completa</h2>
+          <h2 className="sweep mt-2 font-display text-3xl font-bold md:text-4xl">Gira la línea completa</h2>
         </Reveal>
         <div className="relative mt-2">
           <VialCarousel items={products.slice(0, 8)} />
@@ -196,12 +206,12 @@ export default async function Home() {
       <section id="faq" className="mx-auto max-w-6xl scroll-mt-28 px-4 py-16">
         <Reveal>
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Antes de comprar</p>
-          <h2 className="mt-2 font-display text-3xl font-bold md:text-4xl">Lo que más nos preguntan</h2>
+          <h2 className="sweep mt-2 font-display text-3xl font-bold md:text-4xl">Lo que más nos preguntan</h2>
         </Reveal>
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           {faqs.map((f, i) => (
             <Reveal key={f.q} delay={i * 50} className="h-full">
-              <div className="h-full rounded-2xl border bg-surface p-5">
+              <div className="h-full rounded-card border bg-surface p-5 transition-all hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-lg">
                 <p className="font-semibold">{f.q}</p>
                 <p className="mt-2 text-sm text-muted">{f.a}</p>
               </div>
@@ -213,7 +223,7 @@ export default async function Home() {
       {/* Contacto */}
       <section className="mx-auto max-w-6xl px-4 pt-4">
         <Reveal>
-          <div className="relative rounded-[2rem] border bg-surface-2 px-6 py-12 md:flex md:items-center md:justify-between md:px-12">
+          <div className="relative rounded-[calc(var(--r-card)*1.5)] border bg-surface-2 px-6 py-12 md:flex md:items-center md:justify-between md:px-12">
             <div className="relative">
               <h2 className="font-display text-2xl font-bold md:text-3xl">¿Necesitas un péptido que no ves aquí?</h2>
               <p className="mt-2 max-w-md text-muted">Cotizamos síntesis a pedido y compras por volumen para laboratorios.</p>

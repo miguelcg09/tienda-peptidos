@@ -33,7 +33,7 @@ export function Header() {
   }, [count]);
 
   return (
-    <header className={`sticky top-0 z-30 transition-colors duration-300 ${scrolled ? "border-b bg-bg/75 backdrop-blur-xl" : "bg-transparent"}`}>
+    <header className={`sticky top-0 z-30 transition-colors duration-300 relative ${scrolled ? "border-b bg-bg/75 backdrop-blur-xl" : "bg-transparent"}`}>
       <div className="overflow-hidden border-b bg-gradient-to-r from-accent/10 via-accent-2/10 to-accent/10 py-2 text-xs text-fg/80">
         <div className="flex w-max animate-marquee gap-12 whitespace-nowrap">
           {Array.from({ length: 2 }).flatMap((_, k) =>
@@ -79,6 +79,7 @@ export function Header() {
       <nav className="flex gap-6 overflow-x-auto px-4 pb-3 text-sm text-muted md:hidden">
         {links.map((l) => <Link key={l.href} href={l.href}>{l.label}</Link>)}
       </nav>
+      <span className={`absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-accent via-accent-2 to-accent transition-opacity duration-500 ${scrolled ? "opacity-100" : "opacity-0"}`} aria-hidden />
     </header>
   );
 }

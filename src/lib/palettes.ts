@@ -15,11 +15,32 @@ export type Tokens = {
   onAccent: string;
   glow: string; // r g b
   grain: string; // opacidad del grano de papel
+  btnFrom: string; // degradado de los botones principales
+  btnTo: string;
+  rCard: string; // radio de las tarjetas
+  rBtn: string; // radio de los botones
 };
 
 export type Palette = { id: string; name: string; blurb: string; light: Tokens; dark: Tokens };
 
 export const palettes: Palette[] = [
+  {
+    id: "lab",
+    name: "Laboratorio",
+    blurb: "Blanco limpio con azul y naranja. Clara, ordenada y con botones llamativos.",
+    light: {
+      bg: "#ffffff", surface: "#ffffff", surface2: "#f6f8fc", line: "rgb(17 24 39 / 0.1)",
+      fg: "#111827", muted: "#6b7280", accent: "#1e40af", accent2: "#f97316", badge: "#c2410c",
+      tint: "#111827", onAccent: "#ffffff", glow: "30 64 175", grain: "0.03",
+      btnFrom: "#f97316", btnTo: "#ea580c", rCard: "1rem", rBtn: "0.75rem",
+    },
+    dark: {
+      bg: "#0b1220", surface: "#111a2e", surface2: "#172038", line: "rgb(148 163 184 / 0.18)",
+      fg: "#f3f6fb", muted: "#9aa6bd", accent: "#60a5fa", accent2: "#fb923c", badge: "#fdba74",
+      tint: "#ffffff", onAccent: "#0b1220", glow: "96 165 250", grain: "0.05",
+      btnFrom: "#fb923c", btnTo: "#f97316", rCard: "1rem", rBtn: "0.75rem",
+    },
+  },
   {
     id: "ambar",
     name: "Carbón y ámbar",
@@ -28,11 +49,13 @@ export const palettes: Palette[] = [
       bg: "#f5f1ea", surface: "#ffffff", surface2: "#ece6da", line: "rgb(40 30 20 / 0.12)",
       fg: "#1c1915", muted: "#6a635a", accent: "#c94d17", accent2: "#0f7c8a", badge: "#b45309",
       tint: "#1c1915", onAccent: "#ffffff", glow: "201 77 23", grain: "0.05",
+      btnFrom: "var(--accent)", btnTo: "var(--accent-2)", rCard: "1.5rem", rBtn: "9999px",
     },
     dark: {
       bg: "#15130f", surface: "#1e1b16", surface2: "#29251e", line: "rgb(255 240 220 / 0.09)",
       fg: "#f5f0e8", muted: "#a69d8f", accent: "#ff8a3d", accent2: "#3fc8d6", badge: "#fbbf24",
       tint: "#fff5e8", onAccent: "#1a1008", glow: "255 138 61", grain: "0.07",
+      btnFrom: "var(--accent)", btnTo: "var(--accent-2)", rCard: "1.5rem", rBtn: "9999px",
     },
   },
   {
@@ -43,11 +66,13 @@ export const palettes: Palette[] = [
       bg: "#f4f2fa", surface: "#ffffff", surface2: "#e9e5f5", line: "rgb(30 20 60 / 0.12)",
       fg: "#171331", muted: "#625c7d", accent: "#6a3df0", accent2: "#d02a8f", badge: "#5b21b6",
       tint: "#171331", onAccent: "#ffffff", glow: "106 61 240", grain: "0.04",
+      btnFrom: "var(--accent)", btnTo: "var(--accent-2)", rCard: "1.5rem", rBtn: "9999px",
     },
     dark: {
       bg: "#0e0c19", surface: "#16132a", surface2: "#201b3a", line: "rgb(230 220 255 / 0.09)",
       fg: "#f2effb", muted: "#9b95b8", accent: "#a88bfa", accent2: "#f472b6", badge: "#c4b5fd",
       tint: "#f2effb", onAccent: "#120c26", glow: "168 139 250", grain: "0.07",
+      btnFrom: "var(--accent)", btnTo: "var(--accent-2)", rCard: "1.5rem", rBtn: "9999px",
     },
   },
   {
@@ -58,11 +83,13 @@ export const palettes: Palette[] = [
       bg: "#f7f5f1", surface: "#ffffff", surface2: "#ece8e1", line: "rgb(30 20 20 / 0.12)",
       fg: "#141212", muted: "#625e5a", accent: "#d1283a", accent2: "#ef6c2f", badge: "#b91c1c",
       tint: "#141212", onAccent: "#ffffff", glow: "209 40 58", grain: "0.05",
+      btnFrom: "var(--accent)", btnTo: "var(--accent-2)", rCard: "1.5rem", rBtn: "9999px",
     },
     dark: {
       bg: "#0f0e10", surface: "#18161a", surface2: "#221f24", line: "rgb(255 230 230 / 0.09)",
       fg: "#f6f3ef", muted: "#a09a94", accent: "#ff4d5e", accent2: "#ff9b52", badge: "#ff8a95",
       tint: "#fff0f0", onAccent: "#1b0a0d", glow: "255 77 94", grain: "0.07",
+      btnFrom: "var(--accent)", btnTo: "var(--accent-2)", rCard: "1.5rem", rBtn: "9999px",
     },
   },
   {
@@ -73,11 +100,13 @@ export const palettes: Palette[] = [
       bg: "#cfdccf", surface: "#ffffff", surface2: "#e3ebe1", line: "rgb(20 50 32 / 0.18)",
       fg: "#132019", muted: "#4c5f54", accent: "#059669", accent2: "#c28a12", badge: "#047857",
       tint: "#132019", onAccent: "#ffffff", glow: "5 150 105", grain: "0.05",
+      btnFrom: "var(--accent)", btnTo: "var(--accent-2)", rCard: "1.5rem", rBtn: "9999px",
     },
     dark: {
       bg: "#061a11", surface: "#0c2619", surface2: "#123322", line: "rgb(120 220 170 / 0.16)",
       fg: "#eef5ef", muted: "#9bb3a5", accent: "#34d399", accent2: "#f5c451", badge: "#6ee7b7",
       tint: "#fffaf0", onAccent: "#0c1410", glow: "52 211 153", grain: "0.07",
+      btnFrom: "var(--accent)", btnTo: "var(--accent-2)", rCard: "1.5rem", rBtn: "9999px",
     },
   },
 ];
@@ -87,7 +116,7 @@ export function getPalette(id: string | undefined) {
 }
 
 function vars(t: Tokens) {
-  return `--bg:${t.bg};--surface:${t.surface};--surface-2:${t.surface2};--line:${t.line};--fg:${t.fg};--muted:${t.muted};--accent:${t.accent};--accent-2:${t.accent2};--badge:${t.badge};--tint:${t.tint};--on-accent:${t.onAccent};--glow:${t.glow};--grain:${t.grain};`;
+  return `--bg:${t.bg};--surface:${t.surface};--surface-2:${t.surface2};--line:${t.line};--fg:${t.fg};--muted:${t.muted};--accent:${t.accent};--accent-2:${t.accent2};--badge:${t.badge};--tint:${t.tint};--on-accent:${t.onAccent};--glow:${t.glow};--grain:${t.grain};--btn-from:${t.btnFrom};--btn-to:${t.btnTo};--r-card:${t.rCard};--r-btn:${t.rBtn};`;
 }
 
 // CSS que sobreescribe los tokens de globals.css con la paleta elegida.

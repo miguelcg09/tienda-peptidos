@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { formatCLP, type Product } from "@/lib/products";
 import { ProductImage } from "./ProductImage";
 
@@ -9,7 +9,20 @@ import { ProductImage } from "./ProductImage";
 export function Spotlight({ items }: { items: Product[] }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
+  const img = useRef<HTMLDivElement>(null);
   const every = 4500;
+
+  // El vial se desplaza levemente hacia el cursor (paralaje).
+  function onMove(e: React.PointerEvent<HTMLDivElement>) {
+    if (e.pointerType !== "mouse" || !img.current) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    img.current.style.transform = `translate(${x * 18}px, ${y * 14}px) rotate(${x * 6}deg)`;
+  }
+  function onLeaveImg() {
+    if (img.current) img.current.style.transform = "";
+  }
 
   useEffect(() => {
     if (paused || items.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -23,9 +36,10 @@ export function Spotlight({ items }: { items: Product[] }) {
 
   return (
     <div
-      className="relative overflow-hidden rounded-[2.5rem] border bg-surface shadow-xl"
+      className="relative overflow-hidden rounded-[calc(var(--r-card)*1.6)] border bg-surface shadow-xl"
       onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseLeave={() => { setPaused(false); onLeaveImg(); }}
+      onPointerMove={onMove}
     >
       <div
         key={`bg-${p.slug}`}
@@ -42,7 +56,7 @@ export function Spotlight({ items }: { items: Product[] }) {
           <p className="font-display text-2xl font-bold">{formatCLP(from)}</p>
           <Link href={`/productos/${p.slug}`} className="btn-primary mt-4 text-sm">Ver producto</Link>
         </div>
-        <ProductImage product={p} className="animate-float h-48 w-32 drop-shadow-2xl md:h-60 md:w-40" />
+        <div ref={img} className="transition-transform duration-300 ease-out"><ProductImage product={p} className="animate-float h-48 w-32 drop-shadow-2xl md:h-60 md:w-40" /></div>
       </div>
       {items.length > 1 && (
         <div className="relative flex items-center gap-2 px-6 pb-5 md:px-8">

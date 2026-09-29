@@ -31,6 +31,7 @@ Abre http://localhost:3000.
   - **Productos**: crear, editar, precios, precio anterior (muestra el descuento) y stock por presentación, fotos, textos de las pestañas de la ficha (investigación, reconstitución), enlace al COA, destacar, ocultar o borrar.
   - **Pedidos**: ver detalle, marcar despachado con número de seguimiento (avisa por correo al cliente), notas internas, borrar pedidos de prueba.
   - **Ajustes**: nombre, contacto, costo de envío, mínimo de envío gratis, línea de despacho de la ficha, datos legales del vendedor (razón social, RUT, domicilio), aviso de investigación, términos, envíos y devoluciones y privacidad.
+  - **Apariencia** (dentro de Ajustes): paleta de colores. Por defecto "Laboratorio" (blanco, azul y naranja, tipografía Outfit); también Carbón y ámbar, Noche violeta, Tinta y coral y Bosque (`src/lib/palettes.ts`). Los efectos (luz que sigue al cursor, botones magnéticos, barra de avance, títulos animados) son CSS y código propio en `src/components/Effects.tsx`, `ScrollProgress.tsx` y `globals.css`; se desactivan si el sistema pide menos movimiento.
 - Catálogo y ajustes viven en la base de datos (`src/lib/catalog.ts`, `src/lib/settings.ts`). La primera vez se cargan los productos de ejemplo de `src/lib/products.ts`.
 - Fotos de producto: con `BLOB_READ_WRITE_TOKEN` (Vercel Blob) se pueden subir desde el panel; sin él, se pega la URL de una imagen. Sin foto se muestra una ilustración del vial.
 
