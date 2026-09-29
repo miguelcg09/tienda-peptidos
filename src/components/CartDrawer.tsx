@@ -2,14 +2,13 @@
 
 import Link from "next/link";
 import { useCart } from "./CartProvider";
-import { findVariant, formatCLP } from "@/lib/products";
-import { store } from "@/lib/config";
-import { Vial } from "./Vial";
+import { formatCLP } from "@/lib/products";
+import { ProductImage } from "./ProductImage";
 
 export function CartDrawer() {
-  const { open, setOpen, lines, subtotal, setQty, remove } = useCart();
+  const { open, setOpen, lines, subtotal, setQty, remove, find, settings } = useCart();
   if (!open) return null;
-  const missing = store.freeShippingFrom - subtotal;
+  const missing = settings.freeShippingFrom - subtotal;
 
   return (
     <div className="fixed inset-0 z-50">
@@ -30,22 +29,21 @@ export function CartDrawer() {
           <>
             {missing > 0 && (
               <div className="px-5 pt-4 text-sm text-muted">
-                <p>
-                Te faltan <strong>{formatCLP(missing)}</strong> para envío gratis.</p>
+                <p>Te faltan <strong>{formatCLP(missing)}</strong> para envío gratis.</p>
                 <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-tint/5">
-                  <div className="h-full rounded-full bg-gradient-to-r from-accent to-accent-2 transition-all duration-500" style={{ width: `${Math.min(100, (subtotal / store.freeShippingFrom) * 100)}%` }} />
+                  <div className="h-full rounded-full bg-gradient-to-r from-accent to-accent-2 transition-all duration-500" style={{ width: `${Math.min(100, (subtotal / settings.freeShippingFrom) * 100)}%` }} />
                 </div>
               </div>
             )}
             <ul className="flex-1 divide-y overflow-y-auto px-5">
               {lines.map((line) => {
-                const found = findVariant(line.variantId);
+                const found = find(line.variantId);
                 if (!found) return null;
                 const { product, variant } = found;
                 return (
                   <li key={line.variantId} className="flex gap-4 py-4">
-                    <div className="h-20 w-14 shrink-0 rounded-lg bg-tint/5 p-1">
-                      <Vial color={product.color} label={product.name} className="h-full w-full" />
+                    <div className="grid h-20 w-14 shrink-0 place-items-center rounded-lg bg-tint/5 p-1">
+                      <ProductImage product={product} className="h-full w-full" />
                     </div>
                     <div className="flex-1">
                       <p className="font-medium">{product.name}</p>

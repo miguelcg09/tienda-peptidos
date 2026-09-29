@@ -1,26 +1,24 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getProduct, products } from "@/lib/products";
-import { RESEARCH_DISCLAIMER } from "@/lib/config";
-import { Vial } from "@/components/Vial";
+import { formatCLP } from "@/lib/products";
+import { getProduct, getProducts } from "@/lib/catalog";
+import { getSettings } from "@/lib/settings";
+import { ProductImage } from "@/components/ProductImage";
 import { AddToCart } from "@/components/AddToCart";
 import { ProductCard } from "@/components/ProductCard";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const product = getProduct((await params).slug);
+  const product = await getProduct((await params).slug);
   return { title: product?.name ?? "Producto", description: product?.short };
 }
 
 export default async function ProductPage({ params }: Props) {
-  const product = getProduct((await params).slug);
+  const product = await getProduct((await params).slug);
   if (!product) notFound();
+  const [products, settings] = await Promise.all([getProducts(), getSettings()]);
   const related = products.filter((p) => p.category === product.category && p.slug !== product.slug).slice(0, 4);
 
   return (
@@ -37,7 +35,7 @@ export default async function ProductPage({ params }: Props) {
           <div className="relative mt-8 grid h-72 place-items-center overflow-hidden rounded-[2rem] border bg-surface md:h-96">
             <div className="bg-grid absolute inset-0" />
             <div className="absolute bottom-10 left-1/2 h-1/2 w-1/2 -translate-x-1/2 rounded-full opacity-50 blur-3xl" style={{ background: product.color }} />
-            <Vial color={product.color} label={product.name} className="animate-float relative h-4/5" />
+            <ProductImage product={product} className="animate-float relative h-4/5 w-4/5" />
             <span className="absolute left-4 top-4 rounded-full border bg-surface/70 px-3 py-1 text-xs font-semibold text-lime backdrop-blur">
               {product.purity}
             </span>
@@ -65,13 +63,13 @@ export default async function ProductPage({ params }: Props) {
           <div className="glass rounded-3xl p-6">
             <AddToCart product={product} />
             <ul className="mt-5 space-y-2 border-t pt-4 text-xs text-muted">
-              <li>✓ Envío a todo Chile, gratis sobre $80.000</li>
+              <li>✓ Envío a todo Chile, gratis sobre {formatCLP(settings.freeShippingFrom)}</li>
               <li>✓ Certificado de análisis del lote incluido</li>
               <li>✓ Pago con tarjeta, Webpay o transferencia</li>
             </ul>
           </div>
           <p className="rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-xs text-amber-800 dark:text-amber-200">
-            <strong>Solo para investigación.</strong> {RESEARCH_DISCLAIMER}
+            <strong>Solo para investigación.</strong> {settings.disclaimer}
           </p>
         </aside>
       </div>

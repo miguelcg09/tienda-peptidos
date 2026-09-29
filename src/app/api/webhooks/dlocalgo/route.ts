@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { markFailed, markPaid } from "@/lib/orders";
 import { sendOrderEmails } from "@/lib/email";
+import { getSettings } from "@/lib/settings";
+import { decrementStock } from "@/lib/catalog";
 
 // Notificación de dLocal Go cuando cambia el estado de un pago.
 // No se confía en el cuerpo recibido: se consulta el pago en la API de dLocal Go
@@ -32,7 +34,10 @@ export async function POST(req: Request) {
 
   if (payment.status === "PAID") {
     const paid = await markPaid(payment.order_id, payment.id);
-    if (paid) await sendOrderEmails(paid);
+    if (paid) {
+      await decrementStock(paid.items);
+      await sendOrderEmails(paid, await getSettings());
+    }
   } else if (["REJECTED", "CANCELLED", "EXPIRED"].includes(payment.status)) {
     await markFailed(payment.order_id, payment.id);
   }

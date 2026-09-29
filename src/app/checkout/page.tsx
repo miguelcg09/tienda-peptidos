@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "@/components/CartProvider";
-import { findVariant, formatCLP } from "@/lib/products";
+import { formatCLP } from "@/lib/products";
 import { isValidRut } from "@/lib/rut";
 
 const regiones = [
@@ -13,7 +13,7 @@ const regiones = [
 ];
 
 export default function Checkout() {
-  const { lines, subtotal, shipping, total } = useCart();
+  const { lines, subtotal, shipping, total, find } = useCart();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -90,7 +90,7 @@ export default function Checkout() {
         <h2 className="font-semibold">Tu pedido</h2>
         <ul className="mt-4 space-y-3 text-sm">
           {lines.map((l) => {
-            const f = findVariant(l.variantId);
+            const f = find(l.variantId);
             if (!f) return null;
             return (
               <li key={l.variantId} className="flex justify-between gap-3">

@@ -24,14 +24,17 @@ Abre http://localhost:3000.
 - Pedidos guardados en Postgres (`src/lib/orders.ts`). En desarrollo se usa un Postgres embebido (PGlite) en `.data/`; en producción, `DATABASE_URL`.
 - Correos de confirmación al cliente y aviso a la tienda (`src/lib/email.ts`) vía Resend. Sin `RESEND_API_KEY` se imprimen en consola.
 - Webhook de dLocal Go que verifica el pago contra su API antes de marcar el pedido como pagado.
-- Vista privada de pedidos en `/admin/pedidos?clave=<ADMIN_PASSWORD>`.
+- Panel de administración en `/admin` (clave `ADMIN_PASSWORD`, sesión de 30 días):
+  - **Productos**: crear, editar, precios y stock por presentación, fotos, destacar, ocultar o borrar.
+  - **Pedidos**: ver detalle, marcar despachado con número de seguimiento (avisa por correo al cliente), notas internas, borrar pedidos de prueba.
+  - **Ajustes**: nombre, contacto, costo de envío y mínimo de envío gratis, aviso de investigación y términos.
+- Catálogo y ajustes viven en la base de datos (`src/lib/catalog.ts`, `src/lib/settings.ts`). La primera vez se cargan los productos de ejemplo de `src/lib/products.ts`.
+- Fotos de producto: con `BLOB_READ_WRITE_TOKEN` (Vercel Blob) se pueden subir desde el panel; sin él, se pega la URL de una imagen. Sin foto se muestra una ilustración del vial.
 
-## Qué editar antes de publicar
+## Qué hacer antes de vender
 
-- `src/lib/config.ts`: nombre de la tienda, contacto, costos de envío.
-- `src/lib/products.ts`: productos, precios y descripciones reales.
-- `src/components/Vial.tsx`: reemplazar por fotos propias.
-- `src/app/terminos/page.tsx`: revisar con un abogado.
+- Desde `/admin/productos`: reemplazar los productos de ejemplo por los reales, con precios, stock y fotos.
+- Desde `/admin/ajustes`: datos de contacto, envío y términos (revisar los términos con un abogado).
 - Confirmar los nombres de campos del webhook de dLocal Go contra su documentación (`src/app/api/webhooks/dlocalgo/route.ts`).
 
 ## Despliegue

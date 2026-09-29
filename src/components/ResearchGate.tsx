@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { RESEARCH_DISCLAIMER } from "@/lib/config";
+import { useStore } from "./CartProvider";
 
 const KEY = "research-ack-v1";
 
 // Aviso de ingreso: confirma mayoría de edad y uso exclusivo en investigación.
 export function ResearchGate() {
+  const { settings } = useStore();
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -25,7 +26,7 @@ export function ResearchGate() {
         <div className="glow -right-20 -top-20 h-48 w-48 bg-accent-2/30" />
         <p className="relative text-xs font-semibold uppercase tracking-[0.2em] text-accent">Aviso importante</p>
         <h2 className="relative mt-2 font-display text-2xl font-bold">Solo para investigación</h2>
-        <p className="relative mt-3 text-sm text-muted">{RESEARCH_DISCLAIMER}</p>
+        <p className="relative mt-3 text-sm text-muted">{settings.disclaimer}</p>
         <p className="relative mt-3 text-sm text-muted">
           Al continuar declaras ser mayor de 18 años y que adquirirás los productos solo con fines de investigación.
         </p>

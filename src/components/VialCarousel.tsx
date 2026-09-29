@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import type { Product } from "@/lib/products";
-import { Vial } from "./Vial";
+import { ProductImage } from "./ProductImage";
 
 // Carrusel 3D que gira solo y se puede arrastrar. Solo transforms CSS: sin librerías.
 export function VialCarousel({ items }: { items: Product[] }) {
@@ -66,7 +66,7 @@ export function VialCarousel({ items }: { items: Product[] }) {
             className="glass absolute -left-[90px] -top-[150px] flex h-[300px] w-[180px] flex-col items-center justify-between rounded-3xl p-4"
             style={{ transform: `rotateY(${i * step}deg) translateZ(${radius}px)` }}
           >
-            <Vial color={p.color} label={p.name} className="h-52" />
+            <ProductImage product={p} className="h-52 w-full" />
             <span className="text-sm font-semibold">{p.name}</span>
           </Link>
         ))}

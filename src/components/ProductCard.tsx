@@ -1,25 +1,25 @@
 import Link from "next/link";
 import { formatCLP, type Product } from "@/lib/products";
-import { Vial } from "./Vial";
+import { ProductImage } from "./ProductImage";
 import { Tilt } from "./Tilt";
 
 export function ProductCard({ product }: { product: Product }) {
   const from = Math.min(...product.variants.map((v) => v.price));
+  const soldOut = product.variants.every((v) => v.stock === 0);
   return (
     <Tilt className="h-full">
       <Link
         href={`/productos/${product.slug}`}
         className="shine group relative flex h-full flex-col rounded-3xl border bg-surface p-4 transition-colors hover:border-tint/20"
-        style={{ ["--c" as string]: product.color }}
       >
         <div className="relative grid aspect-square place-items-center overflow-hidden rounded-2xl bg-gradient-to-b from-tint/[0.04] to-transparent">
           <div
             className="absolute bottom-0 left-1/2 h-2/3 w-2/3 -translate-x-1/2 rounded-full opacity-40 blur-3xl transition-opacity duration-500 group-hover:opacity-80"
             style={{ background: product.color }}
           />
-          <Vial color={product.color} label={product.name} className="relative h-4/5 transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-105" />
+          <ProductImage product={product} className="relative h-4/5 w-4/5 transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-105" />
           <span className="absolute left-3 top-3 rounded-full border border-tint/10 bg-surface/70 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-lime backdrop-blur">
-            {product.purity.replace(" (HPLC)", "")}
+            {soldOut ? "Agotado" : product.purity.replace(" (HPLC)", "")}
           </span>
         </div>
         <p className="mt-4 text-[11px] font-medium uppercase tracking-widest text-muted">{product.category}</p>

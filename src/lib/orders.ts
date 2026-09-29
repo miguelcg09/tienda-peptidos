@@ -1,7 +1,7 @@
 import "server-only";
 import { query } from "./db";
 
-export type OrderStatus = "pendiente" | "pagado" | "fallido";
+export type OrderStatus = "pendiente" | "pagado" | "despachado" | "fallido";
 
 export type OrderItem = {
   variantId: string;
@@ -31,6 +31,9 @@ export type Order = {
   paymentRef: string | null;
   createdAt: string;
   paidAt: string | null;
+  tracking: string | null;
+  shippedAt: string | null;
+  note: string | null;
 };
 
 type OrderRow = {
@@ -44,6 +47,9 @@ type OrderRow = {
   payment_ref: string | null;
   created_at: string | Date;
   paid_at: string | Date | null;
+  tracking: string | null;
+  shipped_at: string | Date | null;
+  note: string | null;
 };
 
 const asJson = <T,>(v: T | string): T => (typeof v === "string" ? (JSON.parse(v) as T) : v);
@@ -61,6 +67,9 @@ function toOrder(r: OrderRow): Order {
     paymentRef: r.payment_ref,
     createdAt: asIso(r.created_at)!,
     paidAt: asIso(r.paid_at),
+    tracking: r.tracking ?? null,
+    shippedAt: asIso(r.shipped_at ?? null),
+    note: r.note ?? null,
   };
 }
 
@@ -70,7 +79,9 @@ export function newOrderId() {
   return `HX-${stamp}${rand}`;
 }
 
-export async function createOrder(input: Omit<Order, "status" | "paymentRef" | "createdAt" | "paidAt">) {
+export async function createOrder(
+  input: Omit<Order, "status" | "paymentRef" | "createdAt" | "paidAt" | "tracking" | "shippedAt" | "note">,
+) {
   const [row] = await query<OrderRow>(
     `INSERT INTO orders (id, customer, items, subtotal, shipping, total)
      VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
@@ -96,6 +107,24 @@ export async function markPaid(id: string, paymentRef: string | null) {
 
 export async function markFailed(id: string, paymentRef: string | null) {
   await query(`UPDATE orders SET status = 'fallido', payment_ref = $2 WHERE id = $1 AND status = 'pendiente'`, [id, paymentRef]);
+}
+
+// Marca como despachado con número de seguimiento; devuelve null si no estaba pagado.
+export async function markShipped(id: string, tracking: string) {
+  const [row] = await query<OrderRow>(
+    `UPDATE orders SET status = 'despachado', tracking = $2, shipped_at = now()
+     WHERE id = $1 AND status = 'pagado' RETURNING *`,
+    [id, tracking],
+  );
+  return row ? toOrder(row) : null;
+}
+
+export async function setOrderNote(id: string, note: string) {
+  await query(`UPDATE orders SET note = $2 WHERE id = $1`, [id, note || null]);
+}
+
+export async function deleteOrder(id: string) {
+  await query(`DELETE FROM orders WHERE id = $1`, [id]);
 }
 
 export async function listOrders(limit = 100) {

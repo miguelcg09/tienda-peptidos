@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { formatCLP } from "@/lib/products";
 import { useEffect, useState } from "react";
 import { useCart } from "./CartProvider";
-import { store } from "@/lib/config";
 
 const links = [
   { href: "/productos", label: "Productos" },
@@ -13,7 +13,7 @@ const links = [
 ];
 
 export function Header() {
-  const { count, setOpen } = useCart();
+  const { count, setOpen, settings } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [bump, setBump] = useState(false);
 
@@ -38,7 +38,7 @@ export function Header() {
         <div className="flex w-max animate-marquee gap-12 whitespace-nowrap">
           {Array.from({ length: 2 }).flatMap((_, k) =>
             [
-              "🚚 Envío gratis sobre $80.000 a todo Chile",
+              `🚚 Envío gratis sobre ${formatCLP(settings.freeShippingFrom)} a todo Chile`,
               "🔬 Pureza ≥ 98% verificada por HPLC",
               "📄 Certificado de análisis por lote",
               "⚠️ Solo para uso en investigación",
@@ -51,7 +51,7 @@ export function Header() {
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-2 text-sm text-on-accent transition-transform group-hover:rotate-12">
             ⬡
           </span>
-          {store.name}
+          {settings.name}
         </Link>
         <nav className="hidden gap-8 text-sm text-muted md:flex">
           {links.map((l) => (

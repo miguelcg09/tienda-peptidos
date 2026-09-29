@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { findVariant } from "@/lib/products";
-import { store } from "@/lib/config";
+import { findVariant, decrementStock } from "@/lib/catalog";
+import { getSettings } from "@/lib/settings";
 import { getPaymentProvider } from "@/lib/payments";
 import { isValidRut } from "@/lib/rut";
 import { createOrder, markPaid, newOrderId, type OrderItem } from "@/lib/orders";
@@ -13,6 +13,7 @@ type Body = {
 
 export async function POST(req: Request) {
   const { lines, customer } = (await req.json()) as Body;
+  const settings = await getSettings();
 
   if (!Array.isArray(lines) || lines.length === 0) {
     return NextResponse.json({ error: "El carrito está vacío" }, { status: 400 });
@@ -29,10 +30,16 @@ export async function POST(req: Request) {
   let subtotal = 0;
   const items: OrderItem[] = [];
   for (const line of lines) {
-    const found = findVariant(line.variantId);
+    const found = await findVariant(line.variantId);
     const qty = Math.floor(Number(line.qty));
     if (!found || !(qty >= 1 && qty <= 99)) {
       return NextResponse.json({ error: "Producto inválido en el carrito" }, { status: 400 });
+    }
+    if (found.variant.stock != null && found.variant.stock < qty) {
+      return NextResponse.json(
+        { error: `${found.product.name} ${found.variant.label}: ${found.variant.stock === 0 ? "agotado" : `solo quedan ${found.variant.stock}`}` },
+        { status: 409 },
+      );
     }
     subtotal += found.variant.price * qty;
     items.push({
@@ -42,7 +49,7 @@ export async function POST(req: Request) {
       unitPrice: found.variant.price,
     });
   }
-  const shipping = subtotal >= store.freeShippingFrom ? 0 : store.shippingCost;
+  const shipping = subtotal >= settings.freeShippingFrom ? 0 : settings.shippingCost;
 
   const order = await createOrder({
     id: newOrderId(),
@@ -65,14 +72,17 @@ export async function POST(req: Request) {
     const { redirectUrl } = await getPaymentProvider().createPayment({
       orderId: order.id,
       amount: order.total,
-      description: `Pedido ${order.id} · ${store.name}`,
+      description: `Pedido ${order.id} · ${settings.name}`,
       customer: { name: order.customer.name, email: order.customer.email, rut: order.customer.rut },
     });
 
     // En modo de prueba no hay pasarela que avise: se confirma el pago aquí mismo.
     if ((process.env.PAYMENT_PROVIDER ?? "mock") === "mock") {
       const paid = await markPaid(order.id, "modo-prueba");
-      if (paid) await sendOrderEmails(paid);
+      if (paid) {
+        await decrementStock(paid.items);
+        await sendOrderEmails(paid, settings);
+      }
     }
 
     return NextResponse.json({ orderId: order.id, redirectUrl });

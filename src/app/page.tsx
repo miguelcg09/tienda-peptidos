@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { formatCLP, products } from "@/lib/products";
-import { store } from "@/lib/config";
-import { Vial } from "@/components/Vial";
+import { formatCLP } from "@/lib/products";
+import { getProducts } from "@/lib/catalog";
+import { getSettings } from "@/lib/settings";
+import { ProductImage } from "@/components/ProductImage";
 import { Reveal } from "@/components/Reveal";
 import { VialCarousel } from "@/components/VialCarousel";
 import { CatalogTabs } from "@/components/CatalogTabs";
@@ -24,12 +25,14 @@ const faqs = [
   { q: "¿Cómo llegan?", a: "En viales sellados y liofilizados, dentro de embalaje protector. Recomendamos refrigerar al recibir." },
   { q: "¿Qué medios de pago aceptan?", a: "Tarjetas de crédito y débito, Webpay y transferencia bancaria, en pesos chilenos." },
   { q: "¿Puedo ver el certificado antes de comprar?", a: "Sí, escríbenos con el producto que te interesa y te enviamos el COA del lote disponible." },
-  { q: "¿Hacen envíos a regiones?", a: "A todo Chile, con seguimiento. Sobre $80.000 el envío es gratis." },
+  { q: "¿Hacen envíos a regiones?", a: "A todo Chile, con seguimiento. Sobre el mínimo que se indica en el carrito, el envío es gratis." },
   { q: "¿Tienen stock permanente?", a: "Los productos publicados están en stock en Chile; si algo se agota, lo retiramos del catálogo." },
 ];
 
-export default function Home() {
-  const spotlight = products.find((p) => p.slug === "bpc-157") ?? products[0];
+export default async function Home() {
+  const [products, settings] = await Promise.all([getProducts(), getSettings()]);
+  const spotlight = products.find((p) => p.featured) ?? products[0];
+  if (!spotlight) return <p className="p-12 text-center text-muted">Aún no hay productos publicados.</p>;
   const spotlightFrom = Math.min(...spotlight.variants.map((v) => v.price));
 
   return (
@@ -64,7 +67,7 @@ export default function Home() {
           <div className="glass grid items-center gap-6 rounded-[2rem] p-6 md:grid-cols-[200px_1fr_auto] md:p-8">
             <div className="relative mx-auto grid h-52 w-40 place-items-center">
               <div className="absolute bottom-4 h-16 w-32 rounded-full opacity-60 blur-2xl" style={{ background: spotlight.color }} />
-              <Vial color={spotlight.color} label={spotlight.name} className="animate-float relative h-full" />
+              <ProductImage product={spotlight} className="animate-float relative h-full w-full" />
             </div>
             <div className="text-center md:text-left">
               <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent-2">Destacado de la semana</p>
@@ -118,7 +121,7 @@ export default function Home() {
           </p>
         </Reveal>
         <div className="mt-10">
-          <CatalogTabs />
+          <CatalogTabs products={products} />
         </div>
       </section>
 
@@ -203,7 +206,7 @@ export default function Home() {
               <h2 className="font-display text-2xl font-bold md:text-3xl">¿Necesitas un péptido que no ves aquí?</h2>
               <p className="mt-2 max-w-md text-muted">Cotizamos síntesis a pedido y compras por volumen para laboratorios.</p>
             </div>
-            <a href={`mailto:${store.email}`} className="btn-primary relative mt-6 md:mt-0">Escríbenos</a>
+            <a href={`mailto:${settings.email}`} className="btn-primary relative mt-6 md:mt-0">Escríbenos</a>
           </div>
         </Reveal>
       </section>

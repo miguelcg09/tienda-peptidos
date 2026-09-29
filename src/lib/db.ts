@@ -50,6 +50,37 @@ CREATE TABLE IF NOT EXISTS orders (
   paid_at       TIMESTAMPTZ
 );
 CREATE INDEX IF NOT EXISTS orders_created_at ON orders (created_at DESC);
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS tracking TEXT;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS shipped_at TIMESTAMPTZ;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS note TEXT;
+CREATE TABLE IF NOT EXISTS products (
+  slug        TEXT PRIMARY KEY,
+  name        TEXT NOT NULL,
+  category    TEXT NOT NULL,
+  short       TEXT NOT NULL DEFAULT '',
+  description TEXT NOT NULL DEFAULT '',
+  purity      TEXT NOT NULL DEFAULT '',
+  form        TEXT NOT NULL DEFAULT '',
+  cas         TEXT,
+  color       TEXT NOT NULL DEFAULT '#34d399',
+  image_url   TEXT,
+  featured    BOOLEAN NOT NULL DEFAULT false,
+  visible     BOOLEAN NOT NULL DEFAULT true,
+  sort        INTEGER NOT NULL DEFAULT 0,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS variants (
+  id           TEXT PRIMARY KEY,
+  product_slug TEXT NOT NULL REFERENCES products(slug) ON DELETE CASCADE,
+  label        TEXT NOT NULL,
+  price        INTEGER NOT NULL,
+  stock        INTEGER,
+  sort         INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS settings (
+  key   TEXT PRIMARY KEY,
+  value JSONB NOT NULL
+);
 `;
 
 async function getRunner() {

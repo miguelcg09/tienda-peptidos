@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import { CartProvider } from "@/components/CartProvider";
+import { StoreProvider } from "@/components/CartProvider";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
 import { ResearchGate } from "@/components/ResearchGate";
-import { store } from "@/lib/config";
+import { getProducts } from "@/lib/catalog";
+import { getSettings } from "@/lib/settings";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const display = Space_Grotesk({ subsets: ["latin"], variable: "--font-display", weight: ["500", "700"] });
+
+// El catálogo y los ajustes viven en la base de datos, así que todo se renderiza por petición.
+export const dynamic = "force-dynamic";
 
 export const viewport = {
   themeColor: [
@@ -18,22 +22,26 @@ export const viewport = {
   ],
 };
 
-export const metadata: Metadata = {
-  title: { default: `${store.name} · ${store.tagline}`, template: `%s · ${store.name}` },
-  description: "Péptidos de grado investigación con certificado de análisis. Envíos a todo Chile.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await getSettings();
+  return {
+    title: { default: `${s.name} · ${s.tagline}`, template: `%s · ${s.name}` },
+    description: "Péptidos de grado investigación con certificado de análisis. Envíos a todo Chile.",
+  };
+}
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const [catalog, settings] = await Promise.all([getProducts(), getSettings()]);
   return (
     <html lang="es-CL" className={`${inter.variable} ${display.variable}`}>
       <body className="font-sans antialiased">
-        <CartProvider>
+        <StoreProvider catalog={catalog} settings={settings}>
           <Header />
           <main>{children}</main>
-          <Footer />
+          <Footer settings={settings} />
           <CartDrawer />
           <ResearchGate />
-        </CartProvider>
+        </StoreProvider>
       </body>
     </html>
   );

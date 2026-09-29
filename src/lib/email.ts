@@ -1,5 +1,5 @@
 import "server-only";
-import { store } from "./config";
+import type { Settings } from "./config";
 import { formatCLP } from "./products";
 import type { Order } from "./orders";
 
@@ -8,9 +8,9 @@ import type { Order } from "./orders";
 
 type Mail = { to: string; subject: string; html: string; text: string };
 
-async function send(mail: Mail) {
+async function send(mail: Mail, settings: Settings) {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM ?? `${store.name} <onboarding@resend.dev>`;
+  const from = process.env.EMAIL_FROM ?? `${settings.name} <onboarding@resend.dev>`;
   if (!apiKey) {
     console.log(`[correo no enviado: falta RESEND_API_KEY]\nPara: ${mail.to}\nAsunto: ${mail.subject}\n\n${mail.text}`);
     return;
@@ -42,24 +42,27 @@ function itemsHtml(order: Order) {
   </table>`;
 }
 
-function layout(title: string, body: string) {
+function layout(settings: Settings, title: string, body: string) {
   return `<div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#17201b">
-    <h1 style="font-size:20px;margin:0 0 16px">${esc(store.name)}</h1>
+    <h1 style="font-size:20px;margin:0 0 16px">${esc(settings.name)}</h1>
     <h2 style="font-size:17px;margin:0 0 12px">${title}</h2>
     ${body}
-    <p style="font-size:12px;color:#777;margin-top:24px">Productos exclusivamente para investigación in vitro y uso de laboratorio. No aptos para consumo humano o animal.</p>
+    <p style="font-size:12px;color:#777;margin-top:24px">${esc(settings.disclaimer)}</p>
   </div>`;
 }
 
-export async function sendOrderEmails(order: Order) {
+const addressOf = (o: Order) => `${o.customer.address}, ${o.customer.comuna}, ${o.customer.region}`;
+
+export async function sendOrderEmails(order: Order, settings: Settings) {
   const c = order.customer;
-  const address = `${c.address}, ${c.comuna}, ${c.region}`;
+  const address = addressOf(order);
 
   const customerMail: Mail = {
     to: c.email,
-    subject: `Pedido ${order.id} confirmado · ${store.name}`,
-    text: `Hola ${c.name},\n\nRecibimos tu pago. Este es el detalle de tu pedido ${order.id}:\n\n${itemsText(order)}\nEnvío: ${order.shipping ? formatCLP(order.shipping) : "Gratis"}\nTotal: ${formatCLP(order.total)}\n\nDespacho a: ${address}\n\nTe avisaremos por este medio cuando salga con su número de seguimiento.\n\n${store.name} · ${store.email}`,
+    subject: `Pedido ${order.id} confirmado · ${settings.name}`,
+    text: `Hola ${c.name},\n\nRecibimos tu pago. Este es el detalle de tu pedido ${order.id}:\n\n${itemsText(order)}\nEnvío: ${order.shipping ? formatCLP(order.shipping) : "Gratis"}\nTotal: ${formatCLP(order.total)}\n\nDespacho a: ${address}\n\nTe avisaremos por este medio cuando salga con su número de seguimiento.\n\n${settings.name} · ${settings.email}`,
     html: layout(
+      settings,
       `Recibimos tu pago, ${esc(c.name)}`,
       `<p>Este es el detalle de tu pedido <strong>${order.id}</strong>:</p>${itemsHtml(order)}
        <p style="margin-top:16px"><strong>Despacho a:</strong><br>${esc(address)}</p>
@@ -68,15 +71,36 @@ export async function sendOrderEmails(order: Order) {
   };
 
   const storeMail: Mail = {
-    to: process.env.ORDERS_NOTIFY_EMAIL ?? store.email,
+    to: process.env.ORDERS_NOTIFY_EMAIL ?? settings.email,
     subject: `Nuevo pedido ${order.id} · ${formatCLP(order.total)}`,
     text: `Pedido ${order.id} pagado.\n\nCliente: ${c.name}\nRUT: ${c.rut}\nCorreo: ${c.email}\nTeléfono: ${c.phone}\nDirección: ${address}\n\n${itemsText(order)}\nEnvío: ${order.shipping ? formatCLP(order.shipping) : "Gratis"}\nTotal: ${formatCLP(order.total)}\nReferencia de pago: ${order.paymentRef ?? "-"}`,
     html: layout(
+      settings,
       `Nuevo pedido ${order.id}`,
       `<p><strong>${esc(c.name)}</strong> · RUT ${esc(c.rut)}<br>${esc(c.email)} · ${esc(c.phone)}<br>${esc(address)}</p>${itemsHtml(order)}
        <p style="font-size:12px;color:#777">Referencia de pago: ${esc(order.paymentRef ?? "-")}</p>`,
     ),
   };
 
-  await Promise.all([send(customerMail), send(storeMail)]);
+  await Promise.all([send(customerMail, settings), send(storeMail, settings)]);
+}
+
+export async function sendShippedEmail(order: Order, settings: Settings) {
+  const c = order.customer;
+  const tracking = order.tracking ?? "-";
+  await send(
+    {
+      to: c.email,
+      subject: `Tu pedido ${order.id} va en camino · ${settings.name}`,
+      text: `Hola ${c.name},\n\nTu pedido ${order.id} fue despachado a ${addressOf(order)}.\n\nNúmero de seguimiento: ${tracking}\n\n${itemsText(order)}\n\nRecomendamos refrigerar los viales al recibirlos.\n\n${settings.name} · ${settings.email}`,
+      html: layout(
+        settings,
+        `Tu pedido va en camino, ${esc(c.name)}`,
+        `<p>Tu pedido <strong>${order.id}</strong> fue despachado a ${esc(addressOf(order))}.</p>
+         <p style="font-size:18px"><strong>Seguimiento:</strong> ${esc(tracking)}</p>${itemsHtml(order)}
+         <p>Recomendamos refrigerar los viales al recibirlos.</p>`,
+      ),
+    },
+    settings,
+  );
 }

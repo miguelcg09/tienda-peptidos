@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
-import { findVariant, formatCLP } from "@/lib/products";
-import { Vial } from "@/components/Vial";
+import { formatCLP } from "@/lib/products";
+import { ProductImage } from "@/components/ProductImage";
 
 export default function Carrito() {
-  const { lines, subtotal, shipping, total, setQty, remove } = useCart();
+  const { lines, subtotal, shipping, total, setQty, remove, find } = useCart();
 
   if (lines.length === 0) {
     return (
@@ -25,13 +25,13 @@ export default function Carrito() {
         <h1 className="font-display text-3xl font-bold md:text-4xl">Carrito</h1>
         <ul className="mt-6 divide-y rounded-2xl border">
           {lines.map((line) => {
-            const found = findVariant(line.variantId);
+            const found = find(line.variantId);
             if (!found) return null;
             const { product, variant } = found;
             return (
               <li key={line.variantId} className="flex items-center gap-4 p-4">
                 <div className="h-24 w-16 shrink-0 rounded-lg bg-surface border p-1">
-                  <Vial color={product.color} label={product.name} className="h-full w-full" />
+                  <ProductImage product={product} className="h-full w-full" />
                 </div>
                 <div className="flex-1">
                   <Link href={`/productos/${product.slug}`} className="font-medium hover:text-accent">{product.name}</Link>

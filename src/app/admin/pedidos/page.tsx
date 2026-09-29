@@ -1,93 +1,97 @@
-import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { listOrders } from "@/lib/orders";
 import { formatCLP } from "@/lib/products";
+import { removeOrder, saveOrderNote, shipOrder } from "../actions";
 
-export const metadata: Metadata = { title: "Pedidos", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
-// Vista privada de pedidos: /admin/pedidos pide la clave (ADMIN_PASSWORD) y la recuerda 30 días.
-export default async function Pedidos({ searchParams }: { searchParams: Promise<{ clave?: string; error?: string }> }) {
-  const { clave, error } = await searchParams;
-  const password = process.env.ADMIN_PASSWORD;
-  const cookie = (await cookies()).get("admin")?.value;
-  const allowed = Boolean(password) && (cookie === password || clave === password);
+const tone: Record<string, string> = {
+  pagado: "bg-accent/15 text-accent",
+  despachado: "bg-sky-500/15 text-sky-700 dark:text-sky-300",
+  pendiente: "bg-amber-400/15 text-amber-700 dark:text-amber-300",
+  fallido: "bg-red-500/15 text-red-600 dark:text-red-300",
+};
 
-  if (!allowed) {
-    return (
-      <div className="mx-auto max-w-md px-4 py-24 text-center">
-        <h1 className="font-display text-2xl font-bold">Acceso privado</h1>
-        <p className="mt-3 text-sm text-muted">
-          {!password
-            ? "Configura ADMIN_PASSWORD para habilitar esta página."
-            : error || clave
-              ? "La clave no es válida."
-              : "Escribe la clave de administrador para ver los pedidos."}
-        </p>
-        <form method="post" action="/admin/pedidos/entrar" className="mt-6 flex gap-2">
-          <input name="clave" type="password" placeholder="Clave" autoFocus className="field mt-0" />
-          <button className="btn-primary text-sm">Entrar</button>
-        </form>
-      </div>
-    );
-  }
-
+export default async function Pedidos({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  const { error } = await searchParams;
   const orders = await listOrders(200);
-  const tone: Record<string, string> = {
-    pagado: "bg-accent/15 text-accent",
-    pendiente: "bg-amber-400/15 text-amber-700 dark:text-amber-300",
-    fallido: "bg-red-500/15 text-red-600 dark:text-red-300",
-  };
+  const fmtDate = (iso: string) => new Date(iso).toLocaleString("es-CL", { timeZone: "America/Santiago" });
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="font-display text-3xl font-bold">Pedidos</h1>
-          <p className="mt-1 text-sm text-muted">{orders.length} pedidos, del más reciente al más antiguo.</p>
-        </div>
-        <form method="post" action="/admin/pedidos/salir">
-          <button className="btn-ghost text-sm">Salir</button>
-        </form>
-      </div>
+    <div>
+      <h1 className="font-display text-3xl font-bold">Pedidos</h1>
+      <p className="mt-1 text-sm text-muted">{orders.length} pedidos, del más reciente al más antiguo.</p>
+      {error && <p className="mt-4 rounded-lg bg-red-500/10 p-3 text-sm text-red-700 dark:text-red-300">La clave no es válida.</p>}
       {orders.length === 0 ? (
         <p className="mt-10 text-muted">Todavía no hay pedidos.</p>
       ) : (
         <div className="mt-8 space-y-3">
-          {orders.map((o) => (
-            <details key={o.id} className="rounded-2xl border bg-surface">
-              <summary className="flex cursor-pointer list-none flex-wrap items-center gap-x-4 gap-y-1 px-5 py-4 text-sm">
-                <span className="font-mono font-semibold">{o.id}</span>
-                <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${tone[o.status]}`}>{o.status}</span>
-                <span className="text-muted">{new Date(o.createdAt).toLocaleString("es-CL", { timeZone: "America/Santiago" })}</span>
-                <span className="grow">{o.customer.name}</span>
-                <span className="font-semibold">{formatCLP(o.total)}</span>
-              </summary>
-              <div className="grid gap-6 border-t px-5 py-4 text-sm md:grid-cols-2">
-                <div>
-                  <p className="font-semibold">Cliente</p>
-                  <p className="mt-1 text-muted">
-                    {o.customer.name} · RUT {o.customer.rut}<br />
-                    {o.customer.email} · {o.customer.phone}<br />
-                    {o.customer.address}, {o.customer.comuna}, {o.customer.region}
-                  </p>
-                  {o.paymentRef && <p className="mt-2 text-xs text-muted">Ref. pago: {o.paymentRef}</p>}
+          {orders.map((o) => {
+            const deletable = o.paymentRef === "modo-prueba" || o.status === "pendiente" || o.status === "fallido";
+            return (
+              <details key={o.id} className="rounded-2xl border bg-surface">
+                <summary className="flex cursor-pointer list-none flex-wrap items-center gap-x-4 gap-y-1 px-5 py-4 text-sm">
+                  <span className="font-mono font-semibold">{o.id}</span>
+                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${tone[o.status]}`}>{o.status}</span>
+                  <span className="text-muted">{fmtDate(o.createdAt)}</span>
+                  <span className="grow">{o.customer.name}</span>
+                  <span className="font-semibold">{formatCLP(o.total)}</span>
+                </summary>
+                <div className="grid gap-6 border-t px-5 py-4 text-sm md:grid-cols-2">
+                  <div>
+                    <p className="font-semibold">Cliente</p>
+                    <p className="mt-1 text-muted">
+                      {o.customer.name} · RUT {o.customer.rut}<br />
+                      {o.customer.email} · {o.customer.phone}<br />
+                      {o.customer.address}, {o.customer.comuna}, {o.customer.region}
+                    </p>
+                    {o.paymentRef && <p className="mt-2 text-xs text-muted">Ref. pago: {o.paymentRef}</p>}
+                    {o.status === "despachado" && (
+                      <p className="mt-2 text-xs text-muted">
+                        Despachado {o.shippedAt && fmtDate(o.shippedAt)} · Seguimiento: <strong className="text-fg">{o.tracking}</strong>
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <p className="font-semibold">Productos</p>
+                    <ul className="mt-1 space-y-1 text-muted">
+                      {o.items.map((i) => (
+                        <li key={i.variantId} className="flex justify-between">
+                          <span>{i.name} × {i.qty}</span><span>{formatCLP(i.unitPrice * i.qty)}</span>
+                        </li>
+                      ))}
+                      <li className="flex justify-between"><span>Envío</span><span>{o.shipping ? formatCLP(o.shipping) : "Gratis"}</span></li>
+                      <li className="flex justify-between font-semibold text-fg"><span>Total</span><span>{formatCLP(o.total)}</span></li>
+                    </ul>
+                  </div>
+
+                  {o.status === "pagado" && (
+                    <form action={shipOrder} className="flex flex-wrap items-end gap-2 rounded-xl border p-3 md:col-span-2">
+                      <input type="hidden" name="id" value={o.id} />
+                      <label className="grow text-xs text-muted">
+                        Número de seguimiento (Chilexpress, Starken, Blue…)
+                        <input name="tracking" required placeholder="Ej: 123456789" className="field" />
+                      </label>
+                      <button className="btn-primary text-sm">Marcar despachado y avisar al cliente</button>
+                    </form>
+                  )}
+
+                  <form action={saveOrderNote} className="flex flex-wrap items-end gap-2 md:col-span-2">
+                    <input type="hidden" name="id" value={o.id} />
+                    <label className="grow text-xs text-muted">
+                      Nota interna
+                      <input name="note" defaultValue={o.note ?? ""} placeholder="Solo la ves tú" className="field" />
+                    </label>
+                    <button className="btn-ghost text-sm">Guardar nota</button>
+                    {deletable && (
+                      <button formAction={removeOrder.bind(null, o.id)} className="ml-auto text-xs text-red-500 hover:underline">
+                        Eliminar pedido
+                      </button>
+                    )}
+                  </form>
                 </div>
-                <div>
-                  <p className="font-semibold">Productos</p>
-                  <ul className="mt-1 space-y-1 text-muted">
-                    {o.items.map((i) => (
-                      <li key={i.variantId} className="flex justify-between">
-                        <span>{i.name} × {i.qty}</span><span>{formatCLP(i.unitPrice * i.qty)}</span>
-                      </li>
-                    ))}
-                    <li className="flex justify-between"><span>Envío</span><span>{o.shipping ? formatCLP(o.shipping) : "Gratis"}</span></li>
-                    <li className="flex justify-between font-semibold text-fg"><span>Total</span><span>{formatCLP(o.total)}</span></li>
-                  </ul>
-                </div>
-              </div>
-            </details>
-          ))}
+              </details>
+            );
+          })}
         </div>
       )}
     </div>

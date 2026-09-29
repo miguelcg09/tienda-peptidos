@@ -2,6 +2,7 @@ export type Variant = {
   id: string;
   label: string; // p. ej. "5 mg"
   price: number; // CLP, IVA incluido
+  stock: number | null; // null = sin control de stock
 };
 
 export type Product = {
@@ -14,8 +15,11 @@ export type Product = {
   form: string;
   cas?: string;
   color: string; // color de acento de la etiqueta del vial
+  imageUrl?: string; // foto real; si falta se dibuja el vial
   variants: Variant[];
   featured?: boolean;
+  visible: boolean;
+  sort: number;
 };
 
 export const categories = [
@@ -35,8 +39,8 @@ export const categoryMeta: Record<Category, { icon: string; blurb: string; color
   Accesorios: { icon: "🧪", blurb: "Diluyentes y reconstitución", color: "#94a3b8" },
 };
 
-// Catálogo de ejemplo: reemplazar nombres, descripciones y precios por los reales.
-export const products: Product[] = [
+// Catálogo inicial: se carga en la base de datos la primera vez y desde ahí se edita en /admin/productos.
+export const seedProducts: Product[] = [
   {
     slug: "bpc-157",
     name: "BPC-157",
@@ -49,9 +53,11 @@ export const products: Product[] = [
     cas: "137525-51-0",
     color: "#2563eb",
     featured: true,
+    visible: true,
+    sort: 1,
     variants: [
-      { id: "bpc-157-5", label: "5 mg", price: 34990 },
-      { id: "bpc-157-10", label: "10 mg", price: 54990 },
+      { id: "bpc-157-5", label: "5 mg", price: 34990, stock: null },
+      { id: "bpc-157-10", label: "10 mg", price: 54990, stock: null },
     ],
   },
   {
@@ -65,9 +71,11 @@ export const products: Product[] = [
     form: "Polvo liofilizado",
     color: "#0d9488",
     featured: true,
+    visible: true,
+    sort: 2,
     variants: [
-      { id: "tb-500-5", label: "5 mg", price: 39990 },
-      { id: "tb-500-10", label: "10 mg", price: 64990 },
+      { id: "tb-500-5", label: "5 mg", price: 39990, stock: null },
+      { id: "tb-500-10", label: "10 mg", price: 64990, stock: null },
     ],
   },
   {
@@ -80,7 +88,9 @@ export const products: Product[] = [
     purity: "≥ 98% (HPLC)",
     form: "Polvo liofilizado",
     color: "#7c3aed",
-    variants: [{ id: "blend-10", label: "10 mg (5+5)", price: 69990 }],
+    visible: true,
+    sort: 3,
+    variants: [{ id: "blend-10", label: "10 mg (5+5)", price: 69990, stock: null }],
   },
   {
     slug: "semaglutide",
@@ -94,9 +104,11 @@ export const products: Product[] = [
     cas: "910463-68-2",
     color: "#16a34a",
     featured: true,
+    visible: true,
+    sort: 4,
     variants: [
-      { id: "sema-5", label: "5 mg", price: 59990 },
-      { id: "sema-10", label: "10 mg", price: 99990 },
+      { id: "sema-5", label: "5 mg", price: 59990, stock: null },
+      { id: "sema-10", label: "10 mg", price: 99990, stock: null },
     ],
   },
   {
@@ -104,15 +116,16 @@ export const products: Product[] = [
     name: "Tirzepatide",
     category: "Metabolismo",
     short: "Agonista dual de receptores GIP y GLP-1.",
-    description:
-      "Péptido agonista dual GIP/GLP-1 estudiado en modelos de metabolismo de glucosa y lípidos.",
+    description: "Péptido agonista dual GIP/GLP-1 estudiado en modelos de metabolismo de glucosa y lípidos.",
     purity: "≥ 99% (HPLC)",
     form: "Polvo liofilizado",
     color: "#059669",
     featured: true,
+    visible: true,
+    sort: 5,
     variants: [
-      { id: "tirz-10", label: "10 mg", price: 89990 },
-      { id: "tirz-20", label: "20 mg", price: 159990 },
+      { id: "tirz-10", label: "10 mg", price: 89990, stock: null },
+      { id: "tirz-20", label: "20 mg", price: 159990, stock: null },
     ],
   },
   {
@@ -125,7 +138,9 @@ export const products: Product[] = [
     purity: "≥ 98% (HPLC)",
     form: "Polvo liofilizado",
     color: "#ea580c",
-    variants: [{ id: "cjc-ipa-10", label: "10 mg (5+5)", price: 64990 }],
+    visible: true,
+    sort: 6,
+    variants: [{ id: "cjc-ipa-10", label: "10 mg (5+5)", price: 64990, stock: null }],
   },
   {
     slug: "ipamorelin",
@@ -137,19 +152,22 @@ export const products: Product[] = [
     purity: "≥ 99% (HPLC)",
     form: "Polvo liofilizado",
     color: "#d97706",
-    variants: [{ id: "ipa-5", label: "5 mg", price: 32990 }],
+    visible: true,
+    sort: 7,
+    variants: [{ id: "ipa-5", label: "5 mg", price: 32990, stock: null }],
   },
   {
     slug: "semax",
     name: "Semax",
     category: "Cognición",
     short: "Heptapéptido análogo de ACTH(4-10).",
-    description:
-      "Análogo sintético de un fragmento de ACTH, investigado en modelos de neuroprotección.",
+    description: "Análogo sintético de un fragmento de ACTH, investigado en modelos de neuroprotección.",
     purity: "≥ 98% (HPLC)",
     form: "Polvo liofilizado",
     color: "#db2777",
-    variants: [{ id: "semax-10", label: "10 mg", price: 36990 }],
+    visible: true,
+    sort: 8,
+    variants: [{ id: "semax-10", label: "10 mg", price: 36990, stock: null }],
   },
   {
     slug: "agua-bacteriostatica",
@@ -161,20 +179,27 @@ export const products: Product[] = [
     purity: "USP",
     form: "Líquido, vial 10 ml",
     color: "#64748b",
-    variants: [{ id: "bac-10", label: "10 ml", price: 6990 }],
+    visible: true,
+    sort: 9,
+    variants: [{ id: "bac-10", label: "10 ml", price: 6990, stock: null }],
   },
 ];
 
-export function getProduct(slug: string) {
-  return products.find((p) => p.slug === slug);
-}
-
-export function findVariant(variantId: string) {
-  for (const product of products) {
+export function findVariantIn(list: Product[], variantId: string) {
+  for (const product of list) {
     const variant = product.variants.find((v) => v.id === variantId);
     if (variant) return { product, variant };
   }
   return undefined;
+}
+
+export function slugify(text: string) {
+  return text
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 export function formatCLP(amount: number) {

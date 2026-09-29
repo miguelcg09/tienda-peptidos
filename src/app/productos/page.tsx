@@ -1,12 +1,14 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { categories, products } from "@/lib/products";
+import { categories } from "@/lib/products";
+import { getProducts } from "@/lib/catalog";
 import { ProductCard } from "@/components/ProductCard";
 
 export const metadata: Metadata = { title: "Productos" };
 
 export default async function Productos({ searchParams }: { searchParams: Promise<{ categoria?: string }> }) {
   const { categoria } = await searchParams;
+  const products = await getProducts();
   const list = categoria ? products.filter((p) => p.category === categoria) : products;
 
   return (

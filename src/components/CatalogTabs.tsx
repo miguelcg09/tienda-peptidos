@@ -1,19 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { categories, categoryMeta, products, type Category } from "@/lib/products";
+import { categories, categoryMeta, type Category, type Product } from "@/lib/products";
 import { ProductCard } from "./ProductCard";
 
 // Catálogo con pestañas por categoría, en la misma sección (sin ir a otra página).
-export function CatalogTabs() {
+export function CatalogTabs({ products }: { products: Product[] }) {
   const [active, setActive] = useState<Category | "Todos">("Todos");
   const list = active === "Todos" ? products : products.filter((p) => p.category === active);
+  const present = categories.filter((c) => products.some((p) => p.category === c));
 
   return (
     <div className="grid gap-8 md:grid-cols-[220px_1fr]">
       <aside className="md:sticky md:top-32 md:self-start">
         <ul className="flex gap-2 overflow-x-auto pb-2 md:flex-col md:pb-0">
-          {(["Todos", ...categories] as const).map((c) => {
+          {(["Todos", ...present] as const).map((c) => {
             const on = c === active;
             return (
               <li key={c} className="shrink-0">
