@@ -9,6 +9,8 @@ import { Reveal } from "@/components/Reveal";
 import { VialCarousel } from "@/components/VialCarousel";
 import { CatalogTabs } from "@/components/CatalogTabs";
 import { faqs } from "@/lib/faqs";
+import { latestPublished } from "@/lib/reviews";
+import { Stars } from "@/components/Stars";
 
 const buySteps = [
   { title: "Elige tu péptido", text: "Filtra por categoría y compara presentaciones en la misma página." },
@@ -25,7 +27,8 @@ const checks = [
 
 
 export default async function Home() {
-  const [products, settings] = await Promise.all([getProducts(), getSettings()]);
+  const [products, settings, reviews] = await Promise.all([getProducts(), getSettings(), latestPublished(6)]);
+  const nameOf = (slug: string) => products.find((p) => p.slug === slug)?.name ?? "";
   const featured = products.filter((p) => p.featured).slice(0, 4);
   const spotlight = featured[0] ?? products[0];
   if (!spotlight) return <p className="p-12 text-center text-muted">Aún no hay productos publicados.</p>;
@@ -202,6 +205,29 @@ export default async function Home() {
           <VialCarousel items={products.slice(0, 8)} />
         </div>
       </section>
+
+      {/* Opiniones de compradores verificados: solo aparece con al menos tres reseñas con comentario */}
+      {reviews.length >= 3 && (
+        <section className="mx-auto max-w-6xl px-4 pt-4" id="opiniones">
+          <Reveal>
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Opiniones</p>
+            <h2 className="sweep mt-2 font-display text-3xl font-bold md:text-4xl">Lo que dicen quienes ya compraron</h2>
+          </Reveal>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {reviews.slice(0, 3).map((r, i) => (
+              <Reveal key={r.id} delay={i * 80} className="h-full">
+                <figure className="flex h-full flex-col rounded-card border bg-surface p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg">
+                  <Stars value={r.rating} className="text-lg" />
+                  <blockquote className="mt-3 grow text-sm text-muted">“{r.body}”</blockquote>
+                  <figcaption className="mt-4 text-xs">
+                    <span className="font-semibold">{r.name}</span> · {nameOf(r.productSlug)} · <span className="text-accent">Compra verificada</span>
+                  </figcaption>
+                </figure>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Preguntas: dos columnas de tarjetas */}
       <section id="faq" className="mx-auto max-w-6xl scroll-mt-28 px-4 py-16">

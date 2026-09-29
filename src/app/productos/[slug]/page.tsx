@@ -7,6 +7,8 @@ import { faqs } from "@/lib/faqs";
 import { ProductStage } from "@/components/ProductStage";
 import { ProductCard } from "@/components/ProductCard";
 import { Reveal } from "@/components/Reveal";
+import { Stars } from "@/components/Stars";
+import { listPublished } from "@/lib/reviews";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -52,7 +54,7 @@ function Section({ id, n, title, children }: { id: string; n: number; title: str
 export default async function ProductPage({ params }: Props) {
   const product = await getProduct((await params).slug);
   if (!product) notFound();
-  const [products, settings] = await Promise.all([getProducts(), getSettings()]);
+  const [products, settings, reviews] = await Promise.all([getProducts(), getSettings(), listPublished(product.slug)]);
   const related = products.filter((p) => p.slug !== product.slug).sort((a, b) => (a.category === product.category ? -1 : 1) - (b.category === product.category ? -1 : 1)).slice(0, 6);
   const isAccessory = product.category === "Accesorios";
 
@@ -69,6 +71,7 @@ export default async function ProductPage({ params }: Props) {
     { id: "certificado", label: "Certificado" },
     { id: "reconstitucion", label: "Reconstitución" },
     { id: "investigacion", label: "Investigación" },
+    { id: "resenas", label: "Reseñas" },
     { id: "preguntas", label: "Preguntas" },
   ];
 
@@ -82,6 +85,7 @@ export default async function ProductPage({ params }: Props) {
     category: product.category,
     ...(product.imageUrl ? { image: product.imageUrl } : {}),
     brand: { "@type": "Brand", name: settings.name },
+    ...(product.rating ? { aggregateRating: { "@type": "AggregateRating", ratingValue: Number(product.rating.avg.toFixed(1)), reviewCount: product.rating.count } } : {}),
     offers: product.variants.map((v) => ({
       "@type": "Offer",
       name: `${product.name} ${v.label}`,
@@ -166,7 +170,39 @@ export default async function ProductPage({ params }: Props) {
           <p className="mt-4 text-xs text-muted">Resumen informativo de la literatura preclínica. No describe efectos en seres humanos.</p>
         </Section>
 
-        <Section id="preguntas" n={5} title="Preguntas frecuentes">
+        <Section id="resenas" n={5} title="Reseñas de compradores">
+          {product.rating && reviews.length > 0 ? (
+            <>
+              <p className="flex items-center gap-3">
+                <span className="font-display text-4xl font-bold">{product.rating.avg.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
+                <span>
+                  <Stars value={product.rating.avg} className="text-xl" />
+                  <span className="block text-xs text-muted">{product.rating.count} {product.rating.count === 1 ? "reseña verificada" : "reseñas verificadas"}</span>
+                </span>
+              </p>
+              <ul className="mt-5 grid gap-3">
+                {reviews.map((r) => (
+                  <li key={r.id} className="rounded-2xl border bg-surface p-4 text-sm">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <Stars value={r.rating} className="text-base" />
+                      <span className="font-semibold">{r.name}</span>
+                      <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[11px] font-medium text-accent">Compra verificada</span>
+                      <span className="ml-auto text-xs text-muted">{new Date(r.createdAt).toLocaleDateString("es-CL", { timeZone: "America/Santiago", day: "numeric", month: "long", year: "numeric" })}</span>
+                    </div>
+                    {r.body && <p className="mt-2 whitespace-pre-line text-muted">{r.body}</p>}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <p className="text-muted">Aún no hay reseñas de este producto.</p>
+          )}
+          <p className="mt-4 text-xs text-muted">
+            Solo dejan reseña quienes compraron: te invitamos por correo cuando tu pedido sale despachado. Revisamos cada reseña antes de publicarla.
+          </p>
+        </Section>
+
+        <Section id="preguntas" n={6} title="Preguntas frecuentes">
           <div className="grid gap-3">
             {faqs.map((f) => (
               <details key={f.q} className="group rounded-2xl border bg-surface p-4">

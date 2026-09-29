@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { isAdmin } from "@/lib/admin";
+import { pendingReviewCount } from "@/lib/reviews";
 
 export const metadata: Metadata = { title: "Administración", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -9,6 +10,7 @@ const nav = [
   { href: "/admin/pedidos", label: "Pedidos" },
   { href: "/admin/productos", label: "Productos" },
   { href: "/admin/cupones", label: "Cupones" },
+  { href: "/admin/resenas", label: "Reseñas" },
   { href: "/admin/suscriptores", label: "Suscriptores" },
   { href: "/admin/ajustes", label: "Ajustes" },
 ];
@@ -32,13 +34,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     );
   }
 
+  const pendingReviews = await pendingReviewCount();
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
       <div className="mb-8 flex flex-wrap items-center gap-2 border-b pb-4">
         <span className="mr-2 text-xs font-semibold uppercase tracking-[0.25em] text-accent">Administración</span>
         {nav.map((n) => (
           <Link key={n.href} href={n.href} className="rounded-full border px-4 py-1.5 text-sm hover:border-accent">
-            {n.label}
+            {n.label}{n.href === "/admin/resenas" && pendingReviews > 0 && <span className="ml-1.5 rounded-full bg-accent-2 px-1.5 text-xs font-bold text-white">{pendingReviews}</span>}
           </Link>
         ))}
         <form method="post" action="/admin/salir" className="ml-auto">

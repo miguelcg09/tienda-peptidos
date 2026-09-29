@@ -3,6 +3,7 @@ import { formatCLP, type Product } from "@/lib/products";
 import { ProductImage } from "./ProductImage";
 import { Tilt } from "./Tilt";
 import { QuickAdd } from "./QuickAdd";
+import { Stars } from "./Stars";
 
 export function ProductCard({ product }: { product: Product }) {
   const from = Math.min(...product.variants.map((v) => v.price));
@@ -23,6 +24,12 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
         <p className="mt-4 text-[11px] font-medium uppercase tracking-widest text-muted">{product.category}</p>
         <h3 className="mt-1 font-display text-lg font-semibold">{product.name}</h3>
+        {product.rating && (
+          <p className="mt-1 flex items-center gap-1.5 text-xs text-muted">
+            <Stars value={product.rating.avg} className="text-sm" />
+            {product.rating.avg.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ({product.rating.count})
+          </p>
+        )}
         <p className="mt-1 line-clamp-2 text-sm text-muted">{product.short}</p>
         <div className="mt-auto flex items-end justify-between pt-4">
           <p className="font-semibold">

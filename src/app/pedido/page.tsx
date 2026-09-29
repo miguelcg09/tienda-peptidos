@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { formatCLP } from "@/lib/products";
+import { ReviewForm, type Reviewable } from "@/components/ReviewForm";
 
 type Tracking = {
   id: string;
@@ -18,6 +19,7 @@ type Tracking = {
   tracking?: string | null;
   name?: string;
   destination?: string;
+  reviewable?: Reviewable[];
 };
 
 const fecha = (iso?: string | null) =>
@@ -26,7 +28,7 @@ const fecha = (iso?: string | null) =>
 function Seguimiento() {
   const params = useSearchParams();
   const [orden, setOrden] = useState(params.get("orden") ?? "");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(params.get("email") ?? "");
   const [data, setData] = useState<Tracking | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -113,6 +115,20 @@ function Seguimiento() {
                 <p className="mt-1 text-sm text-muted">Agrega el correo con que compraste para ver el número de seguimiento.</p>
               )}
             </div>
+          )}
+
+          {data.status === "despachado" && (
+            <section id="resenas" className="mt-6 scroll-mt-28 border-t pt-5">
+              <h3 className="font-display text-lg font-bold">Cuéntanos cómo te fue</h3>
+              {data.verified && data.reviewable && data.reviewable.length > 0 ? (
+                <>
+                  <p className="mt-1 text-sm text-muted">Tu reseña ayuda a otros investigadores. La revisamos antes de publicarla.</p>
+                  <div className="mt-4"><ReviewForm orden={data.id} email={email.trim()} items={data.reviewable} /></div>
+                </>
+              ) : (
+                <p className="mt-1 text-sm text-muted">Agrega el correo con que compraste para dejar tu reseña.</p>
+              )}
+            </section>
           )}
 
           <ul className="mt-6 space-y-2 border-t pt-4 text-sm">

@@ -6,6 +6,7 @@ import type { Settings } from "@/lib/config";
 import { useCart } from "./CartProvider";
 import { ProductImage } from "./ProductImage";
 import { Newsletter } from "./Newsletter";
+import { Stars } from "./Stars";
 
 type IndexItem = { id: string; label: string };
 
@@ -54,7 +55,9 @@ export function ProductStage({
     ? "Sin stock por ahora"
     : variant.stock == null || variant.stock > 20
       ? "En stock · Más de 20 unidades"
-      : `En stock · Quedan ${variant.stock} unidades`;
+      : variant.stock === 1
+        ? "En stock · Queda 1 unidad"
+        : `En stock · Quedan ${variant.stock} unidades`;
 
   return (
     <>
@@ -74,6 +77,14 @@ export function ProductStage({
               <li className={`rounded-full px-3 py-1.5 ${soldOut ? "bg-red-500/15 text-red-600 dark:text-red-300" : "bg-accent text-on-accent"}`}>{stockLine}</li>
               <li className="rounded-full border bg-surface px-3 py-1.5">Pureza {product.purity.replace(" (HPLC)", "")}</li>
               <li className="rounded-full border bg-surface px-3 py-1.5">COA por lote</li>
+              {product.rating && (
+                <li>
+                  <a href="#resenas" className="flex items-center gap-1.5 rounded-full border bg-surface px-3 py-1.5 transition hover:border-accent">
+                    <Stars value={product.rating.avg} className="text-sm" />
+                    {product.rating.avg.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} · {product.rating.count} {product.rating.count === 1 ? "reseña" : "reseñas"}
+                  </a>
+                </li>
+              )}
               {product.cas && <li className="rounded-full border bg-surface px-3 py-1.5">CAS {product.cas}</li>}
             </ul>
           </div>

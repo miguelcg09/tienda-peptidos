@@ -1,6 +1,7 @@
 import "server-only";
 import { query } from "./db";
 import { seedProducts, type Category, type Product, type Variant } from "./products";
+import { ratingSummary } from "./reviews";
 
 type ProductRow = {
   slug: string;
@@ -50,8 +51,9 @@ async function ensureSeeded() {
   seeded = true;
 }
 
-function toProduct(r: ProductRow, variants: VariantRow[]): Product {
+function toProduct(r: ProductRow, variants: VariantRow[], rating?: { avg: number; count: number }): Product {
   return {
+    ...(rating ? { rating } : {}),
     slug: r.slug,
     name: r.name,
     category: r.category as Category,
@@ -91,7 +93,8 @@ export async function getProducts(opts: { includeHidden?: boolean } = {}): Promi
     `SELECT * FROM products ${opts.includeHidden ? "" : "WHERE visible"} ORDER BY sort, name`,
   );
   const variants = await query<VariantRow>("SELECT * FROM variants");
-  return rows.map((r) => toProduct(r, variants));
+  const ratings = await ratingSummary();
+  return rows.map((r) => toProduct(r, variants, ratings[r.slug]));
 }
 
 export async function getProduct(slug: string, opts: { includeHidden?: boolean } = {}) {
@@ -99,7 +102,7 @@ export async function getProduct(slug: string, opts: { includeHidden?: boolean }
   const [row] = await query<ProductRow>("SELECT * FROM products WHERE slug = $1", [slug]);
   if (!row || (!row.visible && !opts.includeHidden)) return null;
   const variants = await query<VariantRow>("SELECT * FROM variants WHERE product_slug = $1", [slug]);
-  return toProduct(row, variants);
+  return toProduct(row, variants, (await ratingSummary(slug))[slug]);
 }
 
 export async function findVariant(variantId: string) {
@@ -158,9 +161,23 @@ export async function deleteProduct(slug: string) {
   await query("DELETE FROM products WHERE slug = $1", [slug]);
 }
 
+// Devuelve stock (pedido anulado). Solo afecta a presentaciones con control de stock.
+export async function releaseStock(items: { variantId: string; qty: number }[]) {
+  for (const it of items) {
+    await query("UPDATE variants SET stock = stock + $2 WHERE id = $1 AND stock IS NOT NULL", [it.variantId, it.qty]);
+  }
+}
+
 // Descuenta stock de las presentaciones con control de stock (stock no nulo).
 export async function decrementStock(items: { variantId: string; qty: number }[]) {
   for (const it of items) {
     await query("UPDATE variants SET stock = GREATEST(stock - $2, 0) WHERE id = $1 AND stock IS NOT NULL", [it.variantId, it.qty]);
   }
+}
+
+// Producto al que pertenece cada presentación (sirve aunque el producto esté oculto).
+export async function productSlugsForVariants(ids: string[]): Promise<Record<string, string>> {
+  if (ids.length === 0) return {};
+  const rows = await query<{ id: string; product_slug: string }>("SELECT id, product_slug FROM variants WHERE id = ANY($1::text[])", [ids]);
+  return Object.fromEntries(rows.map((r) => [r.id, r.product_slug]));
 }

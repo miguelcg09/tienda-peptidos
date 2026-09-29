@@ -4,13 +4,14 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/admin";
 import { categories, slugify, type Category, type Product, type Variant } from "@/lib/products";
-import { decrementStock, deleteProduct, getProduct, setProductVisible, setVariants, upsertProduct } from "@/lib/catalog";
+import { decrementStock, deleteProduct, getProduct, releaseStock, setProductVisible, setVariants, upsertProduct } from "@/lib/catalog";
 import { deleteOrder, getOrder, markPaid, markShipped, setOrderNote } from "@/lib/orders";
 import { getSettings, saveSettings } from "@/lib/settings";
 import { defaultSettings } from "@/lib/config";
 import { sendBackInStockEmails, sendOrderEmails, sendShippedEmail } from "@/lib/email";
 import { deleteCoupon, normalizeCode, saveCoupon, setCouponActive } from "@/lib/coupons";
 import { clearStockWatchers, deleteSubscriber, stockWatchers } from "@/lib/subscribers";
+import { deleteReview, setReviewStatus, type ReviewStatus } from "@/lib/reviews";
 import type { Settings } from "@/lib/config";
 import { getPalette } from "@/lib/palettes";
 
@@ -148,6 +149,7 @@ export async function removeOrder(id: string) {
   if (!order) return;
   const deletable = order.paymentRef === "modo-prueba" || order.status === "pendiente" || order.status === "fallido";
   if (!deletable) throw new Error("Un pedido pagado no se puede borrar");
+  if (order.stockHeld && order.status === "pendiente") await releaseStock(order.items); // anular una transferencia devuelve el stock
   await deleteOrder(id);
   revalidatePath("/admin/pedidos");
 }
@@ -197,7 +199,7 @@ export async function confirmTransfer(form: FormData) {
   await requireAdmin();
   const paid = await markPaid(str(form, "id"), "transferencia");
   if (paid) {
-    await decrementStock(paid.items);
+    if (!paid.stockHeld) await decrementStock(paid.items); // si estaba reservado, ya se descontó al crear el pedido
     await sendOrderEmails(paid, await getSettings());
   }
   refreshStore();
@@ -240,4 +242,18 @@ export async function removeSubscriber(id: number) {
   await requireAdmin();
   await deleteSubscriber(id);
   revalidatePath("/admin/suscriptores");
+}
+
+export async function setReviewStatusAction(id: number, status: ReviewStatus) {
+  await requireAdmin();
+  await setReviewStatus(id, status);
+  refreshStore();
+  revalidatePath("/admin/resenas");
+}
+
+export async function removeReview(id: number) {
+  await requireAdmin();
+  await deleteReview(id);
+  refreshStore();
+  revalidatePath("/admin/resenas");
 }

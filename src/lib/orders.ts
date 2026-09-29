@@ -35,6 +35,7 @@ export type Order = {
   shipping: number;
   total: number;
   paymentMethod: PaymentMethod;
+  stockHeld: boolean; // transferencia pendiente: el stock ya se descontó y se devuelve si se anula
   paymentRef: string | null;
   createdAt: string;
   paidAt: string | null;
@@ -54,6 +55,7 @@ type OrderRow = {
   shipping: number;
   total: number;
   payment_method: string | null;
+  stock_held: boolean | null;
   payment_ref: string | null;
   created_at: string | Date;
   paid_at: string | Date | null;
@@ -75,6 +77,7 @@ function toOrder(r: OrderRow): Order {
     discount: Number(r.discount ?? 0),
     coupon: r.coupon ?? null,
     paymentMethod: r.payment_method === "transferencia" ? "transferencia" : "tarjeta",
+    stockHeld: Boolean(r.stock_held),
     shipping: Number(r.shipping),
     total: Number(r.total),
     paymentRef: r.payment_ref,
@@ -93,7 +96,7 @@ export function newOrderId() {
 }
 
 export async function createOrder(
-  input: Omit<Order, "status" | "paymentRef" | "createdAt" | "paidAt" | "tracking" | "shippedAt" | "note">,
+  input: Omit<Order, "status" | "paymentRef" | "createdAt" | "paidAt" | "tracking" | "shippedAt" | "note" | "stockHeld">,
 ) {
   const [row] = await query<OrderRow>(
     `INSERT INTO orders (id, customer, items, subtotal, discount, coupon, shipping, total, payment_method)
@@ -101,6 +104,10 @@ export async function createOrder(
     [input.id, JSON.stringify(input.customer), JSON.stringify(input.items), input.subtotal, input.discount, input.coupon, input.shipping, input.total, input.paymentMethod],
   );
   return toOrder(row);
+}
+
+export async function setStockHeld(id: string, held: boolean) {
+  await query(`UPDATE orders SET stock_held = $2 WHERE id = $1`, [id, held]);
 }
 
 export async function getOrder(id: string) {

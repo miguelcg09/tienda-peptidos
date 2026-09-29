@@ -81,7 +81,7 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
                     <form action={confirmTransfer} className="flex flex-wrap items-center gap-3 rounded-xl border border-amber-400/40 bg-amber-400/10 p-3 md:col-span-2">
                       <input type="hidden" name="id" value={o.id} />
                       <p className="grow text-xs text-amber-900 dark:text-amber-100">
-                        Pendiente de transferencia. Cuando veas el abono de <strong>{formatCLP(o.total)}</strong> en tu cuenta, confírmalo aquí: se descuenta el stock y el cliente recibe la confirmación.
+                        Pendiente de transferencia, con el stock reservado. Cuando veas el abono de <strong>{formatCLP(o.total)}</strong> en tu cuenta, confírmalo aquí y el cliente recibe la confirmación. Si no paga, anula el pedido y el stock vuelve.
                       </p>
                       <button className="btn-primary text-sm">Confirmar pago recibido</button>
                     </form>
@@ -107,7 +107,7 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
                     <button className="btn-ghost text-sm">Guardar nota</button>
                     {deletable && (
                       <button formAction={removeOrder.bind(null, o.id)} className="ml-auto text-xs text-red-500 hover:underline">
-                        Eliminar pedido
+                        {o.status === "pendiente" && o.stockHeld ? "Anular pedido y liberar stock" : "Eliminar pedido"}
                       </button>
                     )}
                   </form>

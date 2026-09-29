@@ -89,6 +89,7 @@ CREATE TABLE IF NOT EXISTS settings (
 );
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS discount INTEGER NOT NULL DEFAULT 0;
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS coupon TEXT;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS stock_held BOOLEAN NOT NULL DEFAULT false;
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method TEXT NOT NULL DEFAULT 'tarjeta';
 ALTER TABLE products ADD COLUMN IF NOT EXISTS lot TEXT;
 ALTER TABLE products ADD COLUMN IF NOT EXISTS lot_date TEXT;
@@ -102,6 +103,17 @@ CREATE TABLE IF NOT EXISTS coupons (
   expires_at   TEXT,
   active       BOOLEAN NOT NULL DEFAULT true,
   created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS reviews (
+  id           SERIAL PRIMARY KEY,
+  product_slug TEXT NOT NULL,
+  order_id     TEXT NOT NULL,
+  name         TEXT NOT NULL,
+  rating       INTEGER NOT NULL,
+  body         TEXT NOT NULL DEFAULT '',
+  status       TEXT NOT NULL DEFAULT 'pendiente',
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (order_id, product_slug)
 );
 CREATE TABLE IF NOT EXISTS subscribers (
   id           SERIAL PRIMARY KEY,

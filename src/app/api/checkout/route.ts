@@ -3,7 +3,7 @@ import { findVariant, decrementStock } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { cardProviderName, getPaymentProvider } from "@/lib/payments";
 import { isValidRut } from "@/lib/rut";
-import { createOrder, markPaid, newOrderId, type OrderItem } from "@/lib/orders";
+import { createOrder, markPaid, newOrderId, setStockHeld, type OrderItem } from "@/lib/orders";
 import { sendOrderEmails, sendTransferEmails } from "@/lib/email";
 import { applyCoupon, redeemCoupon } from "@/lib/coupons";
 import { hasBankData } from "@/lib/config";
@@ -98,8 +98,11 @@ export async function POST(req: Request) {
   });
   if (coupon) await redeemCoupon(coupon);
 
-  // Transferencia: el pedido queda pendiente; el cliente recibe los datos y la tienda un aviso.
+  // Transferencia: el pedido queda pendiente y el stock reservado (se devuelve si se anula);
+  // el cliente recibe los datos y la tienda un aviso.
   if (method === "transferencia") {
+    await decrementStock(order.items);
+    await setStockHeld(order.id, true);
     await sendTransferEmails(order, settings);
     return NextResponse.json({ orderId: order.id, redirectUrl: `/checkout/exito?orden=${order.id}&pago=transferencia` });
   }

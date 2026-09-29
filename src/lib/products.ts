@@ -24,6 +24,7 @@ export type Product = {
   coaUrl?: string; // enlace al certificado de análisis (PDF o imagen)
   lot?: string; // número de lote actual (el que va impreso en la etiqueta)
   lotDate?: string; // fecha del análisis del lote (AAAA-MM-DD)
+  rating?: { avg: number; count: number }; // reseñas publicadas (se calcula al leer el catálogo)
   variants: Variant[];
   featured?: boolean;
   visible: boolean;

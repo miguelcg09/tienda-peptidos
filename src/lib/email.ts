@@ -2,6 +2,7 @@ import "server-only";
 import type { Settings } from "./config";
 import { formatCLP } from "./products";
 import type { Order } from "./orders";
+import type { Review } from "./reviews";
 
 // Correos transaccionales. Con RESEND_API_KEY se envían por Resend;
 // sin ella se imprimen en la consola (útil en desarrollo).
@@ -59,6 +60,8 @@ function layout(settings: Settings, title: string, body: string) {
 const addressOf = (o: Order) => `${o.customer.address}${o.customer.reference ? ` (${o.customer.reference})` : ""}, ${o.customer.comuna}, ${o.customer.region}`;
 const trackUrl = (o: Order) => `${(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "")}/pedido?orden=${o.id}`;
 
+const reviewUrl = (o: Order) => `${(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "")}/pedido?orden=${o.id}&email=${encodeURIComponent(o.customer.email)}#resenas`;
+
 export async function sendOrderEmails(order: Order, settings: Settings) {
   const c = order.customer;
   const address = addressOf(order);
@@ -98,14 +101,15 @@ export async function sendShippedEmail(order: Order, settings: Settings) {
     {
       to: c.email,
       subject: `Tu pedido ${order.id} va en camino · ${settings.name}`,
-      text: `Hola ${c.name},\n\nTu pedido ${order.id} fue despachado a ${addressOf(order)}.\n\nNúmero de seguimiento: ${tracking}\n\n${itemsText(order)}\n\nRecomendamos refrigerar los viales al recibirlos.\n\n${settings.name} · ${settings.email}`,
+      text: `Hola ${c.name},\n\nTu pedido ${order.id} fue despachado a ${addressOf(order)}.\n\nNúmero de seguimiento: ${tracking}\n\n${itemsText(order)}\n\nRecomendamos refrigerar los viales al recibirlos.\n\nCuando lo recibas, cuéntanos cómo te fue: ${reviewUrl(order)}\n\n${settings.name} · ${settings.email}`,
       html: layout(
         settings,
         `Tu pedido va en camino, ${esc(c.name)}`,
         `<p>Tu pedido <strong>${order.id}</strong> fue despachado a ${esc(addressOf(order))}.</p>
          <p style="font-size:18px"><strong>Seguimiento:</strong> ${esc(tracking)}</p>
          <p><a href="${trackUrl(order)}">Ver el estado de tu pedido</a></p>${itemsHtml(order)}
-         <p>Recomendamos refrigerar los viales al recibirlos.</p>`,
+         <p>Recomendamos refrigerar los viales al recibirlos.</p>
+         <p>Cuando lo recibas, <a href="${reviewUrl(order)}">cuéntanos cómo te fue</a>: tu reseña ayuda a otros investigadores.</p>`,
       ),
     },
     settings,
@@ -179,5 +183,23 @@ export async function sendBackInStockEmails(product: { name: string; slug: strin
         settings,
       ),
     ),
+  );
+}
+
+// Aviso a la tienda cuando llega una reseña nueva (queda pendiente de aprobación en el panel).
+export async function sendReviewNotice(review: Review, productName: string, settings: Settings) {
+  const url = `${(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "")}/admin/resenas`;
+  await send(
+    {
+      to: process.env.ORDERS_NOTIFY_EMAIL ?? settings.email,
+      subject: `Nueva reseña de ${productName}: ${review.rating} estrellas`,
+      text: `${review.name} dejó una reseña de ${productName} (${review.rating} de 5) en el pedido ${review.orderId}.\n\n${review.body || "(sin comentario)"}\n\nAprobar o rechazar: ${url}`,
+      html: layout(
+        settings,
+        `Nueva reseña de ${esc(productName)}`,
+        `<p><strong>${esc(review.name)}</strong> · ${review.rating} de 5 · pedido ${esc(review.orderId)}</p><p>${esc(review.body) || "<em>Sin comentario</em>"}</p><p><a href="${url}">Aprobar o rechazar en el panel</a></p>`,
+      ),
+    },
+    settings,
   );
 }
