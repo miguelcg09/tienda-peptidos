@@ -1,24 +1,31 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { listOrders } from "@/lib/orders";
 import { formatCLP } from "@/lib/products";
 
 export const metadata: Metadata = { title: "Pedidos", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
-// Vista privada de pedidos. Se abre con /admin/pedidos?clave=<ADMIN_PASSWORD>.
-export default async function Pedidos({ searchParams }: { searchParams: Promise<{ clave?: string }> }) {
-  const { clave } = await searchParams;
+// Vista privada de pedidos: /admin/pedidos pide la clave (ADMIN_PASSWORD) y la recuerda 30 días.
+export default async function Pedidos({ searchParams }: { searchParams: Promise<{ clave?: string; error?: string }> }) {
+  const { clave, error } = await searchParams;
   const password = process.env.ADMIN_PASSWORD;
+  const cookie = (await cookies()).get("admin")?.value;
+  const allowed = Boolean(password) && (cookie === password || clave === password);
 
-  if (!password || clave !== password) {
+  if (!allowed) {
     return (
       <div className="mx-auto max-w-md px-4 py-24 text-center">
         <h1 className="font-display text-2xl font-bold">Acceso privado</h1>
         <p className="mt-3 text-sm text-muted">
-          {password ? "La clave no es válida." : "Configura ADMIN_PASSWORD para habilitar esta página."}
+          {!password
+            ? "Configura ADMIN_PASSWORD para habilitar esta página."
+            : error || clave
+              ? "La clave no es válida."
+              : "Escribe la clave de administrador para ver los pedidos."}
         </p>
-        <form className="mt-6 flex gap-2">
-          <input name="clave" type="password" placeholder="Clave" className="field mt-0" />
+        <form method="post" action="/admin/pedidos/entrar" className="mt-6 flex gap-2">
+          <input name="clave" type="password" placeholder="Clave" autoFocus className="field mt-0" />
           <button className="btn-primary text-sm">Entrar</button>
         </form>
       </div>
@@ -34,8 +41,15 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
-      <h1 className="font-display text-3xl font-bold">Pedidos</h1>
-      <p className="mt-1 text-sm text-muted">{orders.length} pedidos, del más reciente al más antiguo.</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="font-display text-3xl font-bold">Pedidos</h1>
+          <p className="mt-1 text-sm text-muted">{orders.length} pedidos, del más reciente al más antiguo.</p>
+        </div>
+        <form method="post" action="/admin/pedidos/salir">
+          <button className="btn-ghost text-sm">Salir</button>
+        </form>
+      </div>
       {orders.length === 0 ? (
         <p className="mt-10 text-muted">Todavía no hay pedidos.</p>
       ) : (
