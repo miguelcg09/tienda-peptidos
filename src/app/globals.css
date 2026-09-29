@@ -19,12 +19,12 @@
 
 :root {
   color-scheme: light;
-  --bg: #e4e8df;
-  --surface: #f4f6f0;
-  --surface-2: #d8ded3;
-  --line: rgb(28 38 32 / 0.12);
-  --fg: #17201b;
-  --muted: #5d6a62;
+  --bg: #cfdccf;
+  --surface: #edf3ea;
+  --surface-2: #bfd0bf;
+  --line: rgb(20 50 32 / 0.16);
+  --fg: #132019;
+  --muted: #4c5f54;
   --accent: #059669;
   --accent-2: #c28a12;
   --badge: #047857;
@@ -37,12 +37,12 @@
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --bg: #0b110e;
-    --surface: #121a15;
-    --surface-2: #18221c;
-    --line: rgb(220 240 228 / 0.09);
-    --fg: #f3efe6;
-    --muted: #a39d90;
+    --bg: #061a11;
+    --surface: #0c2619;
+    --surface-2: #123322;
+    --line: rgb(120 220 170 / 0.16);
+    --fg: #eef5ef;
+    --muted: #9bb3a5;
     --accent: #34d399;
     --accent-2: #f5c451;
     --badge: #6ee7b7;
