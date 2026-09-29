@@ -1,6 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+
+const MapPicker = dynamic(() => import("./MapPicker").then((m) => m.MapPicker), {
+  ssr: false,
+  loading: () => <div className="h-72 w-full animate-pulse bg-surface-2" />,
+});
 
 export const regiones = [
   "Arica y Parinacota", "Tarapacá", "Antofagasta", "Atacama", "Coquimbo", "Valparaíso",
@@ -8,21 +14,22 @@ export const regiones = [
   "Los Lagos", "Aysén", "Magallanes",
 ];
 
-type Place = { label: string; address: string; comuna: string; region: string; lat: number; lng: number };
+type Place = { label: string; address: string; comuna: string; region: string; lat: number; lng: number; approx?: boolean };
+type Coords = { lat: number; lng: number; source: "sugerencia" | "gps" | "mapa"; approx: boolean };
 
 // Dirección de despacho con autocompletado mientras se escribe, botón "usar mi ubicación"
-// y mapa con el punto de entrega. Los campos se envían con el resto del formulario.
+// y mapa con un marcador que se puede arrastrar. Los campos se envían con el resto del formulario.
 export function AddressPicker() {
   const [address, setAddress] = useState("");
   const [region, setRegion] = useState("Metropolitana");
   const [comuna, setComuna] = useState("");
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [coords, setCoords] = useState<Coords | null>(null);
   const [places, setPlaces] = useState<Place[]>([]);
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState<"buscar" | "ubicar" | null>(null);
   const [hint, setHint] = useState("");
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const chosen = useRef("");
+  const chosen = useRef(""); // último texto elegido de una sugerencia (no se vuelve a buscar)
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Busca sugerencias 350 ms después de la última tecla.
@@ -47,15 +54,23 @@ export function AddressPicker() {
     return () => clearTimeout(timer.current);
   }, [address]);
 
-  function pick(p: Place) {
+  function pick(p: Place, source: Coords["source"] = "sugerencia") {
     chosen.current = p.address;
     setAddress(p.address);
     if (p.comuna) setComuna(p.comuna);
     if (regiones.includes(p.region)) setRegion(p.region);
-    setCoords({ lat: p.lat, lng: p.lng });
+    // Una sugerencia aproximada (solo la calle) no reemplaza un punto ya afinado con GPS o en el mapa.
+    const keep = p.approx && coords && coords.source !== "sugerencia";
+    if (!keep) setCoords({ lat: p.lat, lng: p.lng, source, approx: Boolean(p.approx) });
     setPlaces([]);
     setOpen(false);
     setHint("");
+  }
+
+  function onType(value: string) {
+    setAddress(value);
+    // Si cambia la calle elegida se pierde el punto; agregar el número a la misma calle lo conserva.
+    if (coords && chosen.current && !value.trim().toLowerCase().startsWith(chosen.current.toLowerCase().replace(/\s+\d+\w*$/, ""))) setCoords(null);
   }
 
   function locate() {
@@ -66,8 +81,13 @@ export function AddressPicker() {
         try {
           const r = await fetch(`/api/geo?lat=${c.latitude}&lng=${c.longitude}`);
           const data = (await r.json()) as { place: Place | null };
-          if (data.place) pick(data.place);
-          else { setCoords({ lat: c.latitude, lng: c.longitude }); setHint("Ubicamos el punto, pero no encontramos la calle: escríbela tú."); }
+          if (data.place) {
+            pick({ ...data.place, lat: c.latitude, lng: c.longitude, approx: false }, "gps");
+            if (data.place.approx || !/\d/.test(data.place.address)) setHint("Ubicamos tu calle. Agrega el número a la dirección.");
+          } else {
+            setCoords({ lat: c.latitude, lng: c.longitude, source: "gps", approx: false });
+            setHint("Marcamos tu ubicación en el mapa, pero no encontramos la calle: escríbela tú.");
+          }
         } finally {
           setBusy(null);
         }
@@ -76,11 +96,6 @@ export function AddressPicker() {
       { enableHighAccuracy: true, timeout: 8000 },
     );
   }
-
-  const d = 0.004;
-  const mapSrc = coords
-    ? `https://www.openstreetmap.org/export/embed.html?bbox=${coords.lng - d},${coords.lat - d * 0.7},${coords.lng + d},${coords.lat + d * 0.7}&layer=mapnik&marker=${coords.lat},${coords.lng}`
-    : "";
 
   return (
     <>
@@ -93,10 +108,10 @@ export function AddressPicker() {
             required
             autoComplete="off"
             value={address}
-            onChange={(e) => { setAddress(e.target.value); if (coords) setCoords(null); }}
+            onChange={(e) => onType(e.target.value)}
             onFocus={() => places.length && setOpen(true)}
             onBlur={() => setTimeout(() => setOpen(false), 150)}
-            placeholder="Escribe calle y número, por ejemplo Los Leones 45"
+            placeholder="Calle y número, por ejemplo Los Leones 45"
             className="field"
           />
         </label>
@@ -109,7 +124,10 @@ export function AddressPicker() {
                   <span className="mt-0.5 text-accent">📍</span>
                   <span>
                     <span className="block font-medium">{p.address}</span>
-                    <span className="block text-xs text-muted">{[p.comuna, p.region].filter(Boolean).join(", ")}</span>
+                    <span className="block text-xs text-muted">
+                      {[p.comuna, p.region].filter(Boolean).join(", ")}
+                      {p.approx && " · el número lo ajustas en el mapa"}
+                    </span>
                   </span>
                 </button>
               </li>
@@ -120,7 +138,7 @@ export function AddressPicker() {
           <button type="button" onClick={locate} disabled={busy === "ubicar"} className="rounded-full border px-3 py-1 text-fg transition hover:border-accent">
             {busy === "ubicar" ? "Ubicando…" : "📡 Usar mi ubicación"}
           </button>
-          <span>Las sugerencias completan comuna y región y marcan el punto en el mapa.</span>
+          <span>Elige una sugerencia: completa comuna y región y marca el punto en el mapa.</span>
         </div>
         {hint && <p className="mt-2 text-xs text-amber-700 dark:text-amber-200">{hint}</p>}
       </div>
@@ -138,12 +156,18 @@ export function AddressPicker() {
 
       {coords && (
         <div className="sm:col-span-2">
-          <div className="overflow-hidden rounded-2xl border">
-            <iframe title="Mapa de la dirección de despacho" src={mapSrc} className="h-64 w-full" loading="lazy" />
+          <div className="relative isolate z-0 overflow-hidden rounded-2xl border">
+            <MapPicker lat={coords.lat} lng={coords.lng} onMove={(lat, lng) => setCoords({ lat, lng, source: "mapa", approx: false })} />
           </div>
           <p className="mt-2 flex flex-wrap justify-between gap-2 text-xs text-muted">
-            <span>Confirma que el punto corresponde a tu dirección. Si no, corrige la calle y el número.</span>
-            <a href={`https://www.google.com/maps?q=${coords.lat},${coords.lng}`} target="_blank" rel="noreferrer" className="text-accent hover:underline">Abrir en mapa grande</a>
+            <span data-testid="mapa-nota">
+              {coords.approx
+                ? "El número no aparece en el mapa: el marcador está sobre la calle. Arrástralo hasta tu dirección exacta."
+                : coords.source === "mapa"
+                  ? "Punto ajustado a mano. Así lo recibirá el courier."
+                  : "Si el marcador no coincide con tu puerta, arrástralo o toca el mapa."}
+            </span>
+            <a href={`https://www.google.com/maps?q=${coords.lat},${coords.lng}`} target="_blank" rel="noreferrer" className="text-accent hover:underline">Abrir en Google Maps</a>
           </p>
         </div>
       )}

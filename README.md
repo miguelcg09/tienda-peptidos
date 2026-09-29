@@ -17,7 +17,7 @@ Abre http://localhost:3000.
 - Inicio, catálogo con filtro por categoría y ficha de producto con selector de presentación, insignias de stock, pestañas (resumen, COA, reconstitución, preguntas, investigación) y barra de compra fija.
 - Carrito lateral y página de carrito (se guarda en el navegador).
 - Checkout con validación de RUT, región/comuna y aceptación de uso para investigación.
-- Dirección de despacho con autocompletado: mientras el cliente escribe, `/api/geo` busca en Photon (OpenStreetMap, gratis y sin clave); al elegir una sugerencia se completan comuna y región y aparece un mapa con el punto de entrega. Botón "Usar mi ubicación" (GPS del navegador). El pedido guarda referencia (depto., casa) y coordenadas; en `/admin/pedidos` hay un enlace al punto en el mapa. `GEO_PROVIDER=mock` devuelve resultados fijos para probar sin red.
+- Dirección de despacho con autocompletado: mientras el cliente escribe, `/api/geo` busca en Photon (OpenStreetMap, gratis y sin clave) números exactos y calles; como en Chile OpenStreetMap tiene pocos números de casa, si solo aparece la calle se conserva el número escrito y se avisa que el punto es aproximado. Al elegir una sugerencia se completan comuna y región y aparece un mapa (Leaflet + OpenStreetMap) con un marcador que se puede arrastrar o mover tocando el mapa. Botón "Usar mi ubicación" (GPS del navegador). El pedido guarda referencia (depto., casa) y coordenadas; en `/admin/pedidos` hay un enlace al punto en el mapa. `GEO_PROVIDER=mock` devuelve resultados fijos para probar sin red.
 - Aviso de ingreso (+18 y solo investigación), rótulos en fichas y términos y condiciones base.
 - Capa de pagos intercambiable (`src/lib/payments.ts`):
   - `mock`: modo de prueba, no cobra.

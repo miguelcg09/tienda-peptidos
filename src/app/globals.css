@@ -153,3 +153,26 @@ body { background: var(--color-bg); color: var(--color-fg); }
   *, ::before, ::after { animation: none !important; transition: none !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* Mapa del checkout (Leaflet): marcador arrastrable en el color de acento */
+.leaflet-container { font: inherit; }
+.map-pin span {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50% 50% 50% 0;
+  background: var(--color-accent);
+  border: 3px solid #fff;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 0.35);
+  transform: rotate(-45deg);
+  transform-origin: center;
+  cursor: grab;
+}
+.map-pin span::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: #fff;
+}
+.leaflet-marker-draggable .map-pin span:active { cursor: grabbing; }
