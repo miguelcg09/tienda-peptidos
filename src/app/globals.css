@@ -20,9 +20,9 @@
 :root {
   color-scheme: light;
   --bg: #cfdccf;
-  --surface: #edf3ea;
-  --surface-2: #bfd0bf;
-  --line: rgb(20 50 32 / 0.16);
+  --surface: #ffffff;
+  --surface-2: #e3ebe1;
+  --line: rgb(20 50 32 / 0.18);
   --fg: #132019;
   --muted: #4c5f54;
   --accent: #059669;

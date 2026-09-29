@@ -20,14 +20,19 @@ export function CatalogTabs({ products }: { products: Product[] }) {
               <li key={c} className="shrink-0">
                 <button
                   onClick={() => setActive(c)}
+                  aria-pressed={on}
                   className={`flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left text-sm transition ${
-                    on ? "border-accent/50 bg-accent/10 text-fg" : "text-muted hover:border-tint/20 hover:text-fg"
+                    on
+                      ? "border-accent bg-accent text-on-accent shadow-md"
+                      : "bg-surface text-muted hover:border-accent hover:text-fg"
                   }`}
                 >
                   <span className="text-lg">{c === "Todos" ? "✦" : categoryMeta[c].icon}</span>
                   <span>
                     <span className="block font-medium">{c}</span>
-                    {c !== "Todos" && <span className="block text-xs text-muted">{categoryMeta[c].blurb}</span>}
+                    {c !== "Todos" && (
+                      <span className={`block text-xs ${on ? "text-on-accent/80" : "text-muted"}`}>{categoryMeta[c].blurb}</span>
+                    )}
                   </span>
                 </button>
               </li>
