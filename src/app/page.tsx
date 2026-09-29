@@ -38,9 +38,7 @@ export default async function Home() {
   return (
     <>
       {/* Portada: titular centrado y producto destacado debajo */}
-      <section className="relative overflow-hidden">
-        <div className="bg-grid absolute inset-0" />
-        <div className="glow animate-pulse-glow left-1/2 top-0 h-80 w-[50rem] -translate-x-1/2 bg-accent/20" />
+      <section className="relative border-b bg-surface-2">
         <div className="relative mx-auto max-w-6xl px-4 pb-10 pt-16 text-center md:pt-24">
           <Reveal>
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">Laboratorio · Chile</p>
@@ -64,9 +62,8 @@ export default async function Home() {
         </div>
 
         <Reveal delay={320} className="relative mx-auto max-w-5xl px-4 pb-16">
-          <div className="glass grid items-center gap-6 rounded-[2rem] p-6 md:grid-cols-[200px_1fr_auto] md:p-8">
-            <div className="relative mx-auto grid h-52 w-40 place-items-center">
-              <div className="absolute bottom-4 h-16 w-32 rounded-full opacity-60 blur-2xl" style={{ background: spotlight.color }} />
+          <div className="grid items-center gap-6 rounded-[2rem] border bg-surface p-6 shadow-sm md:grid-cols-[200px_1fr_auto] md:p-8">
+            <div className="relative mx-auto grid h-52 w-40 place-items-center rounded-3xl bg-surface-2">
               <ProductImage product={spotlight} className="animate-float relative h-full w-full" />
             </div>
             <div className="text-center md:text-left">
@@ -126,8 +123,7 @@ export default async function Home() {
       </section>
 
       {/* Garantía: texto largo a la izquierda, certificado ilustrado a la derecha */}
-      <section id="garantia" className="relative overflow-hidden scroll-mt-28 py-20">
-        <div className="glow -left-40 top-1/2 h-96 w-96 -translate-y-1/2 bg-accent-2/15" />
+      <section id="garantia" className="band relative scroll-mt-28 py-20">
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 md:grid-cols-[1.2fr_1fr]">
           <Reveal>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Garantía de análisis</p>
@@ -149,7 +145,7 @@ export default async function Home() {
           </Reveal>
           <Reveal delay={120}>
             {/* Ilustración de un certificado de análisis (reemplazar por uno real) */}
-            <div className="glass rotate-2 rounded-2xl p-6 shadow-2xl transition-transform duration-500 hover:rotate-0">
+            <div className="rotate-2 rounded-2xl border bg-surface p-6 shadow-lg transition-transform duration-500 hover:rotate-0">
               <div className="flex items-center justify-between border-b pb-3">
                 <p className="font-display font-bold">Certificado de análisis</p>
                 <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent">Aprobado</span>
@@ -161,7 +157,7 @@ export default async function Home() {
                 <dt className="text-muted">Masa (MS)</dt><dd className="text-right font-medium">Conforme</dd>
                 <dt className="text-muted">Aspecto</dt><dd className="text-right font-medium">Polvo blanco</dd>
               </dl>
-              <div className="mt-5 h-16 rounded-lg bg-gradient-to-r from-accent/20 via-accent-2/20 to-transparent" aria-hidden />
+              <div className="mt-5 h-16 rounded-lg border border-dashed" aria-hidden />
               <p className="mt-3 text-[10px] text-muted">Ejemplo ilustrativo. El COA real se entrega con cada pedido.</p>
             </div>
           </Reveal>
@@ -200,8 +196,7 @@ export default async function Home() {
       {/* Contacto */}
       <section className="mx-auto max-w-6xl px-4 pt-4">
         <Reveal>
-          <div className="relative overflow-hidden rounded-[2rem] border bg-surface px-6 py-12 md:flex md:items-center md:justify-between md:px-12">
-            <div className="glow -right-20 -top-20 h-64 w-64 bg-accent/20" />
+          <div className="relative rounded-[2rem] border bg-surface-2 px-6 py-12 md:flex md:items-center md:justify-between md:px-12">
             <div className="relative">
               <h2 className="font-display text-2xl font-bold md:text-3xl">¿Necesitas un péptido que no ves aquí?</h2>
               <p className="mt-2 max-w-md text-muted">Cotizamos síntesis a pedido y compras por volumen para laboratorios.</p>

@@ -35,6 +35,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="es-CL" className={`${inter.variable} ${display.variable}`}>
       <body className="font-sans antialiased">
+        <div className="grain" aria-hidden />
         <StoreProvider catalog={catalog} settings={settings}>
           <Header />
           <main>{children}</main>

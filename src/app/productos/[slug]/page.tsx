@@ -32,9 +32,7 @@ export default async function ProductPage({ params }: Props) {
           <h1 className="mt-2 font-display text-4xl font-bold md:text-5xl">{product.name}</h1>
           <p className="mt-3 text-lg text-muted">{product.short}</p>
 
-          <div className="relative mt-8 grid h-72 place-items-center overflow-hidden rounded-[2rem] border bg-surface md:h-96">
-            <div className="bg-grid absolute inset-0" />
-            <div className="absolute bottom-10 left-1/2 h-1/2 w-1/2 -translate-x-1/2 rounded-full opacity-50 blur-3xl" style={{ background: product.color }} />
+          <div className="relative mt-8 grid h-72 place-items-center overflow-hidden rounded-[2rem] border bg-surface-2 md:h-96">
             <ProductImage product={product} className="animate-float relative h-4/5 w-4/5" />
             <span className="absolute left-4 top-4 rounded-full border bg-surface/70 px-3 py-1 text-xs font-semibold text-lime backdrop-blur">
               {product.purity}

@@ -4,7 +4,6 @@ import type { Settings } from "@/lib/config";
 export function Footer({ settings }: { settings: Settings }) {
   return (
     <footer className="relative mt-28 overflow-hidden border-t bg-surface">
-      <div className="glow -top-40 left-1/2 h-72 w-[40rem] -translate-x-1/2 bg-accent/10" />
       <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-3">
         <div>
           <p className="font-display text-xl font-bold">{settings.name}</p>
