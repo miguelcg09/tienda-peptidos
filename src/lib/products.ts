@@ -2,6 +2,7 @@ export type Variant = {
   id: string;
   label: string; // p. ej. "5 mg"
   price: number; // CLP, IVA incluido
+  compareAt: number | null; // precio anterior (para mostrar descuento); null = sin descuento
   stock: number | null; // null = sin control de stock
 };
 
@@ -16,6 +17,11 @@ export type Product = {
   cas?: string;
   color: string; // color de acento de la etiqueta del vial
   imageUrl?: string; // foto real; si falta se dibuja el vial
+  mechanism?: string; // resumen de una línea del mecanismo (tarjeta de datos)
+  storage?: string; // condiciones de almacenamiento
+  reconstitution?: string; // pestaña "Reconstitución"
+  research?: string; // pestaña "Investigación"
+  coaUrl?: string; // enlace al certificado de análisis (PDF o imagen)
   variants: Variant[];
   featured?: boolean;
   visible: boolean;
@@ -43,6 +49,9 @@ export const categoryMeta: Record<Category, { icon: string; blurb: string; color
 export const seedProducts: Product[] = [
   {
     slug: "bpc-157",
+    mechanism: "Modelos preclínicos de reparación de tejidos",
+    reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
+    research: "Se estudia en modelos de cicatrización de tendón, músculo y mucosa gástrica, con interés en angiogénesis y señalización de factores de crecimiento.",
     name: "BPC-157",
     category: "Reparación tisular",
     short: "Pentadecapéptido derivado de una proteína gástrica.",
@@ -56,12 +65,15 @@ export const seedProducts: Product[] = [
     visible: true,
     sort: 1,
     variants: [
-      { id: "bpc-157-5", label: "5 mg", price: 34990, stock: null },
-      { id: "bpc-157-10", label: "10 mg", price: 54990, stock: null },
+      { id: "bpc-157-5", label: "5 mg", price: 34990, compareAt: null, stock: null },
+      { id: "bpc-157-10", label: "10 mg", price: 54990, compareAt: 64990, stock: null },
     ],
   },
   {
     slug: "tb-500",
+    mechanism: "Migración celular y angiogénesis",
+    reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
+    research: "Investigado por su papel en la regulación de actina, la migración de células endoteliales y la formación de nuevos vasos en modelos animales.",
     name: "TB-500",
     category: "Reparación tisular",
     short: "Fragmento sintético de timosina beta-4.",
@@ -74,12 +86,15 @@ export const seedProducts: Product[] = [
     visible: true,
     sort: 2,
     variants: [
-      { id: "tb-500-5", label: "5 mg", price: 39990, stock: null },
-      { id: "tb-500-10", label: "10 mg", price: 64990, stock: null },
+      { id: "tb-500-5", label: "5 mg", price: 39990, compareAt: null, stock: null },
+      { id: "tb-500-10", label: "10 mg", price: 64990, compareAt: null, stock: null },
     ],
   },
   {
     slug: "bpc-tb-blend",
+    mechanism: "Protocolos combinados de reparación",
+    reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
+    research: "Permite estudiar de forma comparativa el efecto conjunto de ambos péptidos en modelos de daño tisular.",
     name: "BPC-157 + TB-500",
     category: "Reparación tisular",
     short: "Mezcla en un solo vial para protocolos combinados.",
@@ -90,10 +105,13 @@ export const seedProducts: Product[] = [
     color: "#7c3aed",
     visible: true,
     sort: 3,
-    variants: [{ id: "blend-10", label: "10 mg (5+5)", price: 69990, stock: null }],
+    variants: [{ id: "blend-10", label: "10 mg (5+5)", price: 69990, compareAt: null, stock: null }],
   },
   {
     slug: "semaglutide",
+    mechanism: "Agonista del receptor GLP-1",
+    reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
+    research: "Se utiliza en investigación sobre secreción de insulina dependiente de glucosa, vaciamiento gástrico y regulación del apetito en modelos animales.",
     name: "Semaglutide",
     category: "Metabolismo",
     short: "Análogo del receptor GLP-1.",
@@ -107,12 +125,15 @@ export const seedProducts: Product[] = [
     visible: true,
     sort: 4,
     variants: [
-      { id: "sema-5", label: "5 mg", price: 59990, stock: null },
-      { id: "sema-10", label: "10 mg", price: 99990, stock: null },
+      { id: "sema-5", label: "5 mg", price: 59990, compareAt: null, stock: null },
+      { id: "sema-10", label: "10 mg", price: 99990, compareAt: 114990, stock: null },
     ],
   },
   {
     slug: "tirzepatide",
+    mechanism: "Agonista dual GIP / GLP-1",
+    reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
+    research: "Investigado en modelos de metabolismo de glucosa y lípidos, con interés en la acción simultánea sobre dos receptores de incretinas.",
     name: "Tirzepatide",
     category: "Metabolismo",
     short: "Agonista dual de receptores GIP y GLP-1.",
@@ -124,12 +145,15 @@ export const seedProducts: Product[] = [
     visible: true,
     sort: 5,
     variants: [
-      { id: "tirz-10", label: "10 mg", price: 89990, stock: null },
-      { id: "tirz-20", label: "20 mg", price: 159990, stock: null },
+      { id: "tirz-10", label: "10 mg", price: 89990, compareAt: null, stock: null },
+      { id: "tirz-20", label: "20 mg", price: 159990, compareAt: null, stock: null },
     ],
   },
   {
     slug: "cjc-1295-ipamorelin",
+    mechanism: "Eje hormona de crecimiento / IGF-1",
+    reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
+    research: "Combinación usada en estudios de pulsatilidad de GH y su relación con IGF-1 en modelos preclínicos.",
     name: "CJC-1295 + Ipamorelin",
     category: "Hormona de crecimiento",
     short: "Combinación de análogo de GHRH y secretagogo selectivo.",
@@ -140,10 +164,13 @@ export const seedProducts: Product[] = [
     color: "#ea580c",
     visible: true,
     sort: 6,
-    variants: [{ id: "cjc-ipa-10", label: "10 mg (5+5)", price: 64990, stock: null }],
+    variants: [{ id: "cjc-ipa-10", label: "10 mg (5+5)", price: 64990, compareAt: null, stock: null }],
   },
   {
     slug: "ipamorelin",
+    mechanism: "Secretagogo selectivo de GH",
+    reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
+    research: "Investigado por su selectividad sobre el receptor de grelina sin efecto relevante sobre cortisol o prolactina en los modelos estudiados.",
     name: "Ipamorelin",
     category: "Hormona de crecimiento",
     short: "Pentapéptido secretagogo de GH.",
@@ -154,10 +181,13 @@ export const seedProducts: Product[] = [
     color: "#d97706",
     visible: true,
     sort: 7,
-    variants: [{ id: "ipa-5", label: "5 mg", price: 32990, stock: null }],
+    variants: [{ id: "ipa-5", label: "5 mg", price: 32990, compareAt: null, stock: null }],
   },
   {
     slug: "semax",
+    mechanism: "Neuropéptido análogo de ACTH(4-10)",
+    reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
+    research: "Estudiado en modelos de neuroprotección, memoria y expresión de BDNF en roedores.",
     name: "Semax",
     category: "Cognición",
     short: "Heptapéptido análogo de ACTH(4-10).",
@@ -167,10 +197,13 @@ export const seedProducts: Product[] = [
     color: "#db2777",
     visible: true,
     sort: 8,
-    variants: [{ id: "semax-10", label: "10 mg", price: 36990, stock: null }],
+    variants: [{ id: "semax-10", label: "10 mg", price: 36990, compareAt: null, stock: null }],
   },
   {
     slug: "agua-bacteriostatica",
+    mechanism: "Diluyente para reconstitución",
+    storage: "Temperatura ambiente, sin luz",
+    research: "Diluyente estándar para preparar soluciones de péptidos liofilizados. El alcohol bencílico al 0,9% inhibe el crecimiento bacteriano y permite extracciones múltiples del mismo vial.",
     name: "Agua bacteriostática",
     category: "Accesorios",
     short: "Diluyente estéril con 0,9% de alcohol bencílico.",
@@ -181,7 +214,7 @@ export const seedProducts: Product[] = [
     color: "#64748b",
     visible: true,
     sort: 9,
-    variants: [{ id: "bac-10", label: "10 ml", price: 6990, stock: null }],
+    variants: [{ id: "bac-10", label: "10 ml", price: 6990, compareAt: null, stock: null }],
   },
 ];
 

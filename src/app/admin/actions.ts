@@ -57,6 +57,11 @@ export async function saveProduct(form: FormData) {
     cas: str(form, "cas") || undefined,
     color: str(form, "color") || "#34d399",
     imageUrl: await resolveImage(form, slug, str(form, "currentImageUrl") || undefined),
+    mechanism: str(form, "mechanism") || undefined,
+    storage: str(form, "storage") || undefined,
+    reconstitution: str(form, "reconstitution") || undefined,
+    research: str(form, "research") || undefined,
+    coaUrl: str(form, "coaUrl") || undefined,
     featured: form.get("featured") === "on",
     visible: form.get("visible") === "on",
     sort: num(form, "sort", 0),
@@ -65,6 +70,7 @@ export async function saveProduct(form: FormData) {
   const ids = form.getAll("v_id").map(String);
   const labels = form.getAll("v_label").map(String);
   const prices = form.getAll("v_price").map(String);
+  const compares = form.getAll("v_compare").map(String);
   const stocks = form.getAll("v_stock").map(String);
   const variants: Variant[] = [];
   for (let i = 0; i < labels.length; i++) {
@@ -73,7 +79,14 @@ export async function saveProduct(form: FormData) {
     if (!label || !Number.isFinite(price) || price <= 0) continue;
     const id = ids[i]?.trim() || `${slug}-${slugify(label)}`;
     const stockRaw = (stocks[i] ?? "").trim();
-    variants.push({ id, label, price, stock: stockRaw === "" ? null : Math.max(0, Number(stockRaw) || 0) });
+    const compareRaw = Number((compares[i] ?? "").replace(/[^\d]/g, ""));
+    variants.push({
+      id,
+      label,
+      price,
+      compareAt: Number.isFinite(compareRaw) && compareRaw > price ? compareRaw : null,
+      stock: stockRaw === "" ? null : Math.max(0, Number(stockRaw) || 0),
+    });
   }
   if (variants.length === 0) throw new Error("Agrega al menos una presentación con precio");
 
@@ -131,6 +144,7 @@ export async function saveSettingsAction(form: FormData) {
     whatsapp: str(form, "whatsapp"),
     shippingCost: num(form, "shippingCost"),
     freeShippingFrom: num(form, "freeShippingFrom"),
+    shippingNote: str(form, "shippingNote"),
     disclaimer: str(form, "disclaimer"),
     terminos: String(form.get("terminos") ?? "").trim(),
   };

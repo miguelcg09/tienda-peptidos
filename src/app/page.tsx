@@ -6,6 +6,7 @@ import { ProductImage } from "@/components/ProductImage";
 import { Reveal } from "@/components/Reveal";
 import { VialCarousel } from "@/components/VialCarousel";
 import { CatalogTabs } from "@/components/CatalogTabs";
+import { faqs } from "@/lib/faqs";
 
 const buySteps = [
   { title: "Elige tu péptido", text: "Filtra por categoría y compara presentaciones en la misma página." },
@@ -20,14 +21,6 @@ const checks = [
   "Trazabilidad: número de lote en cada vial",
 ];
 
-const faqs = [
-  { q: "¿Son aptos para consumo humano?", a: "No. Se venden exclusivamente para investigación in vitro y uso de laboratorio." },
-  { q: "¿Cómo llegan?", a: "En viales sellados y liofilizados, dentro de embalaje protector. Recomendamos refrigerar al recibir." },
-  { q: "¿Qué medios de pago aceptan?", a: "Tarjetas de crédito y débito, Webpay y transferencia bancaria, en pesos chilenos." },
-  { q: "¿Puedo ver el certificado antes de comprar?", a: "Sí, escríbenos con el producto que te interesa y te enviamos el COA del lote disponible." },
-  { q: "¿Hacen envíos a regiones?", a: "A todo Chile, con seguimiento. Sobre el mínimo que se indica en el carrito, el envío es gratis." },
-  { q: "¿Tienen stock permanente?", a: "Los productos publicados están en stock en Chile; si algo se agota, lo retiramos del catálogo." },
-];
 
 export default async function Home() {
   const [products, settings] = await Promise.all([getProducts(), getSettings()]);

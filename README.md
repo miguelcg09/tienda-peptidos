@@ -14,7 +14,7 @@ Abre http://localhost:3000.
 
 ## Qué incluye
 
-- Inicio, catálogo con filtro por categoría y ficha de producto con variantes.
+- Inicio, catálogo con filtro por categoría y ficha de producto con selector de presentación, insignias de stock, pestañas (resumen, COA, reconstitución, preguntas, investigación) y barra de compra fija.
 - Carrito lateral y página de carrito (se guarda en el navegador).
 - Checkout con validación de RUT, región/comuna y aceptación de uso para investigación.
 - Aviso de ingreso (+18 y solo investigación), rótulos en fichas y términos y condiciones base.
@@ -25,9 +25,9 @@ Abre http://localhost:3000.
 - Correos de confirmación al cliente y aviso a la tienda (`src/lib/email.ts`) vía Resend. Sin `RESEND_API_KEY` se imprimen en consola.
 - Webhook de dLocal Go que verifica el pago contra su API antes de marcar el pedido como pagado.
 - Panel de administración en `/admin` (clave `ADMIN_PASSWORD`, sesión de 30 días):
-  - **Productos**: crear, editar, precios y stock por presentación, fotos, destacar, ocultar o borrar.
+  - **Productos**: crear, editar, precios, precio anterior (muestra el descuento) y stock por presentación, fotos, textos de las pestañas de la ficha (investigación, reconstitución), enlace al COA, destacar, ocultar o borrar.
   - **Pedidos**: ver detalle, marcar despachado con número de seguimiento (avisa por correo al cliente), notas internas, borrar pedidos de prueba.
-  - **Ajustes**: nombre, contacto, costo de envío y mínimo de envío gratis, aviso de investigación y términos.
+  - **Ajustes**: nombre, contacto, costo de envío, mínimo de envío gratis, línea de despacho de la ficha, aviso de investigación y términos.
 - Catálogo y ajustes viven en la base de datos (`src/lib/catalog.ts`, `src/lib/settings.ts`). La primera vez se cargan los productos de ejemplo de `src/lib/products.ts`.
 - Fotos de producto: con `BLOB_READ_WRITE_TOKEN` (Vercel Blob) se pueden subir desde el panel; sin él, se pega la URL de una imagen. Sin foto se muestra una ilustración del vial.
 

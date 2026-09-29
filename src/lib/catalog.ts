@@ -13,12 +13,25 @@ type ProductRow = {
   cas: string | null;
   color: string;
   image_url: string | null;
+  mechanism: string | null;
+  storage: string | null;
+  reconstitution: string | null;
+  research: string | null;
+  coa_url: string | null;
   featured: boolean;
   visible: boolean;
   sort: number;
 };
 
-type VariantRow = { id: string; product_slug: string; label: string; price: number; stock: number | null; sort: number };
+type VariantRow = {
+  id: string;
+  product_slug: string;
+  label: string;
+  price: number;
+  compare_at: number | null;
+  stock: number | null;
+  sort: number;
+};
 
 let seeded = false;
 
@@ -47,13 +60,24 @@ function toProduct(r: ProductRow, variants: VariantRow[]): Product {
     cas: r.cas ?? undefined,
     color: r.color,
     imageUrl: r.image_url ?? undefined,
+    mechanism: r.mechanism ?? undefined,
+    storage: r.storage ?? undefined,
+    reconstitution: r.reconstitution ?? undefined,
+    research: r.research ?? undefined,
+    coaUrl: r.coa_url ?? undefined,
     featured: r.featured,
     visible: r.visible,
     sort: Number(r.sort),
     variants: variants
       .filter((v) => v.product_slug === r.slug)
       .sort((a, b) => a.sort - b.sort)
-      .map((v) => ({ id: v.id, label: v.label, price: Number(v.price), stock: v.stock == null ? null : Number(v.stock) })),
+      .map((v) => ({
+        id: v.id,
+        label: v.label,
+        price: Number(v.price),
+        compareAt: v.compare_at == null ? null : Number(v.compare_at),
+        stock: v.stock == null ? null : Number(v.stock),
+      })),
   };
 }
 
@@ -86,13 +110,20 @@ export async function findVariant(variantId: string) {
 
 export async function upsertProduct(p: Omit<Product, "variants">) {
   await query(
-    `INSERT INTO products (slug, name, category, short, description, purity, form, cas, color, image_url, featured, visible, sort)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+    `INSERT INTO products (slug, name, category, short, description, purity, form, cas, color, image_url, featured, visible, sort,
+                           mechanism, storage, reconstitution, research, coa_url)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
      ON CONFLICT (slug) DO UPDATE SET
        name = EXCLUDED.name, category = EXCLUDED.category, short = EXCLUDED.short, description = EXCLUDED.description,
        purity = EXCLUDED.purity, form = EXCLUDED.form, cas = EXCLUDED.cas, color = EXCLUDED.color,
-       image_url = EXCLUDED.image_url, featured = EXCLUDED.featured, visible = EXCLUDED.visible, sort = EXCLUDED.sort`,
-    [p.slug, p.name, p.category, p.short, p.description, p.purity, p.form, p.cas ?? null, p.color, p.imageUrl ?? null, Boolean(p.featured), p.visible, p.sort],
+       image_url = EXCLUDED.image_url, featured = EXCLUDED.featured, visible = EXCLUDED.visible, sort = EXCLUDED.sort,
+       mechanism = EXCLUDED.mechanism, storage = EXCLUDED.storage, reconstitution = EXCLUDED.reconstitution,
+       research = EXCLUDED.research, coa_url = EXCLUDED.coa_url`,
+    [
+      p.slug, p.name, p.category, p.short, p.description, p.purity, p.form, p.cas ?? null, p.color, p.imageUrl ?? null,
+      Boolean(p.featured), p.visible, p.sort,
+      p.mechanism ?? null, p.storage ?? null, p.reconstitution ?? null, p.research ?? null, p.coaUrl ?? null,
+    ],
   );
 }
 
@@ -106,9 +137,10 @@ export async function setVariants(slug: string, variants: Variant[]) {
   await query(`DELETE FROM variants WHERE product_slug = $1 AND NOT (id = ANY($2::text[]))`, [slug, ids]);
   for (const [i, v] of variants.entries()) {
     await query(
-      `INSERT INTO variants (id, product_slug, label, price, stock, sort) VALUES ($1, $2, $3, $4, $5, $6)
-       ON CONFLICT (id) DO UPDATE SET label = EXCLUDED.label, price = EXCLUDED.price, stock = EXCLUDED.stock, sort = EXCLUDED.sort`,
-      [v.id, slug, v.label, v.price, v.stock, i],
+      `INSERT INTO variants (id, product_slug, label, price, compare_at, stock, sort) VALUES ($1, $2, $3, $4, $5, $6, $7)
+       ON CONFLICT (id) DO UPDATE SET label = EXCLUDED.label, price = EXCLUDED.price, compare_at = EXCLUDED.compare_at,
+         stock = EXCLUDED.stock, sort = EXCLUDED.sort`,
+      [v.id, slug, v.label, v.price, v.compareAt, v.stock, i],
     );
   }
 }

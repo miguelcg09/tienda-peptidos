@@ -50,8 +50,23 @@ export default async function EditarProducto({ params }: { params: Promise<{ slu
           <label className="text-sm">Pureza<input name="purity" defaultValue={product.purity} className="field" /></label>
           <label className="text-sm">Formato<input name="form" defaultValue={product.form} className="field" /></label>
           <label className="text-sm">Número CAS (opcional)<input name="cas" defaultValue={product.cas ?? ""} className="field" /></label>
+          <label className="text-sm">Mecanismo (una línea)<input name="mechanism" defaultValue={product.mechanism ?? ""} placeholder="Agonista del receptor GLP-1" className="field" /></label>
+          <label className="text-sm">Almacenamiento<input name="storage" defaultValue={product.storage ?? ""} placeholder="2–8 °C, sin luz" className="field" /></label>
           <label className="text-sm">Orden en el catálogo<input name="sort" type="number" defaultValue={product.sort} className="field" /></label>
           {isNew && <label className="text-sm sm:col-span-2">Dirección (opcional, se genera del nombre)<input name="slug" placeholder="bpc-157" className="field" /></label>}
+        </fieldset>
+
+        <fieldset className="grid gap-4">
+          <legend className="mb-2 font-semibold">Pestañas de la ficha</legend>
+          <label className="text-sm">Investigación (en qué se estudia; solo con fines informativos)
+            <textarea name="research" rows={3} defaultValue={product.research ?? ""} className="field" />
+          </label>
+          <label className="text-sm">Reconstitución (instrucciones de laboratorio)
+            <textarea name="reconstitution" rows={3} defaultValue={product.reconstitution ?? ""} className="field" />
+          </label>
+          <label className="text-sm">Enlace al certificado de análisis (PDF o imagen, opcional)
+            <input name="coaUrl" defaultValue={product.coaUrl ?? ""} placeholder="https://…" className="field" />
+          </label>
         </fieldset>
 
         <fieldset className="grid gap-4 sm:grid-cols-[120px_1fr]">
@@ -75,14 +90,17 @@ export default async function EditarProducto({ params }: { params: Promise<{ slu
 
         <fieldset>
           <legend className="mb-2 font-semibold">Presentaciones y precios</legend>
-          <p className="mb-3 text-xs text-muted">Deja el stock vacío para no controlarlo. Con 0 aparece como agotado.</p>
+          <p className="mb-3 text-xs text-muted">
+            Deja el stock vacío para no controlarlo; con 0 aparece como agotado. Si pones un precio anterior mayor al precio, la ficha muestra el descuento.
+          </p>
           <div className="space-y-2">
-            <div className="grid grid-cols-[1fr_120px_100px] gap-2 text-xs text-muted"><span>Presentación</span><span>Precio CLP</span><span>Stock</span></div>
+            <div className="grid grid-cols-[1fr_110px_110px_90px] gap-2 text-xs text-muted"><span>Presentación</span><span>Precio CLP</span><span>Precio anterior</span><span>Stock</span></div>
             {rows.map((v, i) => (
-              <div key={v?.id ?? `n${i}`} className="grid grid-cols-[1fr_120px_100px] gap-2">
+              <div key={v?.id ?? `n${i}`} className="grid grid-cols-[1fr_110px_110px_90px] gap-2">
                 <input type="hidden" name="v_id" value={v?.id ?? ""} />
                 <input name="v_label" defaultValue={v?.label ?? ""} placeholder="5 mg" className="field mt-0" />
                 <input name="v_price" type="number" min={0} defaultValue={v?.price ?? ""} placeholder="34990" className="field mt-0" />
+                <input name="v_compare" type="number" min={0} defaultValue={v?.compareAt ?? ""} placeholder="—" className="field mt-0" />
                 <input name="v_stock" type="number" min={0} defaultValue={v?.stock ?? ""} placeholder="—" className="field mt-0" />
               </div>
             ))}

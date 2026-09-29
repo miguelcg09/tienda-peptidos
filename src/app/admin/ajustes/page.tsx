@@ -25,6 +25,9 @@ export default async function Ajustes({ searchParams }: { searchParams: Promise<
           <legend className="mb-2 font-semibold">Envío</legend>
           <label className="text-sm">Costo de envío (CLP)<input name="shippingCost" type="number" min={0} defaultValue={s.shippingCost} className="field" /></label>
           <label className="text-sm">Envío gratis desde (CLP)<input name="freeShippingFrom" type="number" min={0} defaultValue={s.freeShippingFrom} className="field" /></label>
+          <label className="text-sm sm:col-span-2">Línea de despacho en la ficha de producto (plazos, empresas de transporte)
+            <input name="shippingNote" defaultValue={s.shippingNote} className="field" />
+          </label>
         </fieldset>
 
         <fieldset className="space-y-4">
