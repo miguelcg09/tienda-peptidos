@@ -9,6 +9,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { Reveal } from "@/components/Reveal";
 import { Stars } from "@/components/Stars";
 import { listPublished } from "@/lib/reviews";
+import { publicUrl } from "@/lib/site";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -76,7 +77,7 @@ export default async function ProductPage({ params }: Props) {
   ];
 
   // Datos estructurados para Google (ficha de producto con precios por presentación)
-  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "");
+  const siteUrl = publicUrl();
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -113,7 +114,7 @@ export default async function ProductPage({ params }: Props) {
         <dl className="mb-10 grid grid-cols-2 gap-y-4 rounded-2xl border bg-surface p-5 text-sm sm:grid-cols-[1.6fr_1fr_1fr_1fr_1fr] sm:divide-x sm:gap-y-0">
           {specs.map(([k, v]) => (
             <div key={k} className="sm:px-4 sm:first:pl-0 sm:last:pr-0">
-              <dt className="text-[11px] font-semibold uppercase tracking-widest text-muted">{k}</dt>
+              <dt className="text-[0.8125rem] font-semibold uppercase tracking-widest text-muted">{k}</dt>
               <dd className="mt-1 font-medium">{v}</dd>
             </div>
           ))}
@@ -186,7 +187,7 @@ export default async function ProductPage({ params }: Props) {
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                       <Stars value={r.rating} className="text-base" />
                       <span className="font-semibold">{r.name}</span>
-                      <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[11px] font-medium text-accent">Compra verificada</span>
+                      <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[0.8125rem] font-medium text-accent">Compra verificada</span>
                       <span className="ml-auto text-xs text-muted">{new Date(r.createdAt).toLocaleDateString("es-CL", { timeZone: "America/Santiago", day: "numeric", month: "long", year: "numeric" })}</span>
                     </div>
                     {r.body && <p className="mt-2 whitespace-pre-line text-muted">{r.body}</p>}

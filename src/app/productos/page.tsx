@@ -4,7 +4,11 @@ import { categories } from "@/lib/products";
 import { getProducts } from "@/lib/catalog";
 import { ProductCard } from "@/components/ProductCard";
 
-export const metadata: Metadata = { title: "Productos" };
+export const metadata: Metadata = {
+  title: "Productos",
+  description: "Catálogo de péptidos de grado investigación con pureza verificada por HPLC y certificado de análisis por lote.",
+  alternates: { canonical: "/productos" },
+};
 
 export default async function Productos({ searchParams }: { searchParams: Promise<{ categoria?: string; q?: string }> }) {
   const { categoria, q = "" } = await searchParams;

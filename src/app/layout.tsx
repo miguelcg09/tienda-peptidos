@@ -14,6 +14,7 @@ import { getPalette, paletteCss } from "@/lib/palettes";
 import { hasBankData, toStoreSettings } from "@/lib/config";
 import { cardProviderName } from "@/lib/payments";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { publicUrl } from "@/lib/site";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit", weight: ["400", "500", "600", "700"] });
 
@@ -30,7 +31,7 @@ export async function generateViewport() {
   };
 }
 
-const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "");
+const siteUrl = publicUrl();
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSettings();
@@ -41,6 +42,8 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
     openGraph: { type: "website", siteName: s.name, locale: "es_CL", title: `${s.name} · ${s.tagline}`, description },
     twitter: { card: "summary_large_image" },
+    applicationName: s.name,
+    formatDetection: { telephone: false, email: false, address: false },
   };
 }
 
@@ -54,12 +57,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="font-sans antialiased">
         {/* Paleta elegida en /admin/ajustes */}
         <style dangerouslySetInnerHTML={{ __html: paletteCss(palette) }} />
+        <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-xl focus:bg-accent focus:px-4 focus:py-2 focus:text-on-accent">
+          Saltar al contenido
+        </a>
         <div className="grain" aria-hidden />
         <ScrollProgress />
         <Effects />
         <StoreProvider catalog={catalog} settings={storeSettings}>
           <Header />
-          <main>{children}</main>
+          <main id="contenido">{children}</main>
           <Footer settings={storeSettings} />
           <CartDrawer />
           <ResearchGate />

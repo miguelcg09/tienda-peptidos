@@ -1,4 +1,5 @@
 import "server-only";
+import { publicUrl } from "@/lib/site";
 
 // Capa de pagos intercambiable. Para cambiar de procesador se agrega un
 // proveedor nuevo que implemente PaymentProvider y se elige con PAYMENT_PROVIDER.
@@ -16,7 +17,7 @@ interface PaymentProvider {
   createPayment(req: CheckoutRequest): Promise<CheckoutResult>;
 }
 
-const siteUrl = () => (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "");
+const siteUrl = () => publicUrl();
 
 // Proveedor de pruebas: no cobra nada, redirige directo a la página de éxito.
 const mockProvider: PaymentProvider = {

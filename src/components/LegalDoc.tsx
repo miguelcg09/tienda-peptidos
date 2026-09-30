@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { Settings } from "@/lib/config";
 import { renderLegal } from "@/lib/legal";
+import { publicUrl } from "@/lib/site";
 
-const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "");
+const siteUrl = publicUrl();
 
 const docs = [
   { href: "/terminos", label: "Términos y condiciones" },

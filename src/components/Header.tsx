@@ -77,7 +77,7 @@ export function Header() {
           )}
         </button>
       </div>
-      <nav className="flex gap-6 overflow-x-auto px-4 pb-3 text-sm text-muted md:hidden">
+      <nav className="flex gap-6 overflow-x-auto whitespace-nowrap px-4 pb-3 pt-1 text-base text-muted [scrollbar-width:none] [mask-image:linear-gradient(to_right,black_90%,transparent)] md:hidden">
         {links.map((l) => <Link key={l.href} href={l.href}>{l.label}</Link>)}
       </nav>
       <span className={`absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-accent via-accent-2 to-accent transition-opacity duration-500 ${scrolled ? "opacity-100" : "opacity-0"}`} aria-hidden />

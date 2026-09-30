@@ -3,6 +3,7 @@ import type { Settings } from "./config";
 import { formatCLP } from "./products";
 import type { Order } from "./orders";
 import type { Review } from "./reviews";
+import { publicUrl } from "@/lib/site";
 
 // Correos transaccionales. Con RESEND_API_KEY se envían por Resend;
 // sin ella se imprimen en la consola (útil en desarrollo).
@@ -58,9 +59,9 @@ function layout(settings: Settings, title: string, body: string) {
 }
 
 const addressOf = (o: Order) => `${o.customer.address}${o.customer.reference ? ` (${o.customer.reference})` : ""}, ${o.customer.comuna}, ${o.customer.region}`;
-const trackUrl = (o: Order) => `${(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "")}/pedido?orden=${o.id}`;
+const trackUrl = (o: Order) => `${publicUrl()}/pedido?orden=${o.id}`;
 
-const reviewUrl = (o: Order) => `${(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "")}/pedido?orden=${o.id}&email=${encodeURIComponent(o.customer.email)}#resenas`;
+const reviewUrl = (o: Order) => `${publicUrl()}/pedido?orden=${o.id}&email=${encodeURIComponent(o.customer.email)}#resenas`;
 
 export async function sendOrderEmails(order: Order, settings: Settings) {
   const c = order.customer;
@@ -170,7 +171,7 @@ export async function sendTransferEmails(order: Order, settings: Settings) {
 
 // Aviso a quienes pidieron "avísame cuando vuelva" un producto.
 export async function sendBackInStockEmails(product: { name: string; slug: string }, emails: string[], settings: Settings) {
-  const url = `${(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "")}/productos/${product.slug}`;
+  const url = `${publicUrl()}/productos/${product.slug}`;
   await Promise.all(
     emails.map((to) =>
       send(
@@ -188,7 +189,7 @@ export async function sendBackInStockEmails(product: { name: string; slug: strin
 
 // Aviso a la tienda cuando llega una reseña nueva (queda pendiente de aprobación en el panel).
 export async function sendReviewNotice(review: Review, productName: string, settings: Settings) {
-  const url = `${(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "")}/admin/resenas`;
+  const url = `${publicUrl()}/admin/resenas`;
   await send(
     {
       to: process.env.ORDERS_NOTIFY_EMAIL ?? settings.email,

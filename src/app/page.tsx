@@ -11,6 +11,7 @@ import { CatalogTabs } from "@/components/CatalogTabs";
 import { faqs } from "@/lib/faqs";
 import { latestPublished } from "@/lib/reviews";
 import { Stars } from "@/components/Stars";
+import { publicUrl } from "@/lib/site";
 
 const buySteps = [
   { title: "Elige tu péptido", text: "Filtra por categoría y compara presentaciones en la misma página." },
@@ -36,8 +37,31 @@ export default async function Home() {
   const present = categories.filter((c) => products.some((p) => p.category === c));
   const lines = present.map((c) => c.toLowerCase());
 
+  const site = publicUrl();
+  const orgLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        name: settings.name,
+        url: site,
+        logo: `${site}/icons/icon-512.png`,
+        description: settings.tagline,
+        ...(settings.email && !settings.email.endsWith("@ejemplo.cl") ? { email: settings.email } : {}),
+        ...(settings.instagram ? { sameAs: [settings.instagram.startsWith("http") ? settings.instagram : `https://instagram.com/${settings.instagram.replace(/^@/, "")}`] } : {}),
+      },
+      {
+        "@type": "WebSite",
+        name: settings.name,
+        url: site,
+        inLanguage: "es-CL",
+        potentialAction: { "@type": "SearchAction", target: `${site}/productos?q={search_term_string}`, "query-input": "required name=search_term_string" },
+      },
+    ],
+  };
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }} />
       {/* Portada: titular a la izquierda con palabra que rota, destacados rotativos a la derecha */}
       <section className="hero-spot relative overflow-hidden border-b bg-surface-2" data-spot>
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 md:grid-cols-[1.15fr_1fr] md:py-20">
@@ -81,7 +105,7 @@ export default async function Home() {
                   { v: <CountUp value={100} suffix="%" />, l: "lotes con certificado" },
                 ].map((st, i) => (
                   <div key={i}>
-                    <dd className="font-display text-3xl font-bold text-fg">{st.v}</dd>
+                    <dd className="whitespace-nowrap font-display text-2xl font-bold text-fg sm:text-3xl">{st.v}</dd>
                     <dt className="mt-1 text-xs text-muted">{st.l}</dt>
                   </div>
                 ))}
@@ -108,7 +132,7 @@ export default async function Home() {
                 </span>
                 <span className="min-w-0">
                   <span className="block truncate font-semibold">{c}</span>
-                  <span className="block text-xs text-muted">{products.filter((p) => p.category === c).length} productos · {categoryMeta[c].blurb}</span>
+                  <span className="block text-xs text-muted">{(() => { const n = products.filter((p) => p.category === c).length; return `${n} ${n === 1 ? "producto" : "productos"}`; })()} · {categoryMeta[c].blurb}</span>
                 </span>
                 <span className="ml-auto text-muted transition group-hover:translate-x-1 group-hover:text-accent">→</span>
               </Link>
@@ -144,7 +168,7 @@ export default async function Home() {
             <h2 className="sweep mt-2 font-display text-3xl font-bold md:text-4xl">Elige por línea de investigación</h2>
           </div>
           <p className="max-w-sm text-sm text-muted">
-            {products.length} productos en stock en Chile. Cada ficha incluye pureza, formato y presentaciones disponibles.
+            {products.length} {products.length === 1 ? "producto" : "productos"} en stock en Chile. Cada ficha incluye pureza, formato y presentaciones disponibles.
           </p>
         </Reveal>
         <div className="mt-10">
@@ -178,7 +202,7 @@ export default async function Home() {
             <div className="rotate-2 rounded-card border bg-surface p-6 shadow-lg transition-transform duration-500 hover:rotate-0">
               <div className="flex items-center justify-between border-b pb-3">
                 <p className="font-display font-bold">Certificado de análisis</p>
-                <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent">Aprobado</span>
+                <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[0.8125rem] font-semibold uppercase tracking-wider text-accent">Aprobado</span>
               </div>
               <dl className="mt-4 grid grid-cols-2 gap-y-3 text-sm">
                 <dt className="text-muted">Producto</dt><dd className="text-right font-medium">{spotlight.name}</dd>
@@ -188,7 +212,7 @@ export default async function Home() {
                 <dt className="text-muted">Aspecto</dt><dd className="text-right font-medium">Polvo blanco</dd>
               </dl>
               <div className="mt-5 h-16 rounded-lg border border-dashed" aria-hidden />
-              <p className="mt-3 text-[10px] text-muted">Ejemplo ilustrativo. El COA real se entrega con cada pedido.</p>
+              <p className="mt-3 text-[0.8125rem] text-muted">Ejemplo ilustrativo. El COA real se entrega con cada pedido.</p>
               <Link href="/certificados" className="btn-ghost mt-4 w-full text-sm">Ver certificados por lote</Link>
             </div>
           </Reveal>

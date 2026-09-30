@@ -126,7 +126,7 @@ export function ProductStage({
                     ) : (
                       <span className="text-right">
                         <span className="block font-semibold">{formatCLP(v.price)}</span>
-                        {v.compareAt && v.compareAt > v.price && <span className="block text-[11px] text-muted line-through">{formatCLP(v.compareAt)}</span>}
+                        {v.compareAt && v.compareAt > v.price && <span className="block text-[0.8125rem] text-muted line-through">{formatCLP(v.compareAt)}</span>}
                       </span>
                     )}
                   </button>
@@ -212,7 +212,7 @@ function SectionIndex({ items }: { items: IndexItem[] }) {
               href={`#${it.id}`}
               className={`flex items-baseline gap-2 rounded-lg px-2 py-1.5 transition ${active === it.id ? "bg-accent/10 text-accent" : "text-muted hover:text-fg"}`}
             >
-              <span className="font-mono text-[10px]">{String(i + 1).padStart(2, "0")}</span>
+              <span className="font-mono text-[0.8125rem]">{String(i + 1).padStart(2, "0")}</span>
               {it.label}
             </a>
           </li>

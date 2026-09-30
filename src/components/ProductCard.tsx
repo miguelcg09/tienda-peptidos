@@ -17,12 +17,12 @@ export function ProductCard({ product }: { product: Product }) {
       >
         <div className="relative grid aspect-square place-items-center overflow-hidden rounded-[calc(var(--r-card)-0.4rem)] bg-surface-2">
           <ProductImage product={product} className="relative h-4/5 w-4/5 transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-105" />
-          <span className="absolute left-3 top-3 rounded-full border border-tint/10 bg-surface/70 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-lime backdrop-blur">
+          <span className="absolute left-3 top-3 rounded-full border border-tint/10 bg-surface/70 px-2.5 py-1 text-[0.8125rem] font-semibold uppercase tracking-wider text-lime backdrop-blur">
             {soldOut ? "Agotado" : product.purity.replace(" (HPLC)", "")}
           </span>
           {quick && <QuickAdd variantId={quick.id} />}
         </div>
-        <p className="mt-4 text-[11px] font-medium uppercase tracking-widest text-muted">{product.category}</p>
+        <p className="mt-4 text-[0.8125rem] font-medium uppercase tracking-widest text-muted">{product.category}</p>
         <h3 className="mt-1 font-display text-lg font-semibold">{product.name}</h3>
         {product.rating && (
           <p className="mt-1 flex items-center gap-1.5 text-xs text-muted">

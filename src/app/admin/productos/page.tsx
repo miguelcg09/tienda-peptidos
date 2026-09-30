@@ -28,8 +28,8 @@ export default async function Productos() {
             <div className="min-w-0 grow">
               <p className="font-semibold">
                 {p.name}
-                {p.featured && <span className="ml-2 rounded-full bg-accent-2/15 px-2 py-0.5 text-[10px] font-semibold uppercase text-accent-2">Destacado</span>}
-                {!p.visible && <span className="ml-2 rounded-full bg-tint/10 px-2 py-0.5 text-[10px] font-semibold uppercase text-muted">Oculto</span>}
+                {p.featured && <span className="ml-2 rounded-full bg-accent-2/15 px-2 py-0.5 text-[0.8125rem] font-semibold uppercase text-accent-2">Destacado</span>}
+                {!p.visible && <span className="ml-2 rounded-full bg-tint/10 px-2 py-0.5 text-[0.8125rem] font-semibold uppercase text-muted">Oculto</span>}
               </p>
               <p className="text-xs text-muted">{p.category} · orden {p.sort}</p>
               <p className="mt-1 text-sm text-muted">

@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
 import { getProducts } from "@/lib/catalog";
+import { publicUrl } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
-const base = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "");
+const base = publicUrl();
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const products = await getProducts();
