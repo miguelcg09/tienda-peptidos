@@ -46,7 +46,7 @@ export function CatalogTabs({ products }: { products: Product[] }) {
                 <button
                   onClick={() => setActive(c)}
                   aria-pressed={on}
-                  className={`min-h-9 font-mono text-xs uppercase tracking-[0.14em] underline-offset-[10px] transition-colors ${
+                  className={`min-h-11 text-base font-medium underline-offset-[10px] transition-colors ${
                     on ? "text-fg underline decoration-2" : "text-muted hover:text-fg"
                   }`}
                 >
@@ -57,7 +57,7 @@ export function CatalogTabs({ products }: { products: Product[] }) {
           })}
         </ul>
         <label className="flex items-center gap-3 text-sm text-muted">
-          <span className="font-mono text-xs uppercase tracking-[0.14em]">Ordenar</span>
+          <span>Ordenar</span>
           <select value={sort} onChange={(e) => setSort(e.target.value as Sort)} className="field mt-0! w-auto py-2 text-sm" aria-label="Ordenar productos">
             {sorts.map((o) => <option key={o.id} value={o.id} className="bg-surface">{o.label}</option>)}
           </select>

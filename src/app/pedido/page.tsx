@@ -66,7 +66,7 @@ function Seguimiento() {
   return (
     <div className="animate-fade mx-auto max-w-2xl px-4 py-16">
       <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Seguimiento</p>
-      <h1 className="mt-2 font-display text-4xl font-bold">Seguir mi pedido</h1>
+      <h1 className="t-page mt-2">Seguir mi pedido</h1>
       <p className="mt-3 text-muted">
         Escribe el número de pedido que recibiste por correo. Si agregas el correo con que compraste, verás también el número de seguimiento del envío.
       </p>
@@ -85,7 +85,7 @@ function Seguimiento() {
       {data && (
         <div className="mt-10 rounded-card border bg-surface p-6">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 className="font-display text-2xl font-bold">Pedido {data.id}</h2>
+            <h2 className="t-h2">Pedido {data.id}</h2>
             <span className={`rounded-btn px-3 py-1 text-xs font-semibold ${
               data.status === "fallido" ? "bg-red-500/15 text-red-600 dark:text-red-300" : data.status === "pendiente" ? "bg-amber-400/15 text-amber-700 dark:text-amber-200" : "bg-accent/15 text-accent"
             }`}>

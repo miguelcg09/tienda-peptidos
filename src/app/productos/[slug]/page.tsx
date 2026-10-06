@@ -45,7 +45,7 @@ function Section({ id, n, title, children }: { id: string; n: number; title: str
       <section id={id} className="scroll-mt-32 border-t py-10 first:border-t-0 first:pt-0">
         <div className="flex items-baseline gap-4">
           <span className="font-mono text-xs text-accent">{String(n).padStart(2, "0")}</span>
-          <h2 className="font-display text-2xl font-bold md:text-3xl">{title}</h2>
+          <h2 className="t-h2">{title}</h2>
         </div>
         <div className="mt-5 md:pl-10">{children}</div>
       </section>
@@ -105,7 +105,7 @@ export default async function ProductPage({ params }: Props) {
   };
 
   return (
-    <div className="animate-fade mx-auto max-w-6xl px-4 pb-24 pt-8">
+    <div className="animate-fade wrap pb-24 pt-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <nav aria-label="Ruta de navegación" className="mb-5 flex flex-wrap gap-2 text-sm text-muted">
         <Link href="/" className="hover:text-accent">Inicio</Link>
@@ -117,11 +117,11 @@ export default async function ProductPage({ params }: Props) {
 
       <ProductStage product={product} settings={settings} index={index} showCertificates={certs}>
         {/* Franja de datos técnicos */}
-        <dl className="mb-10 grid grid-cols-2 gap-y-4 rounded-card border bg-surface p-5 text-sm sm:grid-cols-[1.6fr_1fr_1fr_1fr_1fr] sm:divide-x sm:gap-y-0">
-          {specs.map(([k, v]) => (
-            <div key={k} className="sm:px-4 sm:first:pl-0 sm:last:pr-0">
+        <dl className="mb-10 grid grid-cols-2 gap-x-6 gap-y-5 rounded-card border bg-surface p-5 text-sm sm:grid-cols-[repeat(auto-fit,minmax(7.5rem,1fr))]">
+          {specs.map(([k, v], i) => (
+            <div key={k} className={i === 0 ? "col-span-full border-b pb-5" : ""}>
               <dt className="text-[0.8125rem] font-semibold uppercase tracking-widest text-muted">{k}</dt>
-              <dd className="mt-1 font-medium">{v}</dd>
+              <dd className={`mt-1 font-medium ${k === "CAS" ? "whitespace-nowrap" : ""}`}>{v}</dd>
             </div>
           ))}
         </dl>
@@ -230,10 +230,10 @@ export default async function ProductPage({ params }: Props) {
       {related.length > 0 && (
         <section className="mt-20">
           <div className="flex items-end justify-between">
-            <h2 className="font-display text-2xl font-bold md:text-3xl">Seguir explorando</h2>
+            <h2 className="t-h2">Seguir explorando</h2>
             <Link href="/productos" className="text-sm text-accent hover:underline">Ver todo el catálogo →</Link>
           </div>
-          <div className="-mx-4 mt-6 flex snap-x gap-4 overflow-x-auto px-4 pb-4">
+          <div className="-mx-4 mt-6 flex snap-x gap-4 overflow-x-auto px-4 pb-4 md:mx-0 md:px-0">
             {related.map((p) => (
               <div key={p.slug} className="w-[240px] shrink-0 snap-start">
                 <ProductCard product={p} />

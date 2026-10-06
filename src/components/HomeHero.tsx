@@ -47,9 +47,9 @@ export function HomeHero({ items }: { items: HeroItem[] }) {
       <header>
         <NavBar />
       </header>
-      {/* Texto a la izquierda; a la derecha la pieza con su ficha y, justo debajo, el selector que la cambia */}
-      <div className="mx-auto grid w-full max-w-[1280px] gap-10 px-4 pb-16 pt-4 md:px-12 md:pt-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:grid-rows-[1fr_auto] lg:gap-x-12 lg:gap-y-8">
-        <div className="flex min-w-0 flex-col gap-5 md:gap-6 lg:row-span-2 lg:self-center">
+      {/* Texto a la izquierda; a la derecha la pieza con su ficha encima del vial y, alineado con la ficha, el selector que la cambia */}
+      <div className="mx-auto grid w-full max-w-[1280px] gap-10 px-4 pb-16 pt-4 md:px-12 md:pt-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:gap-x-12">
+        <div className="flex min-w-0 flex-col gap-5 md:gap-6">
           <p className="font-mono text-xs uppercase tracking-[0.14em]">Para quienes investigan por su cuenta</p>
           <h1 id="titulo-portada" className="font-display text-[clamp(2.75rem,5.6vw,5.25rem)] font-light leading-[0.98] tracking-[-0.035em]">
             Péptidos de investigación.
@@ -72,51 +72,54 @@ export function HomeHero({ items }: { items: HeroItem[] }) {
           </p>
         </div>
 
-        {cur && (
-          <div className="flex min-w-0 flex-row-reverse flex-wrap items-end justify-center gap-x-6 gap-y-7 lg:min-h-[520px] lg:self-end">
-            <div className="flex min-w-0 flex-[0_1_220px] justify-center">
-              {cur.imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={cur.imageUrl} alt={cur.name} className="max-h-[520px] w-auto max-w-full object-contain" />
-              ) : (
-                <Vial color={cur.color} label={cur.name} tone="field" lot={cur.lot} format={cur.format} className="h-[360px] w-auto max-w-full lg:h-[440px]" />
-              )}
-            </div>
-            <div className="min-w-0 flex-[0_1_260px] rounded-card bg-white p-5 text-[#0b0f10]" data-testid="ficha-pieza" aria-live="polite">
-              <p className="font-mono text-xs tracking-widest text-[#5b676b]">PIEZA {pad(Math.min(sel, n - 1) + 1)} / {pad(n)}</p>
-              <p className="pb-3 pt-1 font-display text-[1.9rem] font-medium leading-[1.05] tracking-tight [overflow-wrap:anywhere]">{cur.name}</p>
-              <dl>
-                {cur.lot && <Row label="Lote" value={cur.lot} />}
-                <Row label="Formato" value={cur.form} />
-                <Row label="Línea" value={cur.category} mono={false} />
-              </dl>
-              <div className="mt-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-t border-[#0b0f10] pt-3.5">
-                <span className="whitespace-nowrap text-xl font-semibold">{cur.multi ? "Desde " : ""}{formatCLP(cur.from)}</span>
-                <Link href={`/productos/${cur.slug}`} className="inline-flex min-h-11 items-center whitespace-nowrap text-sm font-medium u-link">Ver pieza →</Link>
+        <div className="flex min-w-0 flex-col gap-8 lg:ml-auto lg:w-fit">
+          {cur && (
+            <div className="flex min-w-0 flex-row-reverse flex-wrap items-end justify-center gap-x-6 gap-y-7 lg:flex-nowrap lg:justify-end lg:gap-x-0">
+              <div className="flex min-w-0 flex-[0_1_240px] justify-center">
+                {cur.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={cur.imageUrl} alt={cur.name} className="max-h-[520px] w-auto max-w-full object-contain" />
+                ) : (
+                  <Vial color={cur.color} label={cur.name} tone="field" lot={cur.lot} format={cur.format} className="h-[360px] w-auto max-w-full lg:h-[500px]" />
+                )}
+              </div>
+              {/* En escritorio la ficha se monta sobre el borde del vial: una sola pieza, no dos cajas lado a lado */}
+              <div className="relative z-10 min-w-0 flex-[0_1_260px] rounded-card bg-white p-5 text-[#0b0f10] lg:-mr-5 lg:mb-6" data-testid="ficha-pieza" aria-live="polite">
+                <p className="font-mono text-xs tracking-widest text-[#5b676b]">PIEZA {pad(Math.min(sel, n - 1) + 1)} / {pad(n)}</p>
+                <p className="pb-3 pt-1 font-display text-[1.9rem] font-medium leading-[1.05] tracking-tight [overflow-wrap:anywhere]">{cur.name}</p>
+                <dl>
+                  {cur.lot && <Row label="Lote" value={cur.lot} />}
+                  <Row label="Formato" value={cur.form} />
+                  <Row label="Línea" value={cur.category} mono={false} />
+                </dl>
+                <div className="mt-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-t border-[#0b0f10] pt-3.5">
+                  <span className="whitespace-nowrap text-xl font-semibold">{cur.multi ? "Desde " : ""}{formatCLP(cur.from)}</span>
+                  <Link href={`/productos/${cur.slug}`} className="inline-flex min-h-11 items-center whitespace-nowrap text-sm font-medium u-link">Ver pieza →</Link>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {n > 1 && (
-          <div className="flex flex-col gap-3 lg:justify-self-center lg:self-start">
-            <p id="elegir-pieza" className="font-mono text-xs uppercase tracking-[0.14em]">Elegir pieza</p>
-            <div className="flex flex-wrap gap-2" role="group" aria-labelledby="elegir-pieza">
-              {items.map((it, i) => (
-                <button
-                  key={it.slug}
-                  onClick={() => setSel(i)}
-                  aria-label={`${pad(i + 1)}: ${it.name}`}
-                  aria-pressed={i === sel}
-                  className={`h-12 w-12 rounded-btn border border-current font-mono text-sm font-medium ${move} ${i === sel ? "" : "hover:bg-current/15"}`}
-                  style={i === sel ? { backgroundColor: fg, color } : undefined}
-                >
-                  {pad(i + 1)}
-                </button>
-              ))}
+          {n > 1 && (
+            <div className="flex flex-col gap-3">
+              <p id="elegir-pieza" className="font-mono text-xs uppercase tracking-[0.14em]">Elegir pieza</p>
+              <div className="flex flex-wrap gap-2" role="group" aria-labelledby="elegir-pieza">
+                {items.map((it, i) => (
+                  <button
+                    key={it.slug}
+                    onClick={() => setSel(i)}
+                    aria-label={`${pad(i + 1)}: ${it.name}`}
+                    aria-pressed={i === sel}
+                    className={`h-12 w-12 rounded-btn border border-current font-mono text-sm font-medium ${move} ${i === sel ? "" : "hover:bg-current/15"}`}
+                    style={i === sel ? { backgroundColor: fg, color } : undefined}
+                  >
+                    {pad(i + 1)}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </section>
   );

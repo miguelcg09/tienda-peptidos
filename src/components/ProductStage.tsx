@@ -66,7 +66,7 @@ export function ProductStage({
     <>
       {/* Portada: campo plano del color del producto, texto a la izquierda y vial a la derecha */}
       <section className="relative overflow-hidden rounded-card" style={{ background: field(product.color), color: onColor(field(product.color)) }}>
-        <div className="relative grid gap-8 p-6 md:grid-cols-[1.1fr_1fr] md:p-12">
+        <div className="relative grid gap-6 p-6 md:grid-cols-[1.1fr_1fr] md:gap-8 md:px-12 md:py-9">
           <div className="flex flex-col justify-center">
             <p className="font-mono text-xs uppercase tracking-[0.18em] opacity-80">{product.category}</p>
             <h1 className="mt-3 font-display text-5xl font-medium leading-[0.98] tracking-tight md:text-7xl">{product.name}</h1>
@@ -86,8 +86,8 @@ export function ProductStage({
               {product.cas && <li className="rounded-btn border border-current px-3 py-1.5">CAS {product.cas}</li>}
             </ul>
           </div>
-          <div className="relative grid min-h-[280px] place-items-center md:min-h-[420px]">
-            <ProductImage product={product} tone="field" className="relative h-72 w-auto max-w-full md:h-[26rem]" />
+          <div className="relative grid min-h-[220px] place-items-center md:min-h-0">
+            <ProductImage product={product} tone="field" className="relative h-56 w-auto max-w-full md:h-[16.5rem]" />
           </div>
         </div>
       </section>

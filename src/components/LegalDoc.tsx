@@ -40,7 +40,7 @@ export function LegalDoc({ title, text, settings, current }: { title: string; te
           </Link>
         ))}
       </nav>
-      <h1 className="mt-6 font-display text-3xl font-bold text-fg md:text-4xl">{title}</h1>
+      <h1 className="t-page mt-6 text-fg">{title}</h1>
       <p className="mt-2 text-sm text-muted">Última actualización: {settings.legalUpdated}</p>
       {nodes.map((n, i) => {
         if (n.kind === "h2") return <h2 key={i} className="mt-8 text-xl font-semibold text-fg">{n.text}</h2>;

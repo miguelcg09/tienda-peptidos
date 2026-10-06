@@ -6,6 +6,9 @@ import { ProductImage } from "./ProductImage";
 import { QuickAdd } from "./QuickAdd";
 import { Stars } from "./Stars";
 
+// Acción de la tarjeta: misma forma para "Agregar" y "Ver presentaciones", del ancho de la tarjeta si es angosta
+const cta = "inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-btn border border-fg px-4 text-sm font-semibold transition-colors hover:bg-fg hover:text-bg @min-[22rem]:w-auto @min-[22rem]:min-w-[10.5rem]";
+
 // Tarjeta de pieza: panel con el tono claro del color del producto, nombre, línea, precio y "+".
 export function ProductCard({ product, index, headingLevel = 3 }: { product: Product; index?: number; headingLevel?: 2 | 3 }) {
   const Heading = headingLevel === 2 ? "h2" : "h3";
@@ -30,31 +33,34 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
           <ProductImage product={product} className="h-full w-auto max-w-[80%]" />
         </span>
       </Link>
-      <div className="flex items-end justify-between gap-4">
-        <div className="flex min-w-0 flex-col gap-1.5">
-          <Heading className="font-display text-2xl font-medium leading-tight tracking-tight [overflow-wrap:anywhere]">
-            <Link href={`/productos/${product.slug}`} className="underline-offset-[5px] hover:underline focus-visible:outline-none focus-visible:underline">{product.name}</Link>
-          </Heading>
-          <p className="font-mono text-xs uppercase tracking-widest text-muted">{product.category}</p>
-          <p className="font-mono text-xs text-muted">{product.variants.map((v) => v.label).join(" / ")} · {product.form}</p>
-          {product.rating && (
-            <p className="flex items-center gap-1.5 text-xs text-muted">
-              <Stars value={product.rating.avg} className="text-sm" />
-              {product.rating.avg.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ({product.rating.count})
-            </p>
-          )}
-          <p className="pt-1 text-lg font-semibold">
-            {product.variants.length > 1 && <span className="text-sm font-normal text-muted">Desde </span>}
-            {formatCLP(from)}
+      <div className="flex flex-1 flex-col gap-1.5">
+        <Heading className="break-words font-display text-2xl font-medium leading-tight tracking-tight">
+          <Link href={`/productos/${product.slug}`} className="underline-offset-[5px] hover:underline focus-visible:outline-none focus-visible:underline">{product.name}</Link>
+        </Heading>
+        <p className="font-mono text-xs uppercase tracking-widest text-muted">{product.category}</p>
+        <p className="font-mono text-xs text-muted">{product.variants.map((v) => v.label).join(" / ")} · {product.form}</p>
+        {product.rating && (
+          <p className="flex items-center gap-1.5 text-xs text-muted">
+            <Stars value={product.rating.avg} className="text-sm" />
+            {product.rating.avg.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ({product.rating.count})
           </p>
-        </div>
-        {quick ? (
-          <QuickAdd variantId={quick.id} name={product.name} />
-        ) : (
-          !soldOut && product.variants.length > 1 && (
-            <Link href={`/productos/${product.slug}`} className="shrink-0 pb-1 text-sm font-medium u-link">Ver presentaciones</Link>
-          )
         )}
+        {/* Precio y acción siempre abajo y alineados entre tarjetas: en una fila si la tarjeta es ancha, apilados si es angosta */}
+        <div className="@container mt-auto pt-4">
+          <div className="flex flex-col gap-3 @min-[22rem]:flex-row @min-[22rem]:items-center @min-[22rem]:justify-between">
+            <p className="text-lg font-semibold">
+              {product.variants.length > 1 && <span className="text-sm font-normal text-muted">Desde </span>}
+              {formatCLP(from)}
+            </p>
+            {quick ? (
+              <QuickAdd variantId={quick.id} name={product.name} className={cta} />
+            ) : (
+              !soldOut && product.variants.length > 1 && (
+                <Link href={`/productos/${product.slug}`} className={cta}>Ver presentaciones</Link>
+              )
+            )}
+          </div>
+        </div>
       </div>
     </article>
   );

@@ -11,7 +11,7 @@ export default function Carrito() {
   if (lines.length === 0) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 text-center">
-        <h1 className="font-display text-3xl font-bold md:text-4xl">Tu carrito está vacío</h1>
+        <h1 className="t-page">Tu carrito está vacío</h1>
         <Link href="/productos" className="btn-primary mt-6">
           Ver productos
         </Link>
@@ -20,9 +20,9 @@ export default function Carrito() {
   }
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 md:grid-cols-[1fr_340px]">
+    <div className="wrap grid gap-10 py-12 md:grid-cols-[1fr_340px]">
       <div>
-        <h1 className="font-display text-3xl font-bold md:text-4xl">Carrito</h1>
+        <h1 className="t-page">Carrito</h1>
         <ul className="mt-6 divide-y rounded-card border">
           {lines.map((line) => {
             const found = find(line.variantId);

@@ -32,11 +32,11 @@ export default function Guias() {
   return (
     <div className="animate-fade mx-auto max-w-3xl px-4 py-14">
       <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Guías</p>
-      <h1 className="sweep mt-2 font-display text-4xl font-bold">Antes de comprar y al recibir</h1>
+      <h1 className="t-page mt-2">Antes de comprar y al recibir</h1>
       <p className="mt-4 text-muted">Información práctica de compra, verificación y manipulación de laboratorio. Todos los productos son solo para investigación.</p>
 
       <section id="como-comprar" className="mt-12 scroll-mt-28">
-        <h2 className="font-display text-2xl font-bold">Cómo comprar</h2>
+        <h2 className="t-h2">Cómo comprar</h2>
         <ol className="mt-5 space-y-3">
           {steps.map(([t, d], i) => (
             <li key={t} className="flex gap-4 rounded-card border bg-surface p-4">
@@ -52,7 +52,7 @@ export default function Guias() {
 
       {showCertificates() && (
       <section id="leer-un-coa" className="mt-14 scroll-mt-28">
-        <h2 className="font-display text-2xl font-bold">Cómo leer un certificado de análisis</h2>
+        <h2 className="t-h2">Cómo leer un certificado de análisis</h2>
         <dl className="mt-5 grid gap-3">
           {coa.map(([t, d]) => (
             <div key={t} className="rounded-card border bg-surface p-4"><dt className="font-semibold">{t}</dt><dd className="mt-1 text-sm text-muted">{d}</dd></div>
@@ -63,7 +63,7 @@ export default function Guias() {
       )}
 
       <section id="almacenamiento" className="mt-14 scroll-mt-28">
-        <h2 className="font-display text-2xl font-bold">Almacenamiento y manipulación</h2>
+        <h2 className="t-h2">Almacenamiento y manipulación</h2>
         <dl className="mt-5 grid gap-3">
           {storage.map(([t, d]) => (
             <div key={t} className="rounded-card border bg-surface p-4"><dt className="font-semibold">{t}</dt><dd className="mt-1 text-sm text-muted">{d}</dd></div>

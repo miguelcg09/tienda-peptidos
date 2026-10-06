@@ -23,7 +23,7 @@ export default async function Certificados({ searchParams }: { searchParams: Pro
   return (
     <div className="animate-fade mx-auto max-w-5xl px-4 py-14">
       <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Transparencia</p>
-      <h1 className="sweep mt-2 font-display text-4xl font-bold">Certificados por lote</h1>
+      <h1 className="t-page mt-2">Certificados por lote</h1>
       <p className="mt-4 max-w-2xl text-muted">
         Cada lote se analiza por HPLC (pureza) y espectrometría de masas (identidad). El número de lote va impreso en la etiqueta del vial:
         búscalo aquí para ver su certificado.

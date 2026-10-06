@@ -22,7 +22,7 @@ const HERO_MAX = 6;
 const words = ["Cero", "Un", "Dos", "Tres", "Cuatro", "Cinco", "Seis", "Siete", "Ocho", "Nueve", "Diez"];
 
 const eyebrow = "font-mono text-xs uppercase tracking-[0.14em] text-muted";
-const h2 = "mt-3 font-display text-[clamp(2.5rem,5vw,4.25rem)] font-light leading-none tracking-[-0.03em]";
+const h2 = "mt-3 font-display text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-[-0.03em]";
 
 // Pasos del seguimiento que ve el comprador (ejemplo ilustrativo).
 const tracking = [
@@ -130,7 +130,7 @@ export default async function Home() {
           <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
             <div>
               <p className={eyebrow}>Catálogo</p>
-              <h2 id="titulo-coleccion" className="mt-3 max-w-[22ch] font-display text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-[-0.03em]">
+              <h2 id="titulo-coleccion" className={`${h2} max-w-[22ch]`}>
                 {n === 1 ? "Un compuesto de investigación" : `${countWord} compuestos de investigación`}, con su precio a la vista.
               </h2>
             </div>
@@ -180,7 +180,7 @@ export default async function Home() {
         <div className="mx-auto flex max-w-[1280px] flex-col gap-16 px-4 py-24 md:px-12 md:py-28">
           <div className="flex flex-col gap-6">
             <p className="font-mono text-xs uppercase tracking-[0.14em] text-[#9aa7ab]">Después de comprar</p>
-            <h2 id="titulo-despacho" className="font-display text-[clamp(2.5rem,5.5vw,4.75rem)] font-light leading-[0.98] tracking-[-0.035em]">
+            <h2 id="titulo-despacho" className="font-display text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-[-0.03em]">
               Qué pasa después de pagar
             </h2>
             <p className="text-lg text-[#c4ced1]">Tres pasos. Sin cuenta. Con seguimiento.</p>
@@ -274,11 +274,16 @@ export default async function Home() {
       </section>
 
       {/* Preguntas frecuentes: la primera abierta */}
-      <section id="faq" aria-labelledby="titulo-faq" className="mx-auto max-w-3xl scroll-mt-4 px-4 py-24 md:py-28">
-        <p className={eyebrow}>Preguntas frecuentes</p>
-        <h2 id="titulo-faq" className="mt-3 font-display text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-[-0.03em]">Lo que más preguntan antes de comprar</h2>
-        <p className="mt-4 text-lg text-muted">Respuestas cortas. Si falta la tuya, escríbenos.</p>
-        <div className="mt-10 divide-y rounded-card bg-surface" data-testid="faq-portada">
+      <section id="faq" aria-labelledby="titulo-faq" className="wrap grid scroll-mt-4 gap-x-16 gap-y-10 py-24 md:py-28 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+        <div>
+          <p className={eyebrow}>Preguntas frecuentes</p>
+          <h2 id="titulo-faq" className={h2}>Lo que más preguntan antes de comprar</h2>
+          <p className="mt-4 text-lg text-muted">Respuestas cortas. Si falta la tuya, escríbenos.</p>
+          <p className="mt-6 text-sm">
+            <a href={contactHref} className="font-medium text-fg u-link">¿Otra duda? Escríbenos</a>
+          </p>
+        </div>
+        <div className="divide-y self-start rounded-card bg-surface" data-testid="faq-portada">
           {faqs.map((f, i) => (
             <details key={f.q} open={i === 0} className="group px-6 py-5 transition-colors hover:bg-surface-2">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-medium">
@@ -289,13 +294,10 @@ export default async function Home() {
             </details>
           ))}
         </div>
-        <p className="mt-6 text-sm">
-          <a href={contactHref} className="font-medium text-fg u-link">¿Otra duda? Escríbenos</a>
-        </p>
       </section>
 
       {/* Cierre: una acción para quien decidió y una salida suave para quien aún no compra */}
-      <section aria-labelledby="titulo-cierre" data-field className="-mb-28" style={{ backgroundColor: closingColor, color: onColor(closingColor) }}>
+      <section aria-labelledby="titulo-cierre" data-field style={{ backgroundColor: closingColor, color: onColor(closingColor) }}>
         <div className="mx-auto grid max-w-[1280px] items-center gap-x-16 gap-y-10 px-4 pb-14 pt-24 md:grid-cols-[1.2fr_0.8fr] md:px-12 md:pt-28">
           <div className="flex min-w-0 flex-col items-start gap-7">
             <h2 id="titulo-cierre" className="font-display text-[clamp(2.25rem,4.6vw,4rem)] font-light leading-[1.02] tracking-[-0.03em]">
