@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useState } from "react";
 import { formatCLP } from "@/lib/products";
-import { onColor } from "@/lib/colors";
+import { field, onColor } from "@/lib/colors";
 import { NavBar } from "./Header";
+import { ProductSearch } from "./ProductSearch";
 import { Vial } from "./Vial";
 
 export type HeroItem = {
@@ -37,71 +38,51 @@ export function HomeHero({ items }: { items: HeroItem[] }) {
   const [sel, setSel] = useState(0);
   const n = items.length;
   const cur = items[Math.min(sel, n - 1)];
-  const color = cur?.color ?? FALLBACK;
+  const color = field(cur?.color ?? FALLBACK);
   const fg = onColor(color);
   const move = "transition-colors duration-500 motion-reduce:transition-none";
 
   return (
-    <section aria-labelledby="titulo-portada" className={move} style={{ backgroundColor: color, color: fg }} data-testid="portada">
+    <section id="portada" data-field aria-labelledby="titulo-portada" className={move} style={{ backgroundColor: color, color: fg }} data-testid="portada">
       <header>
         <NavBar />
       </header>
-      <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-10 px-4 pb-16 pt-4 md:flex-row md:flex-wrap md:items-center md:gap-x-12 md:gap-y-14 md:px-12 md:pt-6">
-        {/* En celular la pieza va antes del selector; en escritorio el selector queda bajo el texto */}
-        <div className="contents md:flex md:min-w-0 md:flex-[1_1_420px] md:flex-col md:gap-6">
-          <div className="flex min-w-0 flex-col gap-5 md:gap-6">
-            <p className="font-mono text-xs uppercase tracking-[0.14em]">Para quienes investigan por su cuenta</p>
-            <h1 id="titulo-portada" className="font-display text-[clamp(2.75rem,5.6vw,5.25rem)] font-light leading-[0.98] tracking-[-0.035em]">
-              Péptidos de investigación.
-              <span className="mt-4 block text-[clamp(1.5rem,2.6vw,2.25rem)] font-normal leading-[1.12] tracking-[-0.02em] opacity-90">
-                Pagas en pesos y sigues tu pedido.
-              </span>
-            </h1>
-            <p className="max-w-[34ch] text-lg leading-snug opacity-90 md:text-xl md:leading-relaxed">
-              Despachamos con seguimiento a todo Chile. No necesitas crear una cuenta.
-            </p>
-            <div className="flex flex-wrap items-center gap-x-7 gap-y-5">
-              <a href="#coleccion" className={`inline-flex min-h-14 items-center rounded-btn px-8 text-base font-semibold ${move}`} style={{ backgroundColor: fg, color }}>
-                Ver catálogo
-              </a>
-              <a href="#despacho" className="text-base font-medium underline underline-offset-[5px]">Cómo se despacha</a>
-            </div>
-            <p className="max-w-[44ch] text-sm leading-relaxed opacity-85">
-              Solo para uso en investigación. Mayores de 18 años. No aptos para consumo humano ni animal.
-            </p>
+      {/* Texto a la izquierda; a la derecha la pieza con su ficha y, justo debajo, el selector que la cambia */}
+      <div className="mx-auto grid w-full max-w-[1280px] gap-10 px-4 pb-16 pt-4 md:px-12 md:pt-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:grid-rows-[1fr_auto] lg:gap-x-12 lg:gap-y-8">
+        <div className="flex min-w-0 flex-col gap-5 md:gap-6 lg:row-span-2 lg:self-center">
+          <p className="font-mono text-xs uppercase tracking-[0.14em]">Para quienes investigan por su cuenta</p>
+          <h1 id="titulo-portada" className="font-display text-[clamp(2.75rem,5.6vw,5.25rem)] font-light leading-[0.98] tracking-[-0.035em]">
+            Péptidos de investigación.
+            <span className="mt-4 block text-[clamp(1.5rem,2.6vw,2.25rem)] font-normal leading-[1.12] tracking-[-0.02em]">
+              Pagas en pesos y sigues tu pedido.
+            </span>
+          </h1>
+          <p className="max-w-[34ch] text-lg leading-snug md:text-xl md:leading-relaxed">
+            Despachamos con seguimiento a todo Chile. No necesitas crear una cuenta.
+          </p>
+          <div className="flex flex-wrap items-center gap-x-7 gap-y-5">
+            <a href="#coleccion" className={`inline-flex min-h-14 items-center rounded-btn px-8 text-base font-semibold hover:opacity-90 ${move}`} style={{ backgroundColor: fg, color }}>
+              Ver catálogo
+            </a>
+            <a href="#despacho" className="inline-flex min-h-11 items-center text-base font-medium u-link">Cómo se despacha</a>
           </div>
-          {n > 1 && (
-            <div className="order-3 flex flex-col gap-3 md:order-none md:pt-4">
-              <p className="font-mono text-xs uppercase tracking-[0.14em] opacity-85">Elegir pieza</p>
-              <div className="flex flex-wrap gap-2" role="group" aria-label="Elegir pieza">
-                {items.map((it, i) => (
-                  <button
-                    key={it.slug}
-                    onClick={() => setSel(i)}
-                    aria-label={`Ver ${it.name}`}
-                    aria-pressed={i === sel}
-                    className={`h-12 w-12 rounded-btn border border-current font-mono text-sm font-medium ${move} ${i === sel ? "" : "opacity-70 hover:opacity-100"}`}
-                    style={i === sel ? { backgroundColor: fg, color } : undefined}
-                  >
-                    {pad(i + 1)}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+          <ProductSearch variant="hero" className="hidden w-full max-w-[34rem] md:block" />
+          <p className="max-w-[44ch] text-sm leading-relaxed">
+            Solo para uso en investigación. Mayores de 18 años. No aptos para consumo humano ni animal.
+          </p>
         </div>
 
         {cur && (
-          <div className="order-2 flex min-w-0 flex-[1.1_1_460px] flex-row-reverse flex-wrap items-end justify-center gap-x-6 gap-y-7 md:order-none md:min-h-[560px]">
+          <div className="flex min-w-0 flex-row-reverse flex-wrap items-end justify-center gap-x-6 gap-y-7 lg:min-h-[520px] lg:self-end">
             <div className="flex min-w-0 flex-[0_1_220px] justify-center">
               {cur.imageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={cur.imageUrl} alt={cur.name} className="max-h-[520px] w-auto max-w-full object-contain" />
               ) : (
-                <Vial color={cur.color} label={cur.name} tone="field" lot={cur.lot} format={cur.format} className="h-[360px] w-auto max-w-full md:h-[470px]" />
+                <Vial color={cur.color} label={cur.name} tone="field" lot={cur.lot} format={cur.format} className="h-[360px] w-auto max-w-full lg:h-[440px]" />
               )}
             </div>
-            <div className="min-w-0 flex-[0_1_260px] rounded-card bg-white p-5 text-[#0b0f10]" data-testid="ficha-pieza">
+            <div className="min-w-0 flex-[0_1_260px] rounded-card bg-white p-5 text-[#0b0f10]" data-testid="ficha-pieza" aria-live="polite">
               <p className="font-mono text-xs tracking-widest text-[#5b676b]">PIEZA {pad(Math.min(sel, n - 1) + 1)} / {pad(n)}</p>
               <p className="pb-3 pt-1 font-display text-[1.9rem] font-medium leading-[1.05] tracking-tight [overflow-wrap:anywhere]">{cur.name}</p>
               <dl>
@@ -111,8 +92,28 @@ export function HomeHero({ items }: { items: HeroItem[] }) {
               </dl>
               <div className="mt-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-t border-[#0b0f10] pt-3.5">
                 <span className="whitespace-nowrap text-xl font-semibold">{cur.multi ? "Desde " : ""}{formatCLP(cur.from)}</span>
-                <Link href={`/productos/${cur.slug}`} className="whitespace-nowrap text-sm font-medium underline underline-offset-4">Ver pieza →</Link>
+                <Link href={`/productos/${cur.slug}`} className="inline-flex min-h-11 items-center whitespace-nowrap text-sm font-medium u-link">Ver pieza →</Link>
               </div>
+            </div>
+          </div>
+        )}
+
+        {n > 1 && (
+          <div className="flex flex-col gap-3 lg:justify-self-center lg:self-start">
+            <p id="elegir-pieza" className="font-mono text-xs uppercase tracking-[0.14em]">Elegir pieza</p>
+            <div className="flex flex-wrap gap-2" role="group" aria-labelledby="elegir-pieza">
+              {items.map((it, i) => (
+                <button
+                  key={it.slug}
+                  onClick={() => setSel(i)}
+                  aria-label={`${pad(i + 1)}: ${it.name}`}
+                  aria-pressed={i === sel}
+                  className={`h-12 w-12 rounded-btn border border-current font-mono text-sm font-medium ${move} ${i === sel ? "" : "hover:bg-current/15"}`}
+                  style={i === sel ? { backgroundColor: fg, color } : undefined}
+                >
+                  {pad(i + 1)}
+                </button>
+              ))}
             </div>
           </div>
         )}

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { formatCLP, type Product } from "@/lib/products";
 import type { Settings } from "@/lib/config";
 import { useCart } from "./CartProvider";
-import { onColor } from "@/lib/colors";
+import { field, onColor } from "@/lib/colors";
 import { ProductImage } from "./ProductImage";
 import { Newsletter } from "./Newsletter";
 import { Stars } from "./Stars";
@@ -63,7 +63,7 @@ export function ProductStage({
   return (
     <>
       {/* Portada: campo plano del color del producto, texto a la izquierda y vial a la derecha */}
-      <section className="relative overflow-hidden rounded-card" style={{ background: product.color, color: onColor(product.color) }}>
+      <section className="relative overflow-hidden rounded-card" style={{ background: field(product.color), color: onColor(field(product.color)) }}>
         <div className="relative grid gap-8 p-6 md:grid-cols-[1.1fr_1fr] md:p-12">
           <div className="flex flex-col justify-center">
             <p className="font-mono text-xs uppercase tracking-[0.18em] opacity-80">{product.category}</p>
@@ -197,7 +197,7 @@ function SectionIndex({ items }: { items: IndexItem[] }) {
     return () => io.disconnect();
   }, [items]);
   return (
-    <nav className="hidden md:block">
+    <nav aria-label="Índice de la ficha" className="hidden md:block">
       <ol className="sticky top-32 space-y-1 text-sm">
         {items.map((it, i) => (
           <li key={it.id}>

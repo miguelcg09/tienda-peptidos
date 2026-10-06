@@ -39,6 +39,20 @@ export function onColor(hex: string) {
   return white >= ink ? WHITE : INK;
 }
 
+// Contraste del mejor texto (blanco o tinta) sobre ese color.
+function bestContrast(hex: string) {
+  const l = luminance(hex);
+  return Math.max(1.05 / (l + 0.05), (l + 0.05) / (luminance(INK) + 0.05));
+}
+
+// Fondo para texto: los colores de tono medio no llegan a 4,5:1 ni con blanco ni con tinta, así que se
+// oscurecen lo justo. Con los colores de siempre no cambia nada; protege a los que se carguen desde /admin.
+export function field(hex: string) {
+  let c = hex;
+  for (let i = 0; i < 14 && bestContrast(c) < 4.5; i++) c = mix(c, "#000000", 0.05);
+  return c;
+}
+
 export const deep = (hex: string) => mix(hex, "#000000", 0.42); // tapa sobre el color de la portada
 export const tint = (hex: string) => mix(hex, WHITE, 0.84); // fondo claro de las tarjetas
 export const tintHover = (hex: string) => mix(hex, WHITE, 0.75);

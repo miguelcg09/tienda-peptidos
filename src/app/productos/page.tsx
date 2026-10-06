@@ -42,7 +42,7 @@ export default async function Productos({ searchParams }: { searchParams: Promis
       </div>
       {list.length === 0 && <p className="mt-10 text-muted">No encontramos productos con ese criterio. <Link href="/productos" className="text-accent underline">Ver todo el catálogo</Link></p>}
       <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-        {list.map((p) => <ProductCard key={p.slug} product={p} />)}
+        {list.map((p) => <ProductCard key={p.slug} product={p} headingLevel={2} />)}
       </div>
     </div>
   );

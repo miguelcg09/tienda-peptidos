@@ -142,7 +142,7 @@ function Seguimiento() {
       )}
 
       <p className="mt-10 text-sm text-muted">
-        ¿Dudas con tu pedido? <Link href="/#faq" className="text-accent hover:underline">Revisa las preguntas frecuentes</Link> o escríbenos.
+        ¿Dudas con tu pedido? <Link href="/#faq" className="text-accent underline underline-offset-4 hover:no-underline">Revisa las preguntas frecuentes</Link> o escríbenos.
       </p>
     </div>
   );

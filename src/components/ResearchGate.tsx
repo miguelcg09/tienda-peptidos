@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useStore } from "./CartProvider";
+import { useDialog } from "@/lib/useDialog";
 
 const KEY = "research-ack-v1";
 
@@ -9,6 +10,8 @@ const KEY = "research-ack-v1";
 export function ResearchGate() {
   const { settings } = useStore();
   const [show, setShow] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
+  useDialog(box, show);
 
   useEffect(() => {
     try {
@@ -21,11 +24,11 @@ export function ResearchGate() {
   if (!show) return null;
 
   return (
-    <div className="animate-fade fixed inset-0 z-[60] grid place-items-center bg-black/70 p-4 backdrop-blur-md">
-      <div className="relative max-w-md overflow-hidden rounded-card border bg-surface p-7 shadow-2xl">
+    <div className="animate-fade fixed inset-0 z-[60] grid place-items-center overflow-y-auto bg-black/80 p-4">
+      <div ref={box} role="dialog" aria-modal="true" aria-labelledby="aviso-titulo" aria-describedby="aviso-texto" className="relative max-w-md overflow-hidden rounded-card border bg-surface p-7 shadow-2xl">
         <p className="relative text-xs font-semibold uppercase tracking-[0.2em] text-accent">Aviso importante</p>
-        <h2 className="relative mt-2 font-display text-2xl font-bold">Solo para investigación</h2>
-        <p className="relative mt-3 text-sm text-muted">{settings.disclaimer}</p>
+        <h2 id="aviso-titulo" className="relative mt-2 font-display text-2xl font-bold">Solo para investigación</h2>
+        <p id="aviso-texto" className="relative mt-3 text-sm text-muted">{settings.disclaimer}</p>
         <p className="relative mt-3 text-sm text-muted">
           Al continuar declaras ser mayor de 18 años y que adquirirás los productos solo con fines de investigación.
         </p>
@@ -35,6 +38,7 @@ export function ResearchGate() {
               try { localStorage.setItem(KEY, "1"); } catch {}
               setShow(false);
             }}
+            data-autofocus
             className="btn-primary flex-1 text-sm"
           >
             Entiendo y acepto

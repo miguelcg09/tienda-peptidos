@@ -101,12 +101,12 @@ export default async function ProductPage({ params }: Props) {
   return (
     <div className="animate-fade mx-auto max-w-6xl px-4 pb-24 pt-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <nav className="mb-5 flex flex-wrap gap-2 text-sm text-muted">
+      <nav aria-label="Ruta de navegación" className="mb-5 flex flex-wrap gap-2 text-sm text-muted">
         <Link href="/" className="hover:text-accent">Inicio</Link>
-        <span>/</span>
+        <span aria-hidden="true">/</span>
         <Link href={`/productos?categoria=${encodeURIComponent(product.category)}`} className="hover:text-accent">{product.category}</Link>
-        <span>/</span>
-        <span className="text-fg">{product.name}</span>
+        <span aria-hidden="true">/</span>
+        <span className="text-fg" aria-current="page">{product.name}</span>
       </nav>
 
       <ProductStage product={product} settings={settings} index={index}>
