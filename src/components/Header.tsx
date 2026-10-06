@@ -122,7 +122,7 @@ function StickyHome() {
   return (
     <header
       inert={!show}
-      className={`fixed inset-x-0 top-0 z-30 border-b bg-bg text-fg transition-transform duration-200 motion-reduce:transition-none ${show ? "translate-y-0" : "invisible -translate-y-full"}`}
+      className={`fixed inset-x-0 top-[var(--bar-h)] z-30 border-b bg-bg text-fg transition-transform duration-200 motion-reduce:transition-none ${show ? "translate-y-0" : "invisible -translate-y-full"}`}
     >
       <NavBar compact navLabel="Principal, barra fija" />
     </header>
@@ -134,7 +134,7 @@ export function Header() {
   const pathname = usePathname();
   if (pathname === "/") return <StickyHome />;
   return (
-    <header className="sticky top-0 z-30 border-b bg-bg">
+    <header className="sticky top-[var(--bar-h)] z-30 border-b bg-bg">
       <NavBar compact />
     </header>
   );

@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { showCertificates } from "@/lib/features";
 import { getProduct } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { getPalette } from "@/lib/palettes";
@@ -32,8 +33,8 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         </div>
         <div style={{ display: "flex", gap: 24, fontSize: 30 }}>
           <span style={{ padding: "12px 24px", borderRadius: 999, background: pal.accent, color: pal.onAccent, fontWeight: 700 }}>Desde {formatCLP(from)}</span>
-          <span style={{ padding: "12px 24px", borderRadius: 999, border: `2px solid ${pal.muted}` }}>{product?.purity ?? ""}</span>
-          <span style={{ padding: "12px 24px", borderRadius: 999, border: `2px solid ${pal.muted}` }}>COA por lote</span>
+          {showCertificates() && <span style={{ padding: "12px 24px", borderRadius: 999, border: `2px solid ${pal.muted}` }}>{product?.purity ?? ""}</span>}
+          {showCertificates() && <span style={{ padding: "12px 24px", borderRadius: 999, border: `2px solid ${pal.muted}` }}>COA por lote</span>}
         </div>
       </div>
     ),

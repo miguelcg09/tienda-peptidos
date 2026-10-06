@@ -59,7 +59,7 @@ export const seedProducts: Product[] = [
     category: "Reparación tisular",
     short: "Pentadecapéptido derivado de una proteína gástrica.",
     description:
-      "Péptido sintético de 15 aminoácidos estudiado en modelos preclínicos de reparación de tejidos. Se entrega liofilizado en vial sellado, con certificado de análisis por lote.",
+      "Péptido sintético de 15 aminoácidos estudiado en modelos preclínicos de reparación de tejidos. Se entrega liofilizado en vial sellado.",
     purity: "≥ 99% (HPLC)",
     form: "Polvo liofilizado",
     cas: "137525-51-0",

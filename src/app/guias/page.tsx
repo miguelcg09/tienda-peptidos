@@ -1,14 +1,15 @@
 import Link from "next/link";
+import { showCertificates } from "@/lib/features";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Guías",
-  description: "Cómo comprar, cómo leer un certificado de análisis y cómo almacenar y manipular viales liofilizados.",
+  description: "Cómo comprar y cómo almacenar y manipular viales liofilizados.",
   alternates: { canonical: "/guias" },
 };
 
 const steps = [
-  ["Elige tu producto", "Explora el catálogo por línea de investigación y revisa pureza, formato y presentaciones."],
+  ["Elige tu producto", "Explora el catálogo por línea de investigación y revisa formato y presentaciones."],
   ["Agrega al carrito y completa tus datos", "No necesitas crear una cuenta. Pedimos nombre, RUT, contacto y una dirección de despacho."],
   ["Paga en pesos", "Por transferencia bancaria (te mostramos los datos al confirmar) o con tarjeta cuando esté disponible en el checkout. Si tienes un cupón, lo escribes ahí."],
   ["Recibe con seguimiento", "Despachamos con seguimiento a todo Chile y te avisamos por correo con el número cuando sale tu pedido."],
@@ -49,6 +50,7 @@ export default function Guias() {
         </p>
       </section>
 
+      {showCertificates() && (
       <section id="leer-un-coa" className="mt-14 scroll-mt-28">
         <h2 className="font-display text-2xl font-bold">Cómo leer un certificado de análisis</h2>
         <dl className="mt-5 grid gap-3">
@@ -58,6 +60,7 @@ export default function Guias() {
         </dl>
         <p className="mt-4 text-sm"><Link href="/certificados" className="text-accent hover:underline">Buscar el certificado de mi lote →</Link></p>
       </section>
+      )}
 
       <section id="almacenamiento" className="mt-14 scroll-mt-28">
         <h2 className="font-display text-2xl font-bold">Almacenamiento y manipulación</h2>

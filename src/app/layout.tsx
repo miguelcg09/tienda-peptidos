@@ -62,10 +62,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-card focus:bg-accent focus:px-4 focus:py-2 focus:text-on-accent">
           Saltar al contenido
         </a>
-        {/* Aviso de uso: arriba de todas las páginas, también en la portada */}
-        <section aria-label="Aviso de uso y envío" className="flex flex-wrap justify-center gap-x-8 gap-y-0.5 bg-fg px-4 py-2.5 text-center font-mono text-xs uppercase tracking-[0.14em] text-bg">
-          <span>Solo para uso en investigación · Mayores de 18 años</span>
-          <span className="hidden sm:inline">Envío gratis sobre {formatCLP(settings.freeShippingFrom)}</span>
+        {/* Aviso de uso: fijo arriba en todas las páginas, también en la portada. En celular, versión corta de una línea */}
+        <section aria-label="Aviso de uso y envío" className="sticky top-0 z-40 flex h-[var(--bar-h)] items-center justify-center gap-x-8 overflow-hidden whitespace-nowrap bg-fg px-4 text-center font-mono text-xs uppercase tracking-[0.14em] text-bg">
+          <span className="sm:hidden">Solo investigación · +18</span>
+          <span className="hidden sm:inline">Solo para uso en investigación · Mayores de 18 años</span>
+          <span className="hidden lg:inline">Envío gratis sobre {formatCLP(settings.freeShippingFrom)}</span>
         </section>
         <StoreProvider catalog={catalog} settings={storeSettings}>
           <Header />

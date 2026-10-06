@@ -6,7 +6,7 @@ import { ProductCard } from "@/components/ProductCard";
 
 export const metadata: Metadata = {
   title: "Productos",
-  description: "Catálogo de péptidos de grado investigación con pureza verificada por HPLC y certificado de análisis por lote.",
+  description: "Catálogo de péptidos de investigación. Precios en pesos con IVA incluido y despacho con seguimiento a todo Chile.",
   alternates: { canonical: "/productos" },
 };
 

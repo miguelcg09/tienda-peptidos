@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { getProduct, getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { faqs } from "@/lib/faqs";
+import { showCertificates } from "@/lib/features";
 import { ProductStage } from "@/components/ProductStage";
 import { ProductCard } from "@/components/ProductCard";
 import { Reveal } from "@/components/Reveal";
@@ -16,7 +17,7 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = await getProduct((await params).slug);
   if (!product) return { title: "Producto" };
-  const description = `${product.short} ${product.purity}, ${product.form.toLowerCase()}. Certificado de análisis por lote. Solo para investigación.`;
+  const description = `${product.short} ${product.form}. Solo para investigación.`;
   return {
     title: product.name,
     description,
@@ -59,9 +60,14 @@ export default async function ProductPage({ params }: Props) {
   const related = products.filter((p) => p.slug !== product.slug).sort((a, b) => (a.category === product.category ? -1 : 1) - (b.category === product.category ? -1 : 1)).slice(0, 6);
   const isAccessory = product.category === "Accesorios";
 
+  // El certificado y la pureza se muestran solo con documentos reales (ver src/lib/features.ts)
+  const certs = showCertificates();
+  const hasCert = certs || !!product.coaUrl;
+  const off = hasCert ? 0 : -1; // si no hay sección de certificado, las demás suben un número
+
   const specs = [
     ["Mecanismo", product.mechanism ?? product.category],
-    ["Pureza", product.purity],
+    ...(certs ? [["Pureza", product.purity]] : []),
     ["Forma", product.form],
     ["CAS", product.cas ?? "—"],
     ["Almacenar", product.storage ?? "2–8 °C, sin luz"],
@@ -69,7 +75,7 @@ export default async function ProductPage({ params }: Props) {
 
   const index = [
     { id: "resumen", label: "Resumen" },
-    { id: "certificado", label: "Certificado" },
+    ...(hasCert ? [{ id: "certificado", label: "Certificado" }] : []),
     { id: "reconstitucion", label: "Reconstitución" },
     { id: "investigacion", label: "Investigación" },
     { id: "resenas", label: "Reseñas" },
@@ -109,7 +115,7 @@ export default async function ProductPage({ params }: Props) {
         <span className="text-fg" aria-current="page">{product.name}</span>
       </nav>
 
-      <ProductStage product={product} settings={settings} index={index}>
+      <ProductStage product={product} settings={settings} index={index} showCertificates={certs}>
         {/* Franja de datos técnicos */}
         <dl className="mb-10 grid grid-cols-2 gap-y-4 rounded-card border bg-surface p-5 text-sm sm:grid-cols-[1.6fr_1fr_1fr_1fr_1fr] sm:divide-x sm:gap-y-0">
           {specs.map(([k, v]) => (
@@ -123,12 +129,15 @@ export default async function ProductPage({ params }: Props) {
         <Section id="resumen" n={1} title="Resumen">
           <p className="text-lg leading-relaxed">{product.short}</p>
           <Paragraphs text={product.description} />
+          {!hasCert && product.lot && (
+            <p className="mt-4 text-sm"><strong>Lote actual:</strong> <span className="font-mono">{product.lot}</span></p>
+          )}
           <p className="mt-6 rounded-card border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-800 dark:text-amber-200">
             <strong>Solo para uso en investigación.</strong> {settings.disclaimer}
           </p>
         </Section>
 
-        <Section id="certificado" n={2} title="Certificado de análisis">
+        {hasCert && <Section id="certificado" n={2} title="Certificado de análisis">
           <p className="leading-relaxed text-muted">
             Cada lote se analiza por HPLC (pureza) y espectrometría de masas (identidad). El número de lote va impreso en la
             etiqueta del vial y el certificado correspondiente viaja con el pedido.
@@ -154,9 +163,9 @@ export default async function ProductPage({ params }: Props) {
               <div key={k} className="rounded-card border bg-surface p-3"><dt className="text-xs text-muted">{k}</dt><dd className="mt-1 font-medium">{v}</dd></div>
             ))}
           </dl>
-        </Section>
+        </Section>}
 
-        <Section id="reconstitucion" n={3} title="Reconstitución">
+        <Section id="reconstitucion" n={3 + off} title="Reconstitución">
           {isAccessory && !product.reconstitution ? (
             <p className="text-muted">Este producto se usa tal como viene; no requiere reconstitución.</p>
           ) : (
@@ -166,12 +175,12 @@ export default async function ProductPage({ params }: Props) {
           <p className="mt-4 text-xs text-muted">Información técnica de manipulación. No constituye indicación de uso ni de dosis.</p>
         </Section>
 
-        <Section id="investigacion" n={4} title="Líneas de investigación">
+        <Section id="investigacion" n={4 + off} title="Líneas de investigación">
           <Paragraphs text={product.research ?? "Consulta la literatura científica publicada sobre este compuesto. Con gusto te orientamos sobre referencias."} />
           <p className="mt-4 text-xs text-muted">Resumen informativo de la literatura preclínica. No describe efectos en seres humanos.</p>
         </Section>
 
-        <Section id="resenas" n={5} title="Reseñas de compradores">
+        <Section id="resenas" n={5 + off} title="Reseñas de compradores">
           {product.rating && reviews.length > 0 ? (
             <>
               <p className="flex items-center gap-3">
@@ -203,7 +212,7 @@ export default async function ProductPage({ params }: Props) {
           </p>
         </Section>
 
-        <Section id="preguntas" n={6} title="Preguntas frecuentes">
+        <Section id="preguntas" n={6 + off} title="Preguntas frecuentes">
           <div className="grid gap-3">
             {faqs.map((f) => (
               <details key={f.q} className="group rounded-card border bg-surface p-4">

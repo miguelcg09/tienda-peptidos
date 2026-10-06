@@ -17,11 +17,13 @@ export function ProductStage({
   product,
   settings,
   index,
+  showCertificates = false,
   children,
 }: {
   product: Product;
   settings: Settings;
   index: IndexItem[];
+  showCertificates?: boolean;
   children: ReactNode;
 }) {
   const { add, lines, settings: store } = useCart();
@@ -71,8 +73,8 @@ export function ProductStage({
             <p className="mt-5 max-w-md text-lg opacity-90">{product.short}</p>
             <ul className="mt-6 flex flex-wrap gap-2 text-xs font-medium">
               <li className="rounded-btn bg-[#0b0f10] px-3 py-1.5 text-[#f4f6f6]">{stockLine}</li>
-              <li className="rounded-btn border border-current px-3 py-1.5">Pureza {product.purity.replace(" (HPLC)", "")}</li>
-              <li className="rounded-btn border border-current px-3 py-1.5">COA por lote</li>
+              {showCertificates && <li className="rounded-btn border border-current px-3 py-1.5">Pureza {product.purity.replace(" (HPLC)", "")}</li>}
+              {showCertificates && <li className="rounded-btn border border-current px-3 py-1.5">COA por lote</li>}
               {product.rating && (
                 <li>
                   <a href="#resenas" className="flex items-center gap-1.5 rounded-btn border border-current px-3 py-1.5 transition-opacity hover:opacity-70">
@@ -158,7 +160,7 @@ export function ProductStage({
             <ul className="mt-5 space-y-1.5 border-t pt-4 text-xs text-muted">
               <li>✓ {settings.shippingNote}</li>
               <li>✓ Envío gratis sobre {formatCLP(settings.freeShippingFrom)}</li>
-              <li>✓ Certificado de análisis del lote incluido</li>
+              {showCertificates && <li>✓ Certificado de análisis del lote incluido</li>}
               <li>✓ {payLine}</li>
             </ul>
             {product.coaUrl && (
