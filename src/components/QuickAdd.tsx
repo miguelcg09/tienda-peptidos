@@ -3,22 +3,21 @@
 import { useState } from "react";
 import { useCart } from "./CartProvider";
 
-// Botón "Agregar" que aparece al pasar el mouse por la tarjeta; agrega sin salir del catálogo.
-export function QuickAdd({ variantId }: { variantId: string }) {
+// Botón "+" de las tarjetas: agrega la presentación única sin salir del listado.
+export function QuickAdd({ variantId, name }: { variantId: string; name: string }) {
   const { add } = useCart();
   const [done, setDone] = useState(false);
   return (
     <button
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
+      onClick={() => {
         add(variantId, 1);
         setDone(true);
         setTimeout(() => setDone(false), 1400);
       }}
-      className="absolute bottom-3 left-1/2 -translate-x-1/2 translate-y-3 rounded-full bg-fg px-4 py-2 text-xs font-semibold text-bg opacity-0 shadow-lg transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
+      aria-label={done ? `${name} agregado al carrito` : `Agregar ${name} al carrito`}
+      className="grid h-12 w-12 shrink-0 place-items-center rounded-btn bg-fg pb-0.5 text-2xl leading-none text-bg transition-opacity hover:opacity-80"
     >
-      {done ? "✓ En el carrito" : "+ Agregar"}
+      {done ? "✓" : "+"}
     </button>
   );
 }

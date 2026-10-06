@@ -15,9 +15,9 @@ export function Footer({ settings }: { settings: StoreSettings }) {
           <p className="mt-2 text-sm text-muted">{settings.tagline}</p>
           <div className="mt-4 flex gap-2">
             {settings.instagram && (
-              <a href={instagramUrl(settings.instagram)} target="_blank" rel="noreferrer" className="rounded-full border px-3 py-1 text-xs transition hover:border-accent">Instagram</a>
+              <a href={instagramUrl(settings.instagram)} target="_blank" rel="noreferrer" className="rounded-btn border px-3 py-1 text-xs transition hover:border-accent">Instagram</a>
             )}
-            {wa && <a href={wa} target="_blank" rel="noreferrer" className="rounded-full border px-3 py-1 text-xs transition hover:border-accent">WhatsApp</a>}
+            {wa && <a href={wa} target="_blank" rel="noreferrer" className="rounded-btn border px-3 py-1 text-xs transition hover:border-accent">WhatsApp</a>}
           </div>
         </div>
         <div className="text-sm">

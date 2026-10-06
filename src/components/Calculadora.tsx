@@ -26,7 +26,7 @@ export function Calculadora() {
   const chip = (value: string, set: (v: string) => void, options: string[], unit: string) => (
     <div className="mt-2 flex flex-wrap gap-2">
       {options.map((o) => (
-        <button key={o} type="button" onClick={() => set(o)} aria-pressed={value === o} className={`rounded-full border px-3 py-1 text-xs transition ${value === o ? "border-accent bg-accent text-on-accent" : "hover:border-accent"}`}>
+        <button key={o} type="button" onClick={() => set(o)} aria-pressed={value === o} className={`rounded-btn border px-3 py-1 text-xs transition ${value === o ? "border-accent bg-accent text-on-accent" : "hover:border-accent"}`}>
           {o} {unit}
         </button>
       ))}

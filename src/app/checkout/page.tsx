@@ -111,7 +111,7 @@ export default function Checkout() {
         <fieldset>
           <legend className="mb-3 font-semibold">Medio de pago</legend>
           {methods.length === 0 ? (
-            <div className="rounded-xl border p-4 text-sm">
+            <div className="rounded-card border p-4 text-sm">
               <p>Los pagos en línea se habilitan muy pronto. Mientras tanto, escríbenos por WhatsApp o correo y coordinamos tu pedido.</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {wa && <a href={wa} target="_blank" rel="noreferrer" className="btn-primary text-sm">Pedir por WhatsApp</a>}
@@ -121,7 +121,7 @@ export default function Checkout() {
           ) : (
             <div className="grid gap-3 sm:grid-cols-2">
               {payments.transfer && (
-                <label className={`cursor-pointer rounded-xl border p-4 text-sm transition ${method === "transferencia" ? "border-accent ring-2 ring-accent/30" : "hover:border-accent"}`}>
+                <label className={`cursor-pointer rounded-card border p-4 text-sm transition ${method === "transferencia" ? "border-accent ring-2 ring-accent/30" : "hover:border-accent"}`}>
                   <span className="flex items-center gap-2 font-semibold">
                     <input type="radio" name="paymentMethod" value="transferencia" checked={method === "transferencia"} onChange={() => setMethod("transferencia")} />
                     🏦 Transferencia bancaria
@@ -130,7 +130,7 @@ export default function Checkout() {
                 </label>
               )}
               {payments.card && (
-                <label className={`cursor-pointer rounded-xl border p-4 text-sm transition ${method === "tarjeta" ? "border-accent ring-2 ring-accent/30" : "hover:border-accent"}`}>
+                <label className={`cursor-pointer rounded-card border p-4 text-sm transition ${method === "tarjeta" ? "border-accent ring-2 ring-accent/30" : "hover:border-accent"}`}>
                   <span className="flex items-center gap-2 font-semibold">
                     <input type="radio" name="paymentMethod" value="tarjeta" checked={method === "tarjeta"} onChange={() => setMethod("tarjeta")} />
                     💳 Tarjeta o Webpay{payments.test && " (modo de prueba)"}
@@ -142,7 +142,7 @@ export default function Checkout() {
           )}
         </fieldset>
 
-        <label className="flex gap-3 rounded-xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-900 dark:text-amber-100">
+        <label className="flex gap-3 rounded-card border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-900 dark:text-amber-100">
           <input type="checkbox" name="researchAck" required className="mt-1" />
           <span>
             Declaro ser mayor de 18 años y que los productos serán usados exclusivamente con fines de investigación,
@@ -160,7 +160,7 @@ export default function Checkout() {
         </p>
       </form>
 
-      <aside className="h-fit rounded-2xl border bg-surface p-6">
+      <aside className="h-fit rounded-card border bg-surface p-6">
         <h2 className="font-semibold">Tu pedido</h2>
         <ul className="mt-4 space-y-3 text-sm">
           {lines.map((l) => {
@@ -186,7 +186,7 @@ export default function Checkout() {
               aria-label="Cupón de descuento"
               className="field mt-0 min-w-0 flex-1 uppercase"
             />
-            <button type="button" onClick={() => void applyCoupon()} disabled={couponBusy || !couponInput.trim()} className="shrink-0 rounded-xl border px-3 text-sm transition hover:border-accent disabled:opacity-50">
+            <button type="button" onClick={() => void applyCoupon()} disabled={couponBusy || !couponInput.trim()} className="shrink-0 rounded-card border px-3 text-sm transition hover:border-accent disabled:opacity-50">
               {couponBusy ? "…" : "Aplicar"}
             </button>
           </div>

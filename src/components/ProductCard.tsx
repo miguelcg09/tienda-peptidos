@@ -1,46 +1,49 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { formatCLP, type Product } from "@/lib/products";
+import { tint, tintHover } from "@/lib/colors";
 import { ProductImage } from "./ProductImage";
-import { Tilt } from "./Tilt";
 import { QuickAdd } from "./QuickAdd";
 import { Stars } from "./Stars";
 
-export function ProductCard({ product }: { product: Product }) {
+// Tarjeta de pieza: panel con el tono claro del color del producto, nombre, línea, precio y "+".
+export function ProductCard({ product, index }: { product: Product; index?: number }) {
   const from = Math.min(...product.variants.map((v) => v.price));
   const soldOut = product.variants.every((v) => v.stock === 0);
   const quick = product.variants.length === 1 ? product.variants.find((v) => v.stock !== 0) : undefined;
+  const vars = { "--card-bg": tint(product.color), "--card-hover": tintHover(product.color) } as CSSProperties;
   return (
-    <Tilt className="h-full">
+    <article className="flex h-full min-w-0 flex-col gap-4" style={vars}>
       <Link
         href={`/productos/${product.slug}`}
-        className="shine glow-card group relative flex h-full flex-col rounded-[var(--r-card)] border bg-surface p-4 transition-all hover:border-accent/40 hover:shadow-lg"
+        aria-label={`Ver ${product.name}`}
+        className="relative block aspect-square rounded-card sm:aspect-[4/5] bg-[var(--card-bg)] text-[#0b0f10] transition-colors duration-300 hover:bg-[var(--card-hover)]"
       >
-        <div className="relative grid aspect-square place-items-center overflow-hidden rounded-[calc(var(--r-card)-0.4rem)] bg-surface-2">
-          <ProductImage product={product} className="relative h-4/5 w-4/5 transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-105" />
-          <span className="absolute left-3 top-3 rounded-full border border-tint/10 bg-surface/70 px-2.5 py-1 text-[0.8125rem] font-semibold uppercase tracking-wider text-lime backdrop-blur">
-            {soldOut ? "Agotado" : product.purity.replace(" (HPLC)", "")}
-          </span>
-          {quick && <QuickAdd variantId={quick.id} />}
-        </div>
-        <p className="mt-4 text-[0.8125rem] font-medium uppercase tracking-widest text-muted">{product.category}</p>
-        <h3 className="mt-1 font-display text-lg font-semibold">{product.name}</h3>
-        {product.rating && (
-          <p className="mt-1 flex items-center gap-1.5 text-xs text-muted">
-            <Stars value={product.rating.avg} className="text-sm" />
-            {product.rating.avg.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ({product.rating.count})
-          </p>
-        )}
-        <p className="mt-1 line-clamp-2 text-sm text-muted">{product.short}</p>
-        <div className="mt-auto flex items-end justify-between pt-4">
-          <p className="font-semibold">
-            {product.variants.length > 1 && <span className="text-xs font-normal text-muted">Desde </span>}
+        {index !== undefined && <span className="absolute left-5 top-4 font-mono text-xs tracking-widest">{String(index + 1).padStart(2, "0")}</span>}
+        {soldOut && <span className="absolute right-4 top-4 rounded-btn bg-[#0b0f10] px-2.5 py-1 font-mono text-xs uppercase tracking-widest text-[#f4f6f6]">Agotado</span>}
+        <span className="absolute inset-x-0 inset-y-[11%] flex justify-center">
+          <ProductImage product={product} className="h-full w-auto max-w-[80%]" />
+        </span>
+      </Link>
+      <div className="flex items-end justify-between gap-4">
+        <div className="flex min-w-0 flex-col gap-1.5">
+          <h3 className="font-display text-2xl font-medium leading-tight tracking-tight [overflow-wrap:anywhere]">
+            <Link href={`/productos/${product.slug}`} className="underline-offset-[5px] hover:underline">{product.name}</Link>
+          </h3>
+          <p className="font-mono text-xs uppercase tracking-widest text-muted">{product.category}</p>
+          {product.rating && (
+            <p className="flex items-center gap-1.5 text-xs text-muted">
+              <Stars value={product.rating.avg} className="text-sm" />
+              {product.rating.avg.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ({product.rating.count})
+            </p>
+          )}
+          <p className="pt-1 text-lg font-semibold">
+            {product.variants.length > 1 && <span className="text-sm font-normal text-muted">Desde </span>}
             {formatCLP(from)}
           </p>
-          <span className="grid h-9 w-9 place-items-center rounded-full border transition-all duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-on-accent">
-            →
-          </span>
         </div>
-      </Link>
-    </Tilt>
+        {quick && <QuickAdd variantId={quick.id} name={product.name} />}
+      </div>
+    </article>
   );
 }

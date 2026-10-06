@@ -28,7 +28,7 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
           {orders.map((o) => {
             const deletable = o.paymentRef === "modo-prueba" || o.status === "pendiente" || o.status === "fallido";
             return (
-              <details key={o.id} className="rounded-2xl border bg-surface">
+              <details key={o.id} className="rounded-card border bg-surface">
                 <summary className="flex cursor-pointer list-none flex-wrap items-center gap-x-4 gap-y-1 px-5 py-4 text-sm">
                   <span className="font-mono font-semibold">{o.id}</span>
                   <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${tone[o.status]}`}>{o.status}</span>
@@ -78,7 +78,7 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
                   </div>
 
                   {o.status === "pendiente" && o.paymentMethod === "transferencia" && (
-                    <form action={confirmTransfer} className="flex flex-wrap items-center gap-3 rounded-xl border border-amber-400/40 bg-amber-400/10 p-3 md:col-span-2">
+                    <form action={confirmTransfer} className="flex flex-wrap items-center gap-3 rounded-card border border-amber-400/40 bg-amber-400/10 p-3 md:col-span-2">
                       <input type="hidden" name="id" value={o.id} />
                       <p className="grow text-xs text-amber-900 dark:text-amber-100">
                         Pendiente de transferencia, con el stock reservado. Cuando veas el abono de <strong>{formatCLP(o.total)}</strong> en tu cuenta, confírmalo aquí y el cliente recibe la confirmación. Si no paga, anula el pedido y el stock vuelve.
@@ -88,7 +88,7 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
                   )}
 
                   {o.status === "pagado" && (
-                    <form action={shipOrder} className="flex flex-wrap items-end gap-2 rounded-xl border p-3 md:col-span-2">
+                    <form action={shipOrder} className="flex flex-wrap items-end gap-2 rounded-card border p-3 md:col-span-2">
                       <input type="hidden" name="id" value={o.id} />
                       <label className="grow text-xs text-muted">
                         Número de seguimiento (Chilexpress, Starken, Blue…)

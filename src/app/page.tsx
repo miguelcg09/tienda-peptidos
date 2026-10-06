@@ -1,41 +1,52 @@
-import Link from "next/link";
-import { categories, categoryMeta } from "@/lib/products";
 import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
-import { Spotlight } from "@/components/Spotlight";
-import { RotatingWord } from "@/components/RotatingWord";
-import { CountUp } from "@/components/CountUp";
-import { Reveal } from "@/components/Reveal";
-import { VialCarousel } from "@/components/VialCarousel";
 import { CatalogTabs } from "@/components/CatalogTabs";
-import { faqs } from "@/lib/faqs";
-import { latestPublished } from "@/lib/reviews";
+import { HomeHero, type HeroItem } from "@/components/HomeHero";
+import { ProductCard } from "@/components/ProductCard";
 import { Stars } from "@/components/Stars";
+import { faqs } from "@/lib/faqs";
+import { latestPublished, ratingSummary } from "@/lib/reviews";
+import { whatsappLink } from "@/lib/whatsapp";
 import { publicUrl } from "@/lib/site";
 
-const buySteps = [
-  { title: "Elige tu péptido", text: "Filtra por categoría y compara presentaciones en la misma página." },
-  { title: "Paga en pesos", text: "Transferencia bancaria o tarjeta, según lo disponible. Sin cuentas ni registros previos." },
-  { title: "Recíbelo con su COA", text: "Vial sellado, embalaje protector y el certificado del lote." },
-];
+// Con pocos productos se muestran todos juntos; con más, se agrega el filtro por línea de investigación.
+const SHOW_ALL_UP_TO = 8;
+const HERO_MAX = 6;
 
-const checks = [
-  "Identidad confirmada por espectrometría de masas",
-  "Pureza cuantificada por HPLC en cada lote",
-  "Liofilizado y sellado bajo atmósfera inerte",
-  "Trazabilidad: número de lote en cada vial",
-];
+const eyebrow = "font-mono text-xs uppercase tracking-[0.14em] text-muted";
+const h2 = "mt-3 font-display text-[clamp(2.5rem,5vw,4.25rem)] font-light leading-none tracking-[-0.03em]";
 
+// Pasos del seguimiento que ve el comprador (ejemplo ilustrativo).
+const tracking = [
+  { label: "Pedido recibido", state: "done" },
+  { label: "Preparando tu pedido", state: "done" },
+  { label: "Despachado", state: "now", note: "Seguimiento con número del courier" },
+  { label: "Entregado", state: "next" },
+] as const;
 
 export default async function Home() {
-  const [products, settings, reviews] = await Promise.all([getProducts(), getSettings(), latestPublished(6)]);
+  const [products, settings, reviews, ratings] = await Promise.all([getProducts(), getSettings(), latestPublished(6), ratingSummary()]);
+  if (!products.length) return <p className="p-12 text-center text-muted">Aún no hay productos publicados.</p>;
+
   const nameOf = (slug: string) => products.find((p) => p.slug === slug)?.name ?? "";
-  const featured = products.filter((p) => p.featured).slice(0, 4);
-  const spotlight = featured[0] ?? products[0];
-  if (!spotlight) return <p className="p-12 text-center text-muted">Aún no hay productos publicados.</p>;
-  if (featured.length === 0) featured.push(spotlight);
-  const present = categories.filter((c) => products.some((p) => p.category === c));
-  const lines = present.map((c) => c.toLowerCase());
+  // La portada muestra hasta seis piezas (las destacadas primero); la colección de abajo las trae todas.
+  const hero = [...products].sort((a, b) => Number(!!b.featured) - Number(!!a.featured)).slice(0, HERO_MAX);
+  const items: HeroItem[] = hero.map((p) => ({
+    slug: p.slug,
+    name: p.name,
+    category: p.category,
+    color: p.color,
+    imageUrl: p.imageUrl,
+    lot: p.lot,
+    form: p.form,
+    format: p.variants[0]?.label ?? "",
+    from: Math.min(...p.variants.map((v) => v.price)),
+    multi: p.variants.length > 1,
+  }));
+  const wa = whatsappLink(settings.whatsapp, "Hola, tengo una consulta sobre un producto.");
+  const contactHref = wa || `mailto:${settings.email}`;
+  const totalReviews = Object.values(ratings).reduce((n, r) => n + r.count, 0);
+  const avgReviews = totalReviews ? Object.values(ratings).reduce((n, r) => n + r.avg * r.count, 0) / totalReviews : 0;
 
   const site = publicUrl();
   const orgLd = {
@@ -59,229 +70,121 @@ export default async function Home() {
       },
     ],
   };
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }} />
-      {/* Portada: titular a la izquierda con palabra que rota, destacados rotativos a la derecha */}
-      <section className="hero-spot relative overflow-hidden border-b bg-surface-2" data-spot>
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 md:grid-cols-[1.15fr_1fr] md:py-20">
-          <div>
-            <Reveal>
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">Laboratorio · Chile</p>
-            </Reveal>
-            <h1 className="mt-5 font-display text-5xl font-bold leading-[0.98] tracking-tight md:text-7xl">
-              {/* Cada palabra entra por separado, con un pequeño retraso entre una y otra */}
-              {"Péptidos para investigar".split(" ").map((w, i) => (
-                <span key={w} className="word-wrap mr-[0.25em]">
-                  <span className="word-in" style={{ animationDelay: `${120 + i * 110}ms` }}>{w}</span>
-                </span>
-              ))}
-              <br />
-              <span className="word-wrap">
-                <span className="word-in" style={{ animationDelay: "480ms" }}>
-                  <RotatingWord words={lines} className="text-accent" />
-                </span>
-              </span>
-            </h1>
-            <Reveal delay={160}>
-              <p className="mt-6 max-w-lg text-lg text-muted">
-                Reactivos de grado investigación con certificado de análisis por lote. Compra en pesos y recibe en Chile en 24–72 h.
-              </p>
-            </Reveal>
-            <Reveal delay={240}>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="#catalogo" className="btn-primary">Explorar catálogo</Link>
-                <Link href="#garantia" className="btn-ghost">Cómo verificamos</Link>
-              </div>
-              <p className="mt-4 inline-flex items-center gap-2 rounded-full border bg-surface px-3 py-1 text-xs text-muted">
-                <span className="pulse-dot" aria-hidden /> Solo para uso en investigación · Envíos a todo Chile
-              </p>
-            </Reveal>
-            <Reveal delay={320}>
-              <dl className="mt-10 grid max-w-md grid-cols-3 gap-4 border-t pt-6">
-                {[
-                  { v: <CountUp value={98} prefix="≥ " suffix="%" />, l: "pureza mínima por HPLC" },
-                  { v: <CountUp value={products.length} />, l: "productos en stock" },
-                  { v: <CountUp value={100} suffix="%" />, l: "lotes con certificado" },
-                ].map((st, i) => (
-                  <div key={i}>
-                    <dd className="whitespace-nowrap font-display text-2xl font-bold text-fg sm:text-3xl">{st.v}</dd>
-                    <dt className="mt-1 text-xs text-muted">{st.l}</dt>
-                  </div>
-                ))}
-              </dl>
-            </Reveal>
-          </div>
-          <Reveal delay={200}>
-            <Spotlight items={featured} />
-          </Reveal>
-        </div>
-      </section>
 
-      {/* Líneas de investigación: una tarjeta por categoría */}
-      <section className="mx-auto max-w-6xl px-4 pt-12">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {present.map((c, i) => (
-            <Reveal key={c} delay={i * 70}>
-              <Link
-                href={`/productos?categoria=${encodeURIComponent(c)}`}
-                className="group flex items-center gap-4 rounded-card border bg-surface p-4 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg"
-              >
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-xl" style={{ background: `${categoryMeta[c].color}26` }}>
-                  {categoryMeta[c].icon}
-                </span>
-                <span className="min-w-0">
-                  <span className="block truncate font-semibold">{c}</span>
-                  <span className="block text-xs text-muted">{(() => { const n = products.filter((p) => p.category === c).length; return `${n} ${n === 1 ? "producto" : "productos"}`; })()} · {categoryMeta[c].blurb}</span>
-                </span>
-                <span className="ml-auto text-muted transition group-hover:translate-x-1 group-hover:text-accent">→</span>
-              </Link>
-            </Reveal>
-          ))}
-        </div>
-      </section>
+      <HomeHero items={items} total={products.length} />
 
-      {/* Cómo comprar: tres pasos en línea */}
-      <section className="mx-auto max-w-6xl px-4 py-12">
-        <ol className="grid gap-4 md:grid-cols-3">
-          {buySteps.map((s, i) => (
-            <Reveal key={s.title} delay={i * 90}>
-              <li className="flex gap-4 rounded-card border bg-surface p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-accent to-accent-2 font-display font-bold text-on-accent">
-                  {i + 1}
-                </span>
-                <div>
-                  <p className="font-semibold">{s.title}</p>
-                  <p className="mt-1 text-sm text-muted">{s.text}</p>
-                </div>
-              </li>
-            </Reveal>
-          ))}
-        </ol>
-      </section>
-
-      {/* Catálogo con pestañas */}
-      <section id="catalogo" className="mx-auto max-w-6xl scroll-mt-28 px-4 py-16">
-        <Reveal className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Catálogo</p>
-            <h2 className="sweep mt-2 font-display text-3xl font-bold md:text-4xl">Elige por línea de investigación</h2>
-          </div>
-          <p className="max-w-sm text-sm text-muted">
-            {products.length} {products.length === 1 ? "producto" : "productos"} en stock en Chile. Cada ficha incluye pureza, formato y presentaciones disponibles.
-          </p>
-        </Reveal>
-        <div className="mt-10">
-          <CatalogTabs products={products} />
-        </div>
-      </section>
-
-      {/* Garantía: texto largo a la izquierda, certificado ilustrado a la derecha */}
-      <section id="garantia" className="band relative scroll-mt-28 py-20">
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 md:grid-cols-[1.2fr_1fr]">
-          <Reveal>
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Garantía de análisis</p>
-            <h2 className="sweep mt-2 font-display text-3xl font-bold md:text-4xl">
-              El certificado viaja <span className="text-gradient">con el vial</span>
-            </h2>
-            <p className="mt-5 text-muted">
-              No publicamos promedios ni fichas genéricas. Cada lote que despachamos tiene su propio informe, con la
-              fecha del análisis y el número que aparece impreso en la etiqueta.
+      {/* La colección: todas las piezas juntas */}
+      <section id="coleccion" aria-labelledby="titulo-coleccion" className="scroll-mt-4">
+        <div className="mx-auto flex max-w-[1280px] flex-col gap-14 px-4 py-24 md:px-12 md:py-28">
+          <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
+            <h2 id="titulo-coleccion" className="font-display text-[clamp(2.5rem,5vw,4.25rem)] font-light leading-none tracking-[-0.03em]">La colección</h2>
+            <p className="max-w-[40ch] text-lg text-muted">
+              {products.length === 1 ? "Una pieza" : `${products.length} piezas`}, cada una con su número de lote impreso en el vial.
             </p>
-            <ul className="mt-6 space-y-3">
-              {checks.map((c) => (
-                <li key={c} className="flex items-start gap-3 text-sm">
-                  <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-accent/15 text-xs text-accent">✓</span>
-                  {c}
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-          <Reveal delay={120}>
-            {/* Ilustración de un certificado de análisis (reemplazar por uno real) */}
-            <div className="rotate-2 rounded-card border bg-surface p-6 shadow-lg transition-transform duration-500 hover:rotate-0">
-              <div className="flex items-center justify-between border-b pb-3">
-                <p className="font-display font-bold">Certificado de análisis</p>
-                <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[0.8125rem] font-semibold uppercase tracking-wider text-accent">Aprobado</span>
-              </div>
-              <dl className="mt-4 grid grid-cols-2 gap-y-3 text-sm">
-                <dt className="text-muted">Producto</dt><dd className="text-right font-medium">{spotlight.name}</dd>
-                <dt className="text-muted">Lote</dt><dd className="text-right font-medium">HX-2409-A</dd>
-                <dt className="text-muted">Pureza (HPLC)</dt><dd className="text-right font-medium text-accent">99,4%</dd>
-                <dt className="text-muted">Masa (MS)</dt><dd className="text-right font-medium">Conforme</dd>
-                <dt className="text-muted">Aspecto</dt><dd className="text-right font-medium">Polvo blanco</dd>
-              </dl>
-              <div className="mt-5 h-16 rounded-lg border border-dashed" aria-hidden />
-              <p className="mt-3 text-[0.8125rem] text-muted">Ejemplo ilustrativo. El COA real se entrega con cada pedido.</p>
-              <Link href="/certificados" className="btn-ghost mt-4 w-full text-sm">Ver certificados por lote</Link>
+          </div>
+          {products.length > SHOW_ALL_UP_TO ? (
+            <CatalogTabs products={products} />
+          ) : (
+            <div className="grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3" data-testid="catalogo-portada">
+              {products.map((p, i) => <ProductCard key={p.slug} product={p} index={i} />)}
             </div>
-          </Reveal>
+          )}
         </div>
       </section>
 
-      {/* Vitrina 3D */}
-      <section className="relative overflow-hidden py-12">
-        <Reveal className="relative mx-auto max-w-6xl px-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Vitrina</p>
-          <h2 className="sweep mt-2 font-display text-3xl font-bold md:text-4xl">Gira la línea completa</h2>
-        </Reveal>
-        <div className="relative mt-2">
-          <VialCarousel items={products.slice(0, 8)} />
-        </div>
-      </section>
-
-      {/* Opiniones de compradores verificados: solo aparece con al menos tres reseñas con comentario */}
+      {/* Opiniones de compradores verificados: solo con al menos tres reseñas con comentario */}
       {reviews.length >= 3 && (
-        <section className="mx-auto max-w-6xl px-4 pt-4" id="opiniones">
-          <Reveal>
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Opiniones</p>
-            <h2 className="sweep mt-2 font-display text-3xl font-bold md:text-4xl">Lo que dicen quienes ya compraron</h2>
-          </Reveal>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {reviews.slice(0, 3).map((r, i) => (
-              <Reveal key={r.id} delay={i * 80} className="h-full">
-                <figure className="flex h-full flex-col rounded-card border bg-surface p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg">
-                  <Stars value={r.rating} className="text-lg" />
-                  <blockquote className="mt-3 grow text-sm text-muted">“{r.body}”</blockquote>
-                  <figcaption className="mt-4 text-xs">
-                    <span className="font-semibold">{r.name}</span> · {nameOf(r.productSlug)} · <span className="text-accent">Compra verificada</span>
-                  </figcaption>
-                </figure>
-              </Reveal>
+        <section id="opiniones" aria-labelledby="titulo-opiniones" className="mx-auto max-w-[1280px] px-4 pb-24 md:px-12 md:pb-28">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className={eyebrow}>Opiniones</p>
+              <h2 id="titulo-opiniones" className={h2}>Compradores verificados</h2>
+            </div>
+            <p className="flex items-center gap-2 text-sm text-muted">
+              <Stars value={avgReviews} className="text-lg" />
+              <span><strong className="text-fg">{avgReviews.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</strong> de 5 · {totalReviews} {totalReviews === 1 ? "reseña" : "reseñas"}</span>
+            </p>
+          </div>
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            {reviews.slice(0, 3).map((r) => (
+              <figure key={r.id} className="flex h-full flex-col rounded-card bg-surface p-6">
+                <Stars value={r.rating} className="text-lg" />
+                <blockquote className="mt-3 grow text-base text-muted">“{r.body}”</blockquote>
+                <figcaption className="mt-5 text-sm">
+                  <span className="font-semibold">{r.name}</span> · {nameOf(r.productSlug)} · <span className="font-mono text-xs uppercase tracking-wider text-muted">Compra verificada</span>
+                </figcaption>
+              </figure>
             ))}
           </div>
         </section>
       )}
 
-      {/* Preguntas: dos columnas de tarjetas */}
-      <section id="faq" className="mx-auto max-w-6xl scroll-mt-28 px-4 py-16">
-        <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Antes de comprar</p>
-          <h2 className="sweep mt-2 font-display text-3xl font-bold md:text-4xl">Lo que más nos preguntan</h2>
-        </Reveal>
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          {faqs.map((f, i) => (
-            <Reveal key={f.q} delay={i * 50} className="h-full">
-              <div className="h-full rounded-card border bg-surface p-5 transition-all hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-lg">
-                <p className="font-semibold">{f.q}</p>
-                <p className="mt-2 text-sm text-muted">{f.a}</p>
+      {/* Después de comprar: el despacho */}
+      <section id="despacho" aria-labelledby="titulo-despacho" className="scroll-mt-4 bg-[#0b0f10] text-[#f4f6f6] dark:border-y dark:border-white/10">
+        <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-16 gap-y-14 px-4 py-24 md:px-12 md:py-28">
+          <div className="flex min-w-0 flex-[1_1_420px] flex-col gap-7">
+            <p className="font-mono text-xs uppercase tracking-[0.14em] text-[#9aa7ab]">Después de comprar</p>
+            <h2 id="titulo-despacho" className="font-display text-[clamp(2.75rem,6vw,5.5rem)] font-light leading-[0.98] tracking-[-0.035em]">
+              Un vial. Un lote. Un despacho.
+            </h2>
+            <p className="max-w-[38ch] text-lg leading-relaxed text-[#c4ced1]">
+              Cada pedido sale con número de seguimiento a todo Chile. Si algo llega dañado, avísanos dentro de 48 horas y lo resolvemos.
+            </p>
+            <p className="text-sm text-[#9aa7ab]">{settings.shippingNote}</p>
+          </div>
+          <div className="flex min-w-0 flex-[1_1_380px] justify-center">
+            <div className="w-full max-w-[460px] rounded-card bg-[#151b1d] p-7 pb-8" aria-label="Ejemplo de seguimiento de un pedido">
+              <div className="flex items-center justify-between gap-3">
+                <span className="font-mono text-sm tracking-wider">PEDIDO HX-10482</span>
+                <span className="rounded-[3px] bg-[#f4f6f6] px-2.5 py-1 font-mono text-[0.7rem] tracking-widest text-[#0b0f10]">EJEMPLO</span>
               </div>
-            </Reveal>
-          ))}
+              <ol className="mt-7 flex flex-col">
+                {tracking.map((t, i) => {
+                  const last = i === tracking.length - 1;
+                  const line = t.state === "done" ? "border-[#f4f6f6]" : t.state === "now" ? "border-[#3a4548]" : "border-transparent";
+                  return (
+                    <li key={t.label} className={`relative border-l-2 pl-6 ${last ? "" : "pb-7"} ${line}`} aria-current={t.state === "now" ? "step" : undefined}>
+                      <span
+                        aria-hidden
+                        className={`absolute rounded-full ${
+                          t.state === "now" ? "-left-[9px] top-0.5 h-4 w-4 border-[3px] border-[#f4f6f6] bg-[#0b0f10]"
+                          : t.state === "done" ? "-left-[7px] top-1 h-3 w-3 bg-[#f4f6f6]"
+                          : "-left-[7px] top-1 h-3 w-3 border-2 border-[#5e6a6e]"
+                        }`}
+                      />
+                      <p className={`text-lg ${t.state === "now" ? "font-semibold" : "font-medium"} ${t.state === "next" ? "text-[#7c898d]" : ""}`}>{t.label}</p>
+                      {"note" in t && <p className="pt-1.5 font-mono text-xs text-[#c4ced1]">{t.note}</p>}
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Contacto */}
-      <section className="mx-auto max-w-6xl px-4 pt-4">
-        <Reveal>
-          <div className="relative rounded-[calc(var(--r-card)*1.5)] border bg-surface-2 px-6 py-12 md:flex md:items-center md:justify-between md:px-12">
-            <div className="relative">
-              <h2 className="font-display text-2xl font-bold md:text-3xl">¿Necesitas un péptido que no ves aquí?</h2>
-              <p className="mt-2 max-w-md text-muted">Cotizamos síntesis a pedido y compras por volumen para laboratorios.</p>
-            </div>
-            <a href={`mailto:${settings.email}`} className="btn-primary relative mt-6 md:mt-0">Escríbenos</a>
-          </div>
-        </Reveal>
+      {/* Preguntas frecuentes: la primera abierta */}
+      <section id="faq" aria-labelledby="titulo-faq" className="mx-auto max-w-3xl scroll-mt-4 px-4 py-24 md:py-28">
+        <p className={eyebrow}>Antes de comprar</p>
+        <h2 id="titulo-faq" className={h2}>Preguntas frecuentes</h2>
+        <div className="mt-10 divide-y rounded-card bg-surface" data-testid="faq-portada">
+          {faqs.map((f, i) => (
+            <details key={f.q} open={i === 0} className="group px-6 py-5">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-medium">
+                {f.q}
+                <span className="font-mono text-xl transition group-open:rotate-45" aria-hidden>+</span>
+              </summary>
+              <p className="mt-2 text-muted">{f.a}</p>
+            </details>
+          ))}
+        </div>
+        <p className="mt-6 text-sm text-muted">
+          ¿Otra duda? <a href={contactHref} className="font-medium text-fg underline underline-offset-4">Escríbenos</a> y te respondemos.
+        </p>
       </section>
     </>
   );

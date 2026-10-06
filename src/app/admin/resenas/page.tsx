@@ -32,7 +32,7 @@ export default async function Resenas() {
       ) : (
         <ul className="mt-8 space-y-3">
           {reviews.map((r) => (
-            <li key={r.id} className="rounded-2xl border bg-surface p-4 text-sm">
+            <li key={r.id} className="rounded-card border bg-surface p-4 text-sm">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <Stars value={r.rating} className="text-base" />
                 <span className="font-semibold">{nameOf(r.productSlug)}</span>

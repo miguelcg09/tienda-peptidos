@@ -80,13 +80,13 @@ function Seguimiento() {
         </label>
         <button disabled={loading} className="btn-primary self-end">{loading ? "Buscando…" : "Buscar"}</button>
       </form>
-      {error && <p className="mt-4 rounded-xl bg-red-500/10 p-3 text-sm text-red-600 dark:text-red-300">{error}</p>}
+      {error && <p className="mt-4 rounded-card bg-red-500/10 p-3 text-sm text-red-600 dark:text-red-300">{error}</p>}
 
       {data && (
-        <div className="mt-10 rounded-3xl border bg-surface p-6">
+        <div className="mt-10 rounded-card border bg-surface p-6">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="font-display text-2xl font-bold">Pedido {data.id}</h2>
-            <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
+            <span className={`rounded-btn px-3 py-1 text-xs font-semibold ${
               data.status === "fallido" ? "bg-red-500/15 text-red-600 dark:text-red-300" : data.status === "pendiente" ? "bg-amber-400/15 text-amber-700 dark:text-amber-200" : "bg-accent/15 text-accent"
             }`}>
               {{ pendiente: "Pago pendiente", pagado: "Pagado, preparando envío", despachado: "Despachado", fallido: "Pago no completado" }[data.status]}
@@ -97,7 +97,7 @@ function Seguimiento() {
           {data.status !== "fallido" && (
             <ol className="mt-6 grid gap-3 sm:grid-cols-3">
               {steps.map((s, i) => (
-                <li key={s.label} className={`rounded-2xl border p-4 ${s.done ? "border-accent/40 bg-accent/5" : "opacity-60"}`}>
+                <li key={s.label} className={`rounded-card border p-4 ${s.done ? "border-accent/40 bg-accent/5" : "opacity-60"}`}>
                   <span className={`grid h-7 w-7 place-items-center rounded-full text-xs font-bold ${s.done ? "bg-accent text-on-accent" : "border"}`}>{s.done ? "✓" : i + 1}</span>
                   <p className="mt-3 font-semibold">{s.label}</p>
                   {s.when && data.verified && <p className="text-xs text-muted">{s.when}</p>}
@@ -107,7 +107,7 @@ function Seguimiento() {
           )}
 
           {data.status === "despachado" && (
-            <div className="mt-6 rounded-2xl border bg-surface-2 p-4">
+            <div className="mt-6 rounded-card border bg-surface-2 p-4">
               <p className="text-xs font-semibold uppercase tracking-widest text-muted">Número de seguimiento</p>
               {data.verified ? (
                 <p className="mt-1 font-mono text-lg">{data.tracking ?? "—"}</p>

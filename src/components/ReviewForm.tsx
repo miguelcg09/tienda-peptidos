@@ -31,7 +31,7 @@ function One({ orden, email, item }: { orden: string; email: string; item: Revie
   }
 
   return (
-    <form onSubmit={submit} className="rounded-2xl border bg-surface p-4" data-testid={`resena-${item.slug}`}>
+    <form onSubmit={submit} className="rounded-card border bg-surface p-4" data-testid={`resena-${item.slug}`}>
       <p className="font-semibold">{item.name}</p>
       {state === "ok" ? (
         <p className="mt-2 text-sm text-accent" role="status">{msg}</p>

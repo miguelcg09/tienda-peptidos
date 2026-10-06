@@ -92,7 +92,7 @@ function Exito() {
       </p>
 
       {transfer && !paid && !failed && (
-        <div className="mt-8 rounded-2xl border border-accent/30 bg-accent/5 p-5 text-left text-sm" data-testid="transferencia">
+        <div className="mt-8 rounded-card border border-accent/30 bg-accent/5 p-5 text-left text-sm" data-testid="transferencia">
           <p className="font-semibold">Transfiere {summary ? <span className="text-accent">{formatCLP(summary.total)}</span> : "el total"} a esta cuenta:</p>
           <dl className="mt-3 grid gap-1 sm:grid-cols-[150px_1fr]">
             {bank.map(([k, v]) => (
@@ -108,13 +108,13 @@ function Exito() {
           <div className="mt-4 flex flex-wrap gap-2">
             {wa && <a href={wa} target="_blank" rel="noreferrer" className="btn-primary text-sm">Enviar comprobante por WhatsApp</a>}
             <a href={`mailto:${settings.bankEmail || settings.email}?subject=${encodeURIComponent(`Comprobante pedido ${orderId}`)}`} className="btn-ghost text-sm">Enviar por correo</a>
-            <button type="button" onClick={copy} className="rounded-xl border px-4 py-2 text-sm transition hover:border-accent">{copied ? "Copiado ✓" : "Copiar datos"}</button>
+            <button type="button" onClick={copy} className="rounded-card border px-4 py-2 text-sm transition hover:border-accent">{copied ? "Copiado ✓" : "Copiar datos"}</button>
           </div>
         </div>
       )}
 
       {summary && (
-        <div className="glass mt-8 rounded-2xl p-5 text-left text-sm">
+        <div className="glass mt-8 rounded-card p-5 text-left text-sm">
           <ul className="space-y-2">
             {summary.items.map((i) => (
               <li key={i.variantId} className="flex justify-between gap-4">

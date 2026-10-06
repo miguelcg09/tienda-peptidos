@@ -22,7 +22,7 @@ export function ResearchGate() {
 
   return (
     <div className="animate-fade fixed inset-0 z-[60] grid place-items-center bg-black/70 p-4 backdrop-blur-md">
-      <div className="relative max-w-md overflow-hidden rounded-3xl border bg-surface p-7 shadow-2xl">
+      <div className="relative max-w-md overflow-hidden rounded-card border bg-surface p-7 shadow-2xl">
         <p className="relative text-xs font-semibold uppercase tracking-[0.2em] text-accent">Aviso importante</p>
         <h2 className="relative mt-2 font-display text-2xl font-bold">Solo para investigación</h2>
         <p className="relative mt-3 text-sm text-muted">{settings.disclaimer}</p>

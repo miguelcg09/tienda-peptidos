@@ -31,7 +31,7 @@ export function CartDrawer() {
               <div className="px-5 pt-4 text-sm text-muted">
                 <p>Te faltan <strong>{formatCLP(missing)}</strong> para envío gratis.</p>
                 <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-tint/5">
-                  <div className="h-full rounded-full bg-gradient-to-r from-accent to-accent-2 transition-all duration-500" style={{ width: `${Math.min(100, (subtotal / settings.freeShippingFrom) * 100)}%` }} />
+                  <div className="h-full rounded-full bg-accent transition-all duration-500" style={{ width: `${Math.min(100, (subtotal / settings.freeShippingFrom) * 100)}%` }} />
                 </div>
               </div>
             )}

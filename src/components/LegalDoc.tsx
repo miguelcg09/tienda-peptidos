@@ -35,7 +35,7 @@ export function LegalDoc({ title, text, settings, current }: { title: string; te
     <article className="mx-auto max-w-3xl px-4 py-12 text-fg/80">
       <nav className="flex flex-wrap gap-2 text-xs">
         {docs.map((d) => (
-          <Link key={d.href} href={d.href} className={`rounded-full border px-3 py-1 transition ${d.href === current ? "border-accent bg-accent text-on-accent" : "text-muted hover:border-accent hover:text-fg"}`}>
+          <Link key={d.href} href={d.href} className={`rounded-btn border px-3 py-1 transition ${d.href === current ? "border-accent bg-accent text-on-accent" : "text-muted hover:border-accent hover:text-fg"}`}>
             {d.label}
           </Link>
         ))}
@@ -47,7 +47,7 @@ export function LegalDoc({ title, text, settings, current }: { title: string; te
         if (n.kind === "ul") return <ul key={i} className="mt-2 list-disc space-y-1 pl-6">{n.items.map((it, j) => <li key={j}>{it}</li>)}</ul>;
         return n.text ? <p key={i} className="mt-3 leading-relaxed">{n.text}</p> : null;
       })}
-      <p className="mt-10 rounded-2xl border bg-surface p-4 text-sm">
+      <p className="mt-10 rounded-card border bg-surface p-4 text-sm">
         ¿Dudas sobre este documento? Escríbenos a <a href={`mailto:${settings.email}`} className="font-medium text-accent">{settings.email}</a>.
       </p>
     </article>

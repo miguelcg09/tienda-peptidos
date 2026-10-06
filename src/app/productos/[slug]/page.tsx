@@ -111,7 +111,7 @@ export default async function ProductPage({ params }: Props) {
 
       <ProductStage product={product} settings={settings} index={index}>
         {/* Franja de datos técnicos */}
-        <dl className="mb-10 grid grid-cols-2 gap-y-4 rounded-2xl border bg-surface p-5 text-sm sm:grid-cols-[1.6fr_1fr_1fr_1fr_1fr] sm:divide-x sm:gap-y-0">
+        <dl className="mb-10 grid grid-cols-2 gap-y-4 rounded-card border bg-surface p-5 text-sm sm:grid-cols-[1.6fr_1fr_1fr_1fr_1fr] sm:divide-x sm:gap-y-0">
           {specs.map(([k, v]) => (
             <div key={k} className="sm:px-4 sm:first:pl-0 sm:last:pr-0">
               <dt className="text-[0.8125rem] font-semibold uppercase tracking-widest text-muted">{k}</dt>
@@ -123,7 +123,7 @@ export default async function ProductPage({ params }: Props) {
         <Section id="resumen" n={1} title="Resumen">
           <p className="text-lg leading-relaxed">{product.short}</p>
           <Paragraphs text={product.description} />
-          <p className="mt-6 rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-800 dark:text-amber-200">
+          <p className="mt-6 rounded-card border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-800 dark:text-amber-200">
             <strong>Solo para uso en investigación.</strong> {settings.disclaimer}
           </p>
         </Section>
@@ -143,7 +143,7 @@ export default async function ProductPage({ params }: Props) {
           {product.coaUrl ? (
             <a href={product.coaUrl} target="_blank" rel="noreferrer" className="btn-primary mt-5">Ver certificado del lote actual</a>
           ) : (
-            <p className="mt-5 rounded-2xl border bg-surface p-4 text-sm">
+            <p className="mt-5 rounded-card border bg-surface p-4 text-sm">
               ¿Quieres verlo antes de comprar? Escríbenos a{" "}
               <a href={`mailto:${settings.email}?subject=COA ${product.name}`} className="font-medium text-accent">{settings.email}</a>{" "}
               indicando el producto y te lo enviamos.
@@ -151,7 +151,7 @@ export default async function ProductPage({ params }: Props) {
           )}
           <dl className="mt-6 grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
             {[["Método de pureza", "HPLC"], ["Identidad", "Espectrometría de masas"], ["Pureza declarada", product.purity]].map(([k, v]) => (
-              <div key={k} className="rounded-xl border bg-surface p-3"><dt className="text-xs text-muted">{k}</dt><dd className="mt-1 font-medium">{v}</dd></div>
+              <div key={k} className="rounded-card border bg-surface p-3"><dt className="text-xs text-muted">{k}</dt><dd className="mt-1 font-medium">{v}</dd></div>
             ))}
           </dl>
         </Section>
@@ -183,11 +183,11 @@ export default async function ProductPage({ params }: Props) {
               </p>
               <ul className="mt-5 grid gap-3">
                 {reviews.map((r) => (
-                  <li key={r.id} className="rounded-2xl border bg-surface p-4 text-sm">
+                  <li key={r.id} className="rounded-card border bg-surface p-4 text-sm">
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                       <Stars value={r.rating} className="text-base" />
                       <span className="font-semibold">{r.name}</span>
-                      <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[0.8125rem] font-medium text-accent">Compra verificada</span>
+                      <span className="rounded-btn bg-accent/10 px-2 py-0.5 text-[0.8125rem] font-medium text-accent">Compra verificada</span>
                       <span className="ml-auto text-xs text-muted">{new Date(r.createdAt).toLocaleDateString("es-CL", { timeZone: "America/Santiago", day: "numeric", month: "long", year: "numeric" })}</span>
                     </div>
                     {r.body && <p className="mt-2 whitespace-pre-line text-muted">{r.body}</p>}
@@ -206,7 +206,7 @@ export default async function ProductPage({ params }: Props) {
         <Section id="preguntas" n={6} title="Preguntas frecuentes">
           <div className="grid gap-3">
             {faqs.map((f) => (
-              <details key={f.q} className="group rounded-2xl border bg-surface p-4">
+              <details key={f.q} className="group rounded-card border bg-surface p-4">
                 <summary className="flex cursor-pointer list-none items-center justify-between font-semibold">
                   {f.q}
                   <span className="text-muted transition group-open:rotate-45">+</span>

@@ -25,7 +25,7 @@ export default async function Suscriptores() {
       {subs.length === 0 ? (
         <p className="mt-10 text-muted">Todavía nadie ha dejado su correo.</p>
       ) : (
-        <div className="mt-8 overflow-x-auto rounded-2xl border bg-surface">
+        <div className="mt-8 overflow-x-auto rounded-card border bg-surface">
           <table className="w-full text-sm">
             <thead className="text-left text-xs uppercase tracking-wider text-muted">
               <tr>{["Correo", "Origen", "Fecha", ""].map((h) => <th key={h} className="px-4 py-3 font-medium">{h}</th>)}</tr>

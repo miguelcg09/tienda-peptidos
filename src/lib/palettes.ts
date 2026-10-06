@@ -25,20 +25,20 @@ export type Palette = { id: string; name: string; blurb: string; light: Tokens; 
 
 export const palettes: Palette[] = [
   {
-    id: "lab",
-    name: "Laboratorio",
-    blurb: "Blanco limpio con azul y naranja. Clara, ordenada y con botones llamativos.",
+    id: "vitrina",
+    name: "Vitrina",
+    blurb: "Hielo y tinta, con el color de cada producto como único acento. Moderna y silenciosa.",
     light: {
-      bg: "#ffffff", surface: "#ffffff", surface2: "#f6f8fc", line: "rgb(17 24 39 / 0.1)",
-      fg: "#111827", muted: "#6b7280", accent: "#1e40af", accent2: "#f97316", badge: "#c2410c",
-      tint: "#111827", onAccent: "#ffffff", glow: "30 64 175", grain: "0.03",
-      btnFrom: "#f97316", btnTo: "#ea580c", rCard: "1rem", rBtn: "0.75rem",
+      bg: "#f4f6f6", surface: "#ffffff", surface2: "#e9eeee", line: "rgb(11 15 16 / 0.12)",
+      fg: "#0b0f10", muted: "#5b676b", accent: "#0b0f10", accent2: "#2e5aac", badge: "#2e5aac",
+      tint: "#0b0f10", onAccent: "#f4f6f6", glow: "11 15 16", grain: "0",
+      btnFrom: "#0b0f10", btnTo: "#0b0f10", rCard: "0.375rem", rBtn: "0.25rem",
     },
     dark: {
-      bg: "#0b1220", surface: "#111a2e", surface2: "#172038", line: "rgb(148 163 184 / 0.18)",
-      fg: "#f3f6fb", muted: "#9aa6bd", accent: "#60a5fa", accent2: "#fb923c", badge: "#fdba74",
-      tint: "#ffffff", onAccent: "#0b1220", glow: "96 165 250", grain: "0.05",
-      btnFrom: "#fb923c", btnTo: "#f97316", rCard: "1rem", rBtn: "0.75rem",
+      bg: "#0b0f10", surface: "#151b1d", surface2: "#1c2326", line: "rgb(244 246 246 / 0.14)",
+      fg: "#f4f6f6", muted: "#9aa7ab", accent: "#f4f6f6", accent2: "#7fa4e8", badge: "#7fa4e8",
+      tint: "#f4f6f6", onAccent: "#0b0f10", glow: "244 246 246", grain: "0",
+      btnFrom: "#f4f6f6", btnTo: "#f4f6f6", rCard: "0.375rem", rBtn: "0.25rem",
     },
   },
   {

@@ -39,7 +39,7 @@ export default function Guias() {
         <ol className="mt-5 space-y-3">
           {steps.map(([t, d], i) => (
             <li key={t} className="flex gap-4 rounded-card border bg-surface p-4">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-accent to-accent-2 font-display font-bold text-on-accent">{i + 1}</span>
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-btn bg-accent font-display font-medium text-on-accent">{i + 1}</span>
               <div><p className="font-semibold">{t}</p><p className="mt-1 text-sm text-muted">{d}</p></div>
             </li>
           ))}
@@ -69,7 +69,7 @@ export default function Guias() {
         <p className="mt-4 text-sm"><Link href="/calculadora" className="text-accent hover:underline">Calculadora de reconstitución →</Link></p>
       </section>
 
-      <p className="mt-14 rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-800 dark:text-amber-200">
+      <p className="mt-14 rounded-card border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-800 dark:text-amber-200">
         <strong>Solo para uso en investigación.</strong> Esta información es técnica y de manipulación de laboratorio; no describe usos, dosis ni efectos en personas o animales.
       </p>
     </div>

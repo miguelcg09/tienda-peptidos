@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { formatCLP, type Product } from "@/lib/products";
 import type { Settings } from "@/lib/config";
 import { useCart } from "./CartProvider";
+import { onColor } from "@/lib/colors";
 import { ProductImage } from "./ProductImage";
 import { Newsletter } from "./Newsletter";
 import { Stars } from "./Stars";
@@ -61,38 +62,30 @@ export function ProductStage({
 
   return (
     <>
-      {/* Portada: texto a la izquierda, vial grande a la derecha sobre un panel del color del producto */}
-      <section className="relative overflow-hidden rounded-[2.5rem] border bg-surface">
-        <div
-          className="pointer-events-none absolute inset-y-0 right-0 w-full md:w-1/2"
-          style={{ background: `linear-gradient(135deg, transparent 0%, ${product.color}22 60%, ${product.color}55 100%)` }}
-          aria-hidden
-        />
+      {/* Portada: campo plano del color del producto, texto a la izquierda y vial a la derecha */}
+      <section className="relative overflow-hidden rounded-card" style={{ background: product.color, color: onColor(product.color) }}>
         <div className="relative grid gap-8 p-6 md:grid-cols-[1.1fr_1fr] md:p-12">
           <div className="flex flex-col justify-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">{product.category}</p>
-            <h1 className="mt-3 font-display text-5xl font-bold leading-[0.95] tracking-tight md:text-7xl">{product.name}</h1>
-            <p className="mt-5 max-w-md text-lg text-muted">{product.short}</p>
+            <p className="font-mono text-xs uppercase tracking-[0.18em] opacity-80">{product.category}</p>
+            <h1 className="mt-3 font-display text-5xl font-medium leading-[0.98] tracking-tight md:text-7xl">{product.name}</h1>
+            <p className="mt-5 max-w-md text-lg opacity-90">{product.short}</p>
             <ul className="mt-6 flex flex-wrap gap-2 text-xs font-medium">
-              <li className={`rounded-full px-3 py-1.5 ${soldOut ? "bg-red-500/15 text-red-600 dark:text-red-300" : "bg-accent text-on-accent"}`}>{stockLine}</li>
-              <li className="rounded-full border bg-surface px-3 py-1.5">Pureza {product.purity.replace(" (HPLC)", "")}</li>
-              <li className="rounded-full border bg-surface px-3 py-1.5">COA por lote</li>
+              <li className="rounded-btn bg-[#0b0f10] px-3 py-1.5 text-[#f4f6f6]">{stockLine}</li>
+              <li className="rounded-btn border border-current px-3 py-1.5">Pureza {product.purity.replace(" (HPLC)", "")}</li>
+              <li className="rounded-btn border border-current px-3 py-1.5">COA por lote</li>
               {product.rating && (
                 <li>
-                  <a href="#resenas" className="flex items-center gap-1.5 rounded-full border bg-surface px-3 py-1.5 transition hover:border-accent">
+                  <a href="#resenas" className="flex items-center gap-1.5 rounded-btn border border-current px-3 py-1.5 transition-opacity hover:opacity-70">
                     <Stars value={product.rating.avg} className="text-sm" />
                     {product.rating.avg.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} · {product.rating.count} {product.rating.count === 1 ? "reseña" : "reseñas"}
                   </a>
                 </li>
               )}
-              {product.cas && <li className="rounded-full border bg-surface px-3 py-1.5">CAS {product.cas}</li>}
+              {product.cas && <li className="rounded-btn border border-current px-3 py-1.5">CAS {product.cas}</li>}
             </ul>
           </div>
           <div className="relative grid min-h-[280px] place-items-center md:min-h-[420px]">
-            <span className="pointer-events-none absolute select-none font-display text-[8rem] font-bold leading-none text-tint/[0.05] md:text-[12rem]" aria-hidden>
-              {variant.label.replace(/\s.*/, "")}
-            </span>
-            <ProductImage product={product} className="animate-float relative h-64 w-64 drop-shadow-2xl md:h-80 md:w-80" />
+            <ProductImage product={product} tone="field" className="relative h-72 w-auto max-w-full md:h-[26rem]" />
           </div>
         </div>
       </section>
@@ -103,9 +96,9 @@ export function ProductStage({
 
         {/* Tarjeta de compra: fija mientras se lee el contenido */}
         <aside className="order-first md:order-none">
-          <div ref={cardRef} className="rounded-3xl border bg-surface p-5 shadow-lg md:sticky md:top-32">
+          <div ref={cardRef} className="rounded-card border bg-surface p-5 shadow-lg md:sticky md:top-32">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">Presentación</p>
-            <div className="mt-2 divide-y rounded-2xl border">
+            <div className="mt-2 divide-y rounded-card border">
               {product.variants.map((v) => {
                 const on = v.id === variant.id;
                 return (
@@ -113,7 +106,7 @@ export function ProductStage({
                     key={v.id}
                     onClick={() => { setVariantId(v.id); setQty(1); }}
                     aria-pressed={on}
-                    className={`flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition first:rounded-t-2xl last:rounded-b-2xl ${
+                    className={`flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition first:rounded-t-card last:rounded-b-card ${
                       on ? "bg-accent/10" : "hover:bg-surface-2"
                     } ${v.stock === 0 ? "opacity-50" : ""}`}
                   >
@@ -140,12 +133,12 @@ export function ProductStage({
                 <p className="text-xs text-muted">IVA incluido</p>
               </div>
               {discount > 0 && (
-                <span className="rounded-full bg-accent-2 px-2.5 py-1 text-xs font-bold text-white">-{pct}% · Ahorras {formatCLP(discount)}</span>
+                <span className="rounded-btn bg-accent-2 px-2.5 py-1 text-xs font-bold text-white">-{pct}% · Ahorras {formatCLP(discount)}</span>
               )}
             </div>
 
             <div className="mt-4 flex gap-2">
-              <div className="flex items-center rounded-full border">
+              <div className="flex items-center rounded-btn border">
                 <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-3 py-2 text-muted hover:text-fg" aria-label="Menos">−</button>
                 <span className="w-6 text-center text-sm">{qty}</span>
                 <button onClick={() => setQty(Math.min(max, qty + 1))} className="px-3 py-2 text-muted hover:text-fg" aria-label="Más">+</button>
@@ -156,14 +149,14 @@ export function ProductStage({
             </div>
 
             {soldOut && (
-              <div className="mt-4 rounded-2xl border bg-surface-2 p-3 text-sm">
+              <div className="mt-4 rounded-card border bg-surface-2 p-3 text-sm">
                 <p className="font-medium">¿Te avisamos cuando vuelva?</p>
                 <div className="mt-2"><Newsletter source="stock" product={product.slug} cta="Avísame" done="Listo: te escribimos cuando vuelva a estar disponible." compact /></div>
               </div>
             )}
 
             <ul className="mt-5 space-y-1.5 border-t pt-4 text-xs text-muted">
-              <li>🚚 {settings.shippingNote}</li>
+              <li>✓ {settings.shippingNote}</li>
               <li>✓ Envío gratis sobre {formatCLP(settings.freeShippingFrom)}</li>
               <li>✓ Certificado de análisis del lote incluido</li>
               <li>✓ {payLine}</li>

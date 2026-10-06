@@ -36,7 +36,7 @@ export default async function Certificados({ searchParams }: { searchParams: Pro
       </form>
 
       {list.length === 0 ? (
-        <p className="mt-10 rounded-2xl border bg-surface p-5 text-sm">
+        <p className="mt-10 rounded-card border bg-surface p-5 text-sm">
           No encontramos ese lote. Escríbenos a <a href={`mailto:${settings.email}?subject=Consulta de lote ${q}`} className="text-accent">{settings.email}</a> con el número impreso en tu vial y lo revisamos.
         </p>
       ) : (

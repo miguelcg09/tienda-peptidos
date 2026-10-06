@@ -27,14 +27,14 @@ export default async function Productos({ searchParams }: { searchParams: Promis
         <button className="btn-primary text-sm">Buscar</button>
       </form>
       <div className="mt-6 flex flex-wrap gap-2">
-        <Link href="/productos" className={`rounded-full border px-4 py-1.5 text-sm ${!categoria ? "border-accent bg-accent/10 text-accent" : "hover:border-tint/30"}`}>
+        <Link href="/productos" className={`rounded-btn border px-4 py-1.5 text-sm ${!categoria ? "border-accent bg-accent/10 text-accent" : "hover:border-tint/30"}`}>
           Todos
         </Link>
         {categories.map((c) => (
           <Link
             key={c}
             href={`/productos?categoria=${encodeURIComponent(c)}`}
-            className={`rounded-full border px-4 py-1.5 text-sm ${categoria === c ? "border-accent bg-accent/10 text-accent" : "hover:border-tint/30"}`}
+            className={`rounded-btn border px-4 py-1.5 text-sm ${categoria === c ? "border-accent bg-accent/10 text-accent" : "hover:border-tint/30"}`}
           >
             {c}
           </Link>

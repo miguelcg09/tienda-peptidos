@@ -186,7 +186,7 @@ export function AddressPicker() {
         </label>
         {busy === "buscar" && <span className="absolute right-3 top-9 text-xs text-muted">Buscando…</span>}
         {open && places.length > 0 && (
-          <ul className="absolute z-20 mt-1 w-full overflow-hidden rounded-xl border bg-surface shadow-xl">
+          <ul className="absolute z-20 mt-1 w-full overflow-hidden rounded-card border bg-surface shadow-xl">
             {places.map((p) => (
               <li key={p.label}>
                 <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => pick(p)} className="flex w-full items-start gap-3 px-4 py-2.5 text-left hover:bg-accent/10">
@@ -204,10 +204,10 @@ export function AddressPicker() {
           </ul>
         )}
         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
-          <button type="button" onClick={() => void locate(true)} disabled={busy === "ubicar" || !address.trim()} className="rounded-full border px-3 py-1 text-fg transition hover:border-accent disabled:opacity-50">
+          <button type="button" onClick={() => void locate(true)} disabled={busy === "ubicar" || !address.trim()} className="rounded-btn border px-3 py-1 text-fg transition hover:border-accent disabled:opacity-50">
             {busy === "ubicar" ? "Ubicando…" : "🗺️ Ver en el mapa"}
           </button>
-          <button type="button" onClick={gps} disabled={busy === "gps"} className="rounded-full border px-3 py-1 text-fg transition hover:border-accent">
+          <button type="button" onClick={gps} disabled={busy === "gps"} className="rounded-btn border px-3 py-1 text-fg transition hover:border-accent">
             {busy === "gps" ? "Ubicando…" : "📡 Usar mi ubicación"}
           </button>
           <span>Escribe tu dirección y elige tu comuna; el mapa se ubica solo y puedes ajustar el marcador.</span>
@@ -222,7 +222,7 @@ export function AddressPicker() {
 
       {coords && (
         <div className="sm:col-span-2">
-          <div className="relative isolate z-0 overflow-hidden rounded-2xl border">
+          <div className="relative isolate z-0 overflow-hidden rounded-card border">
             <MapPicker lat={coords.lat} lng={coords.lng} onMove={(lat, lng) => setCoords({ lat, lng, source: "mapa", level: "mapa" })} />
           </div>
           <p className="mt-2 flex flex-wrap justify-between gap-2 text-xs text-muted">

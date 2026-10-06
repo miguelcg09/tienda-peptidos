@@ -44,7 +44,7 @@ export const defaultSettings: Settings = {
   shippingCost: 4990,
   freeShippingFrom: 80000,
   shippingNote: "Despachamos el mismo día hábil si compras antes de las 16:00 · Envío con seguimiento a todo Chile",
-  palette: "lab",
+  palette: "vitrina",
   disclaimer:
     "Todos los productos se venden exclusivamente para investigación in vitro y uso de laboratorio. No aptos para consumo humano o animal, ni para uso diagnóstico o terapéutico.",
   legalName: "",

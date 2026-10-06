@@ -23,7 +23,7 @@ export default function Carrito() {
     <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 md:grid-cols-[1fr_340px]">
       <div>
         <h1 className="font-display text-3xl font-bold md:text-4xl">Carrito</h1>
-        <ul className="mt-6 divide-y rounded-2xl border">
+        <ul className="mt-6 divide-y rounded-card border">
           {lines.map((line) => {
             const found = find(line.variantId);
             if (!found) return null;
@@ -38,7 +38,7 @@ export default function Carrito() {
                   <p className="text-sm text-muted">{variant.label} · {formatCLP(variant.price)}</p>
                   <button onClick={() => remove(line.variantId)} className="mt-1 text-xs text-muted hover:text-red-500">Eliminar</button>
                 </div>
-                <div className="flex items-center rounded-full border">
+                <div className="flex items-center rounded-btn border">
                   <button onClick={() => setQty(line.variantId, line.qty - 1)} className="px-3 py-1" aria-label="Menos">−</button>
                   <span className="w-6 text-center text-sm">{line.qty}</span>
                   <button onClick={() => setQty(line.variantId, line.qty + 1)} className="px-3 py-1" aria-label="Más">+</button>
@@ -49,7 +49,7 @@ export default function Carrito() {
           })}
         </ul>
       </div>
-      <aside className="h-fit rounded-2xl bg-surface border p-6">
+      <aside className="h-fit rounded-card bg-surface border p-6">
         <h2 className="font-semibold">Resumen</h2>
         <dl className="mt-4 space-y-2 text-sm">
           <div className="flex justify-between"><dt>Subtotal</dt><dd>{formatCLP(subtotal)}</dd></div>
