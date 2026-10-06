@@ -14,6 +14,7 @@ Abre http://localhost:3000.
 
 ## Qué incluye
 
+- Inicio (versión 2, rama `version-2`): ocho pantallas pensadas como un recorrido, de "¿esto es para mí?" a "quiero esto": 1) promesa y buscador de producto o lote, 2) franja de pruebas, 3) catálogo (todos los productos juntos hasta 8; sobre eso aparece el filtro por línea), 4) certificado de ejemplo interactivo y buscador de lote, 5) cómo comprar y recibir, con "Seguir pedido", 6) opiniones (solo con 3 o más reseñas), 7) preguntas frecuentes y 8) cierre con una acción y el boletín. Componentes: `HeroSearch.tsx` y `CertificateExplorer.tsx`; el texto está en `src/app/page.tsx`. La versión 1 del inicio sigue en la rama `version-1`.
 - Inicio, catálogo con filtro por categoría y ficha de producto con selector de presentación, insignias de stock, pestañas (resumen, COA, reconstitución, preguntas, investigación) y barra de compra fija.
 - Carrito lateral y página de carrito (se guarda en el navegador).
 - Checkout con validación de RUT, región/comuna y aceptación de uso para investigación.
