@@ -38,7 +38,7 @@ export function renderLegal(text: string, s: LegalValues, siteUrl: string) {
   return text.replace(/\{\{[a-z_]+\}\}/g, (m) => values[m] ?? m);
 }
 
-export const legalUpdatedDefault = "29 de septiembre de 2026";
+export const legalUpdatedDefault = "6 de octubre de 2026";
 
 export const terminosDefault = `## Uso exclusivo para investigación
 Los productos de {{tienda}} se venden únicamente para investigación in vitro y uso de laboratorio. No son medicamentos ni suplementos, no cuentan con registro sanitario y no están destinados al consumo humano o animal ni a fines diagnósticos o terapéuticos.
@@ -46,7 +46,7 @@ Los productos de {{tienda}} se venden únicamente para investigación in vitro y
 Al comprar declaras ser mayor de 18 años, adquirir los productos con fines de investigación y contar con los conocimientos necesarios para manipularlos. Nos reservamos el derecho de rechazar pedidos cuando existan indicios de un uso distinto.
 
 ## Información de los productos
-Las descripciones tienen fines informativos y científicos; no constituyen recomendaciones de uso ni de dosis. Cada lote cuenta con certificado de análisis. Las imágenes son referenciales y el stock puede variar sin previo aviso.
+Las descripciones tienen fines informativos y científicos; no constituyen recomendaciones de uso ni de dosis. Las imágenes son referenciales y el stock puede variar sin previo aviso.
 
 ## Precios y pago
 Los precios se expresan en pesos chilenos e incluyen impuestos. El costo de envío se informa antes de pagar. Los pagos se procesan a través de plataformas externas certificadas; no almacenamos datos de tarjetas. El pedido se confirma una vez acreditado el pago.
@@ -58,7 +58,7 @@ Despachamos a todo Chile con seguimiento. Los plazos son referenciales y depende
 Por tratarse de productos de laboratorio, solo se aceptan devoluciones de productos sellados y sin uso, o con falla o error en el despacho, dentro de los plazos que establece la Ley 19.496. Escríbenos a {{correo}} para gestionarlo.
 
 ## Responsabilidad
-{{tienda}} responde por la identidad y calidad de los productos según su certificado de análisis. No se hace responsable del uso que se les dé una vez entregados ni de daños derivados de un uso contrario a estos términos.
+{{tienda}} responde por que el producto entregado corresponda al que figura en su ficha y en tu pedido. No se hace responsable del uso que se les dé una vez entregados ni de daños derivados de un uso contrario a estos términos.
 
 ## Modificaciones y contacto
 Podemos actualizar estos términos en cualquier momento; la versión vigente es la publicada en este sitio. Se rigen por las leyes de Chile. Consultas a {{correo}} o al WhatsApp {{whatsapp}}.`;

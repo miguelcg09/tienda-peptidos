@@ -2,6 +2,7 @@ import "server-only";
 import { query } from "./db";
 import { seedProducts, type Category, type Product, type Variant } from "./products";
 import { ratingSummary } from "./reviews";
+import { showCertificates } from "./features";
 
 type ProductRow = {
   slug: string;
@@ -38,6 +39,15 @@ type VariantRow = {
 
 let seeded = false;
 
+// Mientras no haya certificados reales, la descripción de ejemplo de la primera carga ya no promete uno por lote
+// (ver src/lib/features.ts). Solo cambia esa frase exacta, así que no toca descripciones editadas a mano. No
+// corre en vistas previas de Vercel, que pueden compartir la base de datos con el sitio publicado.
+const OLD_CERT_PHRASE = ", con certificado de análisis por lote";
+async function dropCertificatePromise() {
+  if (showCertificates() || process.env.VERCEL_ENV === "preview") return;
+  await query("UPDATE products SET description = replace(description, $1::text, '') WHERE position($1::text in description) > 0", [OLD_CERT_PHRASE]);
+}
+
 // La primera vez que la base está vacía se carga el catálogo de ejemplo.
 async function ensureSeeded() {
   if (seeded) return;
@@ -48,6 +58,7 @@ async function ensureSeeded() {
       await setVariants(p.slug, p.variants);
     }
   }
+  await dropCertificatePromise();
   seeded = true;
 }
 
