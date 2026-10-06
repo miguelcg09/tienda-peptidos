@@ -21,7 +21,6 @@ export type HeroItem = {
 };
 
 const pad = (n: number) => String(n).padStart(2, "0");
-const words = ["Cero", "Un", "Dos", "Tres", "Cuatro", "Cinco", "Seis", "Siete", "Ocho", "Nueve", "Diez"];
 const FALLBACK = "#0b0f10";
 
 function Row({ label, value, mono = true }: { label: string; value: string; mono?: boolean }) {
@@ -34,13 +33,12 @@ function Row({ label, value, mono = true }: { label: string; value: string; mono
 }
 
 // Portada: el fondo toma el color de la pieza elegida; el vial queda quieto y cambia la ficha.
-export function HomeHero({ items, total }: { items: HeroItem[]; total: number }) {
+export function HomeHero({ items }: { items: HeroItem[] }) {
   const [sel, setSel] = useState(0);
   const n = items.length;
   const cur = items[Math.min(sel, n - 1)];
   const color = cur?.color ?? FALLBACK;
   const fg = onColor(color);
-  const count = total === 1 ? "Un compuesto" : `${words[total] ?? total} compuestos`;
   const move = "transition-colors duration-500 motion-reduce:transition-none";
 
   return (
@@ -51,20 +49,26 @@ export function HomeHero({ items, total }: { items: HeroItem[]; total: number })
       <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-10 px-4 pb-16 pt-4 md:flex-row md:flex-wrap md:items-center md:gap-x-12 md:gap-y-14 md:px-12 md:pt-6">
         {/* En celular la pieza va antes del selector; en escritorio el selector queda bajo el texto */}
         <div className="contents md:flex md:min-w-0 md:flex-[1_1_420px] md:flex-col md:gap-6">
-          <div className="flex min-w-0 flex-col gap-6">
-            <p className="font-mono text-xs uppercase tracking-[0.14em]">Colección · {pad(total)} {total === 1 ? "pieza" : "piezas"}</p>
-            <h1 id="titulo-portada" className="font-display text-[clamp(3rem,6vw,5.75rem)] font-light leading-[0.98] tracking-[-0.035em]">
+          <div className="flex min-w-0 flex-col gap-5 md:gap-6">
+            <p className="font-mono text-xs uppercase tracking-[0.14em]">Para quienes investigan por su cuenta</p>
+            <h1 id="titulo-portada" className="font-display text-[clamp(2.75rem,5.6vw,5.25rem)] font-light leading-[0.98] tracking-[-0.035em]">
               Péptidos de investigación.
+              <span className="mt-4 block text-[clamp(1.5rem,2.6vw,2.25rem)] font-normal leading-[1.12] tracking-[-0.02em] opacity-90">
+                Pagas en pesos y sigues tu pedido.
+              </span>
             </h1>
-            <p className="max-w-[32ch] text-xl leading-relaxed opacity-90">
-              {count}, cada uno con su lote impreso en el vial y despacho con seguimiento a todo Chile.
+            <p className="max-w-[34ch] text-lg leading-snug opacity-90 md:text-xl md:leading-relaxed">
+              Despachamos con seguimiento a todo Chile. No necesitas crear una cuenta.
             </p>
             <div className="flex flex-wrap items-center gap-x-7 gap-y-5">
               <a href="#coleccion" className={`inline-flex min-h-14 items-center rounded-btn px-8 text-base font-semibold ${move}`} style={{ backgroundColor: fg, color }}>
-                Ver la colección
+                Ver catálogo
               </a>
               <a href="#despacho" className="text-base font-medium underline underline-offset-[5px]">Cómo se despacha</a>
             </div>
+            <p className="max-w-[44ch] text-sm leading-relaxed opacity-85">
+              Solo para uso en investigación. Mayores de 18 años. No aptos para consumo humano ni animal.
+            </p>
           </div>
           {n > 1 && (
             <div className="order-3 flex flex-col gap-3 md:order-none md:pt-4">

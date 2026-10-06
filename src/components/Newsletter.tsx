@@ -8,8 +8,9 @@ export function Newsletter({
   product,
   placeholder = "tu@correo.cl",
   cta = "Suscribirme",
-  done = "¡Listo! Te avisaremos por correo.",
+  done = "Listo. Te avisaremos por correo.",
   compact = false,
+  testId,
 }: {
   source?: "boletin" | "stock";
   product?: string;
@@ -17,6 +18,7 @@ export function Newsletter({
   cta?: string;
   done?: string;
   compact?: boolean;
+  testId?: string;
 }) {
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "busy" | "ok" | "error">("idle");
@@ -32,19 +34,19 @@ export function Newsletter({
         body: JSON.stringify({ email, source, product }),
       });
       const data = (await r.json()) as { error?: string };
-      if (!r.ok) throw new Error(data.error ?? "No pudimos guardar tu correo");
+      if (!r.ok) throw new Error(data.error ?? "No pudimos guardar tu correo. Revisa que esté bien escrito e inténtalo de nuevo.");
       setState("ok");
       setMsg(done);
     } catch (err) {
       setState("error");
-      setMsg(err instanceof Error ? err.message : "No pudimos guardar tu correo");
+      setMsg(err instanceof Error ? err.message : "No pudimos guardar tu correo. Revisa que esté bien escrito e inténtalo de nuevo.");
     }
   }
 
   if (state === "ok") return <p className="text-sm text-accent" role="status">{msg}</p>;
 
   return (
-    <form onSubmit={submit} className={`flex ${compact ? "gap-2" : "flex-wrap gap-2"}`} data-testid={`suscribir-${source}`}>
+    <form onSubmit={submit} className={`flex ${compact ? "gap-2" : "flex-wrap gap-2"}`} data-testid={testId ?? `suscribir-${source}`}>
       <input
         type="email"
         required

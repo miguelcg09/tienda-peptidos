@@ -11,6 +11,14 @@ const sorts: { id: Sort; label: string }[] = [
   { id: "precio-desc", label: "Precio: mayor a menor" },
   { id: "nombre", label: "Nombre A–Z" },
 ];
+// Qué es cada línea, en una frase: lo que se estudia en laboratorio, sin prometer efectos.
+const lineDesc: Record<Category, string> = {
+  "Reparación tisular": "Péptidos que se estudian en modelos preclínicos de reparación de tejidos.",
+  Metabolismo: "Agonistas de los receptores GLP-1 y GIP.",
+  "Hormona de crecimiento": "Compuestos que actúan sobre el eje GH / IGF-1 en modelos de laboratorio.",
+  Cognición: "Neuropéptidos estudiados en modelos animales.",
+  Accesorios: "Agua bacteriostática y material para reconstituir en laboratorio.",
+};
 const minPrice = (p: Product) => Math.min(...p.variants.map((v) => v.price));
 
 // Colección con filtro por línea de investigación y orden, en la misma sección (sin ir a otra página).
@@ -55,10 +63,11 @@ export function CatalogTabs({ products }: { products: Product[] }) {
           </select>
         </label>
       </div>
-      <p className="-mt-4 text-sm text-muted">
-        <span className="font-semibold text-fg">{list.length}</span> {list.length === 1 ? "pieza" : "piezas"}
-        {active !== "Todos" && <> en {active}</>}
+      <p className="-mt-4 text-sm text-muted" aria-live="polite">
+        <span className="font-semibold text-fg">{list.length}</span> {list.length === 1 ? "producto" : "productos"}
+        {active !== "Todos" && <> en {active}. {lineDesc[active]}</>}
       </p>
+      {list.length === 0 && <p className="text-muted">No hay productos en esta línea por ahora. Escríbenos y te avisamos cuando lleguen.</p>}
       <div key={`${active}-${sort}`} className="animate-fade grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3" data-testid="catalogo-portada">
         {list.map((p, i) => <ProductCard key={p.slug} product={p} index={i} />)}
       </div>

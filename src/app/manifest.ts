@@ -11,7 +11,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
   return {
     name: `${s.name} · ${s.tagline}`,
     short_name: s.name,
-    description: "Péptidos de grado investigación con certificado de análisis por lote.",
+    description: "Péptidos de investigación en Chile. Pago en pesos y despacho con seguimiento a todo Chile.",
     start_url: "/",
     display: "standalone",
     lang: "es-CL",

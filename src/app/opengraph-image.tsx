@@ -30,10 +30,10 @@ export default async function Image() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <span style={{ fontSize: 88, fontWeight: 800, lineHeight: 1.05 }}>Péptidos de grado investigación</span>
-          <span style={{ fontSize: 36, color: pal.muted }}>Certificado de análisis por lote · Envíos a todo Chile</span>
+          <span style={{ fontSize: 36, color: pal.muted }}>Pago en pesos · Despacho con seguimiento a todo Chile</span>
         </div>
         <div style={{ display: "flex", gap: 20, fontSize: 28 }}>
-          <span style={{ padding: "12px 28px", borderRadius: 999, background: pal.accent, color: pal.onAccent, fontWeight: 700 }}>Pureza verificada por HPLC</span>
+          <span style={{ padding: "12px 28px", borderRadius: 999, background: pal.accent, color: pal.onAccent, fontWeight: 700 }}>Mayores de 18 años</span>
           <span style={{ padding: "12px 28px", borderRadius: 999, border: `2px solid ${pal.muted}` }}>Solo para investigación</span>
         </div>
       </div>

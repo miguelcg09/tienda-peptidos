@@ -11,6 +11,7 @@ export function ProductCard({ product, index }: { product: Product; index?: numb
   const from = Math.min(...product.variants.map((v) => v.price));
   const soldOut = product.variants.every((v) => v.stock === 0);
   const quick = product.variants.length === 1 ? product.variants.find((v) => v.stock !== 0) : undefined;
+  const lowStock = product.variants.reduce<number | null>((m, v) => (v.stock !== null && v.stock > 0 && v.stock <= 5 && (m === null || v.stock < m) ? v.stock : m), null);
   const vars = { "--card-bg": tint(product.color), "--card-hover": tintHover(product.color) } as CSSProperties;
   return (
     <article className="flex h-full min-w-0 flex-col gap-4" style={vars}>
@@ -21,6 +22,7 @@ export function ProductCard({ product, index }: { product: Product; index?: numb
       >
         {index !== undefined && <span className="absolute left-5 top-4 font-mono text-xs tracking-widest">{String(index + 1).padStart(2, "0")}</span>}
         {soldOut && <span className="absolute right-4 top-4 rounded-btn bg-[#0b0f10] px-2.5 py-1 font-mono text-xs uppercase tracking-widest text-[#f4f6f6]">Agotado</span>}
+        {!soldOut && lowStock !== null && <span className="absolute right-4 top-4 rounded-btn bg-[#0b0f10] px-2.5 py-1 font-mono text-xs uppercase tracking-widest text-[#f4f6f6]">Últimas {lowStock}</span>}
         <span className="absolute inset-x-0 inset-y-[11%] flex justify-center">
           <ProductImage product={product} className="h-full w-auto max-w-[80%]" />
         </span>
@@ -31,6 +33,7 @@ export function ProductCard({ product, index }: { product: Product; index?: numb
             <Link href={`/productos/${product.slug}`} className="underline-offset-[5px] hover:underline">{product.name}</Link>
           </h3>
           <p className="font-mono text-xs uppercase tracking-widest text-muted">{product.category}</p>
+          <p className="font-mono text-xs text-muted">{product.variants.map((v) => v.label).join(" / ")} · {product.form}</p>
           {product.rating && (
             <p className="flex items-center gap-1.5 text-xs text-muted">
               <Stars value={product.rating.avg} className="text-sm" />
@@ -42,7 +45,13 @@ export function ProductCard({ product, index }: { product: Product; index?: numb
             {formatCLP(from)}
           </p>
         </div>
-        {quick && <QuickAdd variantId={quick.id} name={product.name} />}
+        {quick ? (
+          <QuickAdd variantId={quick.id} name={product.name} />
+        ) : (
+          !soldOut && product.variants.length > 1 && (
+            <Link href={`/productos/${product.slug}`} className="shrink-0 pb-1 text-sm font-medium underline underline-offset-[5px]">Ver presentaciones</Link>
+          )
+        )}
       </div>
     </article>
   );

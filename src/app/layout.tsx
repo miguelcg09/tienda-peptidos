@@ -8,6 +8,7 @@ import { CartDrawer } from "@/components/CartDrawer";
 import { ResearchGate } from "@/components/ResearchGate";
 import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
+import { formatCLP } from "@/lib/products";
 import { getPalette, paletteCss } from "@/lib/palettes";
 import { hasBankData, toStoreSettings } from "@/lib/config";
 import { cardProviderName } from "@/lib/payments";
@@ -35,12 +36,13 @@ const siteUrl = publicUrl();
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSettings();
-  const description = "Péptidos de grado investigación con certificado de análisis por lote. Compra en pesos, envíos a todo Chile.";
+  const description = "Péptidos de investigación en Chile. Pago en pesos y despacho con seguimiento a todo Chile. Solo para uso en investigación, mayores de 18.";
+  const title = `Péptidos de investigación en Chile | ${s.name}`;
   return {
     metadataBase: new URL(siteUrl),
-    title: { default: `${s.name} · ${s.tagline}`, template: `%s · ${s.name}` },
+    title: { default: title, template: `%s · ${s.name}` },
     description,
-    openGraph: { type: "website", siteName: s.name, locale: "es_CL", title: `${s.name} · ${s.tagline}`, description },
+    openGraph: { type: "website", siteName: s.name, locale: "es_CL", title, description },
     twitter: { card: "summary_large_image" },
     applicationName: s.name,
     formatDetection: { telephone: false, email: false, address: false },
@@ -61,8 +63,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           Saltar al contenido
         </a>
         {/* Aviso de uso: siempre visible, también en la portada */}
-        <div className="bg-fg px-4 py-2.5 text-center font-mono text-xs uppercase tracking-[0.14em] text-bg">
-          Solo para uso en investigación · Mayores de 18 años
+        <div className="flex flex-wrap justify-center gap-x-8 gap-y-0.5 bg-fg px-4 py-2.5 text-center font-mono text-xs uppercase tracking-[0.14em] text-bg">
+          <span>Solo para uso en investigación · Mayores de 18 años</span>
+          <span className="hidden sm:inline">Envío gratis sobre {formatCLP(settings.freeShippingFrom)}</span>
         </div>
         <StoreProvider catalog={catalog} settings={storeSettings}>
           <Header />

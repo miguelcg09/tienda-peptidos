@@ -24,7 +24,6 @@ export function Footer({ settings }: { settings: StoreSettings }) {
           <p className="font-semibold">Tienda</p>
           <ul className="mt-3 space-y-2 text-muted">
             <li><Link href="/productos" className="hover:text-accent">Productos</Link></li>
-            <li><Link href="/certificados" className="hover:text-accent">Certificados por lote</Link></li>
             <li><Link href="/calculadora" className="hover:text-accent">Calculadora de reconstitución</Link></li>
             <li><Link href="/guias" className="hover:text-accent">Guías</Link></li>
             <li><Link href="/pedido" className="hover:text-accent">Seguir mi pedido</Link></li>
@@ -43,7 +42,7 @@ export function Footer({ settings }: { settings: StoreSettings }) {
         </div>
         <div className="text-sm">
           <p className="font-semibold">Novedades y ofertas</p>
-          <p className="mt-2 text-muted">Nuevos lotes, productos y cupones, una vez al mes como máximo.</p>
+          <p className="mt-2 text-muted">Nuevos lotes y cupones. Un correo al mes como máximo.</p>
           <div className="mt-4"><Newsletter compact /></div>
         </div>
       </div>
