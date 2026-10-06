@@ -28,7 +28,7 @@ export default async function Ajustes({ searchParams }: { searchParams: Promise<
           <legend className="mb-2 font-semibold">Apariencia</legend>
           <p className="text-xs text-muted sm:col-span-2">Elige la combinación de colores. Cada una tiene versión clara y oscura; el visitante ve la de su sistema.</p>
           {palettes.map((p) => (
-            <label key={p.id} className="flex cursor-pointer items-start gap-3 rounded-card border bg-surface p-4 has-[:checked]:border-accent has-[:checked]:ring-2 has-[:checked]:ring-accent/30">
+            <label key={p.id} className="flex cursor-pointer items-start gap-3 rounded-2xl border bg-surface p-4 has-[:checked]:border-accent has-[:checked]:ring-2 has-[:checked]:ring-accent/30">
               <input type="radio" name="palette" value={p.id} defaultChecked={s.palette === p.id} className="mt-1" />
               <span className="grow">
                 <span className="block font-medium">{p.name}</span>

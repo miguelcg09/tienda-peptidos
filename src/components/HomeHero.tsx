@@ -27,7 +27,7 @@ const FALLBACK = "#0b0f10";
 function Row({ label, value, mono = true }: { label: string; value: string; mono?: boolean }) {
   return (
     <div className="flex justify-between gap-3 border-t border-[#e3e8e9] py-2.5">
-      <dt className="font-mono text-[0.7rem] uppercase tracking-widest text-[#5b676b]">{label}</dt>
+      <dt className="font-mono text-xs uppercase tracking-widest text-[#5b676b]">{label}</dt>
       <dd className={`text-right text-sm ${mono ? "font-mono text-[0.8rem]" : ""}`}>{value}</dd>
     </div>
   );

@@ -8,6 +8,7 @@ import { faqs } from "@/lib/faqs";
 import { latestPublished, ratingSummary } from "@/lib/reviews";
 import { whatsappLink } from "@/lib/whatsapp";
 import { publicUrl } from "@/lib/site";
+import { formatCLP } from "@/lib/products";
 
 // Con pocos productos se muestran todos juntos; con más, se agrega el filtro por línea de investigación.
 const SHOW_ALL_UP_TO = 8;
@@ -134,13 +135,13 @@ export default async function Home() {
             <p className="max-w-[38ch] text-lg leading-relaxed text-[#c4ced1]">
               Cada pedido sale con número de seguimiento a todo Chile. Si algo llega dañado, avísanos dentro de 48 horas y lo resolvemos.
             </p>
-            <p className="text-sm text-[#9aa7ab]">{settings.shippingNote}</p>
+            <p className="text-sm text-[#9aa7ab]">{settings.shippingNote} · Envío gratis sobre {formatCLP(settings.freeShippingFrom)}</p>
           </div>
           <div className="flex min-w-0 flex-[1_1_380px] justify-center">
             <div className="w-full max-w-[460px] rounded-card bg-[#151b1d] p-7 pb-8" aria-label="Ejemplo de seguimiento de un pedido">
               <div className="flex items-center justify-between gap-3">
                 <span className="font-mono text-sm tracking-wider">PEDIDO HX-10482</span>
-                <span className="rounded-[3px] bg-[#f4f6f6] px-2.5 py-1 font-mono text-[0.7rem] tracking-widest text-[#0b0f10]">EJEMPLO</span>
+                <span className="rounded-[3px] bg-[#f4f6f6] px-2.5 py-1 font-mono text-xs tracking-widest text-[#0b0f10]">EJEMPLO</span>
               </div>
               <ol className="mt-7 flex flex-col">
                 {tracking.map((t, i) => {

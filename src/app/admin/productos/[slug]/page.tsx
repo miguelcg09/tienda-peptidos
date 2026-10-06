@@ -80,7 +80,7 @@ export default async function EditarProducto({ params }: { params: Promise<{ slu
 
         <fieldset className="grid gap-4 sm:grid-cols-[120px_1fr]">
           <legend className="mb-2 font-semibold">Imagen</legend>
-          <div className="grid h-40 w-full place-items-center rounded-card border bg-tint/5">
+          <div className="grid h-40 w-full place-items-center rounded-2xl border bg-tint/5">
             <ProductImage product={product} className="h-4/5" />
           </div>
           <div className="space-y-3 text-sm">

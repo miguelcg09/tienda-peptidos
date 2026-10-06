@@ -18,7 +18,7 @@ export default async function Cupones({ searchParams }: { searchParams: Promise<
       </p>
       {guardado && <p className="mt-4 rounded-lg bg-accent/10 p-3 text-sm text-accent">Cupón guardado.</p>}
 
-      <form action={saveCouponAction} className="mt-8 grid gap-4 rounded-card border bg-surface p-5 sm:grid-cols-3">
+      <form action={saveCouponAction} className="mt-8 grid gap-4 rounded-2xl border bg-surface p-5 sm:grid-cols-3">
         <label className="text-sm">Código<input name="code" required placeholder="BIENVENIDA10" className="field uppercase" /></label>
         <label className="text-sm">Tipo
           <select name="kind" className="field">
@@ -36,7 +36,7 @@ export default async function Cupones({ searchParams }: { searchParams: Promise<
       {coupons.length === 0 ? (
         <p className="mt-10 text-muted">Todavía no hay cupones.</p>
       ) : (
-        <div className="mt-8 overflow-x-auto rounded-card border bg-surface">
+        <div className="mt-8 overflow-x-auto rounded-2xl border bg-surface">
           <table className="w-full text-sm">
             <thead className="text-left text-xs uppercase tracking-wider text-muted">
               <tr>{["Código", "Descuento", "Mínimo", "Usos", "Vence", "Estado", ""].map((h) => <th key={h} className="px-4 py-3 font-medium">{h}</th>)}</tr>

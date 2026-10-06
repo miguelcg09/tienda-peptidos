@@ -21,7 +21,7 @@ export default async function Productos() {
 
       <div className="mt-8 space-y-3">
         {products.map((p) => (
-          <div key={p.slug} className={`flex flex-wrap items-center gap-4 rounded-card border bg-surface p-4 ${p.visible ? "" : "opacity-60"}`}>
+          <div key={p.slug} className={`flex flex-wrap items-center gap-4 rounded-2xl border bg-surface p-4 ${p.visible ? "" : "opacity-60"}`}>
             <div className="grid h-16 w-12 shrink-0 place-items-center rounded-lg bg-tint/5">
               <ProductImage product={p} className="h-full w-full" />
             </div>
