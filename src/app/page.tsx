@@ -3,10 +3,8 @@ import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { CatalogTabs } from "@/components/CatalogTabs";
 import { HomeHero, type HeroItem } from "@/components/HomeHero";
-import { Newsletter } from "@/components/Newsletter";
 import { field, onColor } from "@/lib/colors";
 import { ProductCard } from "@/components/ProductCard";
-import { Icon, type IconName } from "@/components/Icon";
 import { ProductImage } from "@/components/ProductImage";
 import { Stars } from "@/components/Stars";
 import { faqs } from "@/lib/faqs";
@@ -21,7 +19,7 @@ const HERO_MAX = 6;
 
 const words = ["Cero", "Un", "Dos", "Tres", "Cuatro", "Cinco", "Seis", "Siete", "Ocho", "Nueve", "Diez"];
 
-const eyebrow = "font-mono text-xs uppercase tracking-[0.14em] text-muted";
+const eyebrow = "text-sm font-medium text-muted";
 const h2 = "mt-3 font-display text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-[-0.03em]";
 
 // Pasos del seguimiento que ve el comprador (ejemplo ilustrativo).
@@ -58,16 +56,16 @@ export default async function Home() {
   const realEmail = settings.email && !settings.email.endsWith("@ejemplo.cl") ? settings.email : "";
   const n = products.length;
   const countWord = words[n] ?? String(n);
-  const proofs: { icon: IconName; title: string; text: string; href: string; link: string }[] = [
-    { icon: "route", title: "Con seguimiento", text: "Cada pedido sale con número de seguimiento a todo Chile.", href: "/pedido", link: "Seguir mi pedido" },
-    { icon: "peso", title: "En pesos", text: "Pagas en pesos chilenos, por transferencia bancaria.", href: "/guias#como-comprar", link: "Cómo comprar" },
-    { icon: "clock", title: "Mismo día hábil", text: `${dispatch}. Envío gratis sobre ${formatCLP(settings.freeShippingFrom)}.`, href: "/envios", link: "Envíos y devoluciones" },
-    { icon: "box", title: "48 horas", text: "Si tu pedido llega dañado, escríbenos dentro de 48 horas con tu número de pedido.", href: "/envios", link: "Envíos y devoluciones" },
+  const proofs: { label: string; title: string; text: string; href: string; link: string }[] = [
+    { label: "Envío", title: "Con seguimiento", text: "Cada pedido sale con número de seguimiento a todo Chile.", href: "/pedido", link: "Seguir mi pedido" },
+    { label: "Pago", title: "En pesos", text: "Pagas en pesos chilenos, por transferencia bancaria.", href: "/guias#como-comprar", link: "Cómo comprar" },
+    { label: "Despacho", title: "Mismo día hábil", text: `${dispatch}. Envío gratis sobre ${formatCLP(settings.freeShippingFrom)}.`, href: "/envios", link: "Envíos y devoluciones" },
+    { label: "Si llega dañado", title: "48 horas", text: "Si tu pedido llega dañado, escríbenos dentro de 48 horas con tu número de pedido.", href: "/envios", link: "Envíos y devoluciones" },
   ];
-  const steps: { icon: IconName; title: string; text: string }[] = [
-    { icon: "cart", title: "Elige y agrega al carrito.", text: "No necesitas crear una cuenta. Pedimos nombre, RUT, contacto y dirección de despacho." },
-    { icon: "peso", title: "Paga en pesos.", text: "Por transferencia bancaria: te mostramos los datos al confirmar y guardamos tu pedido 48 horas mientras transfieres." },
-    { icon: "route", title: "Recibe con seguimiento.", text: "Cuando despachamos, te enviamos el número de seguimiento por correo. También lo ves en “Seguir mi pedido”." },
+  const steps: { title: string; text: string }[] = [
+    { title: "Elige y agrega al carrito.", text: "No necesitas crear una cuenta. Pedimos nombre, RUT, contacto y dirección de despacho." },
+    { title: "Paga en pesos.", text: "Por transferencia bancaria: te mostramos los datos al confirmar y guardamos tu pedido 48 horas mientras transfieres." },
+    { title: "Recibe con seguimiento.", text: "Cuando despachamos, te enviamos el número de seguimiento por correo. También lo ves en “Seguir mi pedido”." },
   ];
   const facts = [
     ["Despacho", dispatch],
@@ -115,7 +113,7 @@ export default async function Home() {
         <ul className="mx-auto grid max-w-[1280px] px-4 sm:grid-cols-2 md:px-12 lg:grid-cols-4">
           {proofs.map((x, i) => (
             <li key={x.title} className={`flex flex-col items-start gap-3 py-10 lg:py-12 ${i > 0 ? "lg:border-l lg:border-fg/15 lg:pl-8" : ""} ${i < 3 ? "lg:pr-8" : ""} ${i % 2 === 1 ? "sm:pl-8 lg:pl-8" : "sm:pr-8"}`}>
-              <Icon name={x.icon} size={28} className="text-muted" />
+              <p className="text-sm font-medium text-muted">{x.label}</p>
               <h3 className="font-display text-3xl font-medium tracking-tight">{x.title}</h3>
               <p className="text-muted">{x.text}</p>
               <Link href={x.href} className="mt-auto inline-flex min-h-11 items-center text-sm font-medium u-link">{x.link}</Link>
@@ -167,7 +165,7 @@ export default async function Home() {
                 <Stars value={r.rating} className="text-lg" />
                 <blockquote className="mt-3 grow text-base text-muted">“{r.body}”</blockquote>
                 <figcaption className="mt-5 text-sm">
-                  <span className="font-semibold">{r.name}</span> · {nameOf(r.productSlug)} · <span className="font-mono text-xs uppercase tracking-wider text-muted">Compra verificada</span>
+                  <span className="font-semibold">{r.name}</span> · {nameOf(r.productSlug)} · <span className="text-xs font-medium text-muted">Compra verificada</span>
                 </figcaption>
               </figure>
             ))}
@@ -179,7 +177,7 @@ export default async function Home() {
       <section id="despacho" data-field aria-labelledby="titulo-despacho" className="scroll-mt-4 bg-[#0b0f10] text-[#f4f6f6] dark:border-y dark:border-white/10">
         <div className="mx-auto flex max-w-[1280px] flex-col gap-16 px-4 py-24 md:px-12 md:py-28">
           <div className="flex flex-col gap-6">
-            <p className="font-mono text-xs uppercase tracking-[0.14em] text-[#9aa7ab]">Después de comprar</p>
+            <p className="text-sm font-medium text-[#9aa7ab]">Después de comprar</p>
             <h2 id="titulo-despacho" className="font-display text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-[-0.03em]">
               Qué pasa después de pagar
             </h2>
@@ -190,10 +188,7 @@ export default async function Home() {
             {steps.map((st, i) => (
               <li key={st.title} className="relative flex flex-col gap-4 border-t border-[#2a3336] pt-7">
                 <span aria-hidden="true" className="absolute -top-px left-0 h-0.5 w-14 bg-[#f4f6f6]" />
-                <div className="flex items-center gap-3 text-[#c4ced1]">
-                  <Icon name={st.icon} size={26} />
-                  <span className="font-mono text-xs uppercase tracking-[0.14em]">Paso {i + 1}</span>
-                </div>
+                <p className="font-display text-5xl font-light leading-none tracking-tight"><span className="sr-only">Paso </span>{i + 1}</p>
                 <h3 className="text-2xl font-medium leading-snug tracking-tight">{st.title}</h3>
                 <p className="max-w-[44ch] text-[#c4ced1]">{st.text}</p>
               </li>
@@ -205,7 +200,7 @@ export default async function Home() {
               <dl className="border-t border-[#2a3336]">
                 {facts.map(([k, v]) => (
                   <div key={k} className="grid gap-x-6 gap-y-1 border-b border-[#2a3336] py-4 sm:grid-cols-[8rem_1fr]">
-                    <dt className="font-mono text-xs uppercase tracking-[0.14em] text-[#9aa7ab]">{k}</dt>
+                    <dt className="text-sm font-medium text-[#9aa7ab]">{k}</dt>
                     <dd>{v}</dd>
                   </div>
                 ))}
@@ -254,7 +249,7 @@ export default async function Home() {
               </div>
 
               <form action="/pedido" method="get" className="flex flex-col gap-3" data-testid="seguir-pedido">
-                <label htmlFor="seguir-orden" className="font-mono text-xs uppercase tracking-[0.14em] text-[#9aa7ab]">Número de pedido</label>
+                <label htmlFor="seguir-orden" className="text-sm font-medium text-[#9aa7ab]">Número de pedido</label>
                 <div className="flex flex-wrap gap-3">
                   <input
                     id="seguir-orden"
@@ -312,17 +307,10 @@ export default async function Home() {
             <ProductImage product={closing} tone="field" className="h-[300px] w-auto max-w-full md:h-[400px]" />
           </div>
         </div>
-        <div className="mx-auto max-w-[1280px] px-4 md:px-12">
-          <div className="grid items-center gap-x-10 gap-y-4 border-t border-current/30 py-8 pb-24 md:grid-cols-[auto_minmax(0,26rem)_1fr] md:pb-28">
-            <p className="font-medium">¿No compras hoy?</p>
-            <div>
-              <Newsletter testId="suscribir-cierre" cta="Avísame de nuevos lotes" compact tone="field" buttonStyle={{ backgroundColor: onColor(closingColor), color: closingColor }} />
-              <p className="mt-2 text-sm">Máximo un correo al mes.</p>
-            </div>
-            <p className="text-sm md:text-right">
-              ¿No ves el compuesto que buscas? <a href={contactHref} className="font-medium u-link">Escríbenos</a> y vemos si podemos incluirlo.
-            </p>
-          </div>
+        <div className="wrap">
+          <p className="border-t border-current/30 py-8 pb-24 text-sm md:pb-28">
+            ¿No ves el compuesto que buscas? <a href={contactHref} className="font-medium u-link">Escríbenos</a> y vemos si podemos incluirlo.
+          </p>
         </div>
       </section>
     </>

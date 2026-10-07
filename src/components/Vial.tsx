@@ -20,6 +20,7 @@ export function Vial({
   tone = "light",
   lot,
   format,
+  kind = "powder",
 }: {
   color: string;
   label: string;
@@ -27,10 +28,13 @@ export function Vial({
   tone?: "light" | "field";
   lot?: string;
   format?: string;
+  kind?: "powder" | "liquid";
 }) {
   const field = tone === "field";
-  const cap = field ? deep(color) : color;
-  const capTop = deep(color);
+  const liquid = kind === "liquid";
+  // Los líquidos (agua bacteriostática) llevan sello metálico y líquido en lugar de polvo, para no ser el mismo frasco de todos.
+  const cap = liquid ? (field ? "#dfe6e8" : "#a9b4b8") : field ? deep(color) : color;
+  const capTop = liquid ? (field ? "#b8c3c6" : "#7d8a8f") : deep(color);
   const [l1, l2] = splitName(label);
   const display = { fontFamily: "var(--font-funnel-display), system-ui, sans-serif" };
   const mono = { fontFamily: "var(--font-geist-mono), ui-monospace, monospace" };
@@ -49,8 +53,14 @@ export function Vial({
         stroke={field ? "#ffffff" : "#0b0f10"} strokeOpacity={field ? 0.8 : 0.35} strokeWidth="2"
       />
       <rect x="57" y="122" width="6" height="170" rx="3" fill="#ffffff" opacity={field ? 0.45 : 0.6} />
-      <path d="M58 292 V272 Q64 262 76 266 Q88 258 102 264 Q116 258 128 266 Q140 262 142 274 V292 Q142 296 136 296 H64 Q58 296 58 292 Z" fill="#ffffff" />
-      <path d="M58 284 H142 V292 Q142 296 136 296 H64 Q58 296 58 292 Z" fill="#e3e8e9" />
+      {liquid ? (
+        <rect x="58" y="214" width="84" height="82" rx="8" fill={field ? "#ffffff" : color} fillOpacity={field ? 0.3 : 0.28} />
+      ) : (
+        <>
+          <path d="M58 292 V272 Q64 262 76 266 Q88 258 102 264 Q116 258 128 266 Q140 262 142 274 V292 Q142 296 136 296 H64 Q58 296 58 292 Z" fill="#ffffff" />
+          <path d="M58 284 H142 V292 Q142 296 136 296 H64 Q58 296 58 292 Z" fill="#e3e8e9" />
+        </>
+      )}
       <rect x="64" y="56" width="72" height="44" rx="5" fill={cap} />
       <rect x="70" y="44" width="60" height="16" rx="4" fill={capTop} />
       <rect x="64" y="92" width="72" height="8" rx="3" fill={field ? "#0b0f10" : capTop} opacity={field ? 0.25 : 1} />
@@ -59,9 +69,9 @@ export function Vial({
       <text x="100" y={l2 ? 196 : 205} textAnchor="middle" fontWeight="700" fontSize={fit(l1)} fill="#0b0f10" style={display}>{l1}</text>
       {l2 && <text x="100" y="212" textAnchor="middle" fontWeight="700" fontSize={fit(l2)} fill="#0b0f10" style={display}>{l2}</text>}
       {data.map((t, i) => (
-        <text key={t} x="100" y={231 + i * 10} textAnchor="middle" fontSize="7.5" fill="#0b0f10" style={mono}>{t}</text>
+        <text key={t} x="100" y={231 + i * 10} textAnchor="middle" fontSize="8.5" fill="#0b0f10" style={mono}>{t}</text>
       ))}
-      <text x="100" y="251" textAnchor="middle" fontSize="6" fill="#0b0f10" style={mono}>SOLO INVESTIGACIÓN</text>
+      <text x="100" y="251" textAnchor="middle" fontSize="8" fill="#0b0f10" style={mono}>SOLO INVESTIGACIÓN</text>
     </svg>
   );
 }

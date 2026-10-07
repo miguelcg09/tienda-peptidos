@@ -1,11 +1,10 @@
 "use client";
 
-import { useId, useState, type CSSProperties } from "react";
+import { useId, useState } from "react";
 
 const FALLBACK = "No pudimos guardar tu correo. Revisa que esté bien escrito e inténtalo de nuevo.";
 
 // Formulario de correo reutilizable: boletín (pie de página, cierre) o "avísame cuando vuelva" (ficha agotada).
-// tone "field": para usarlo sobre un fondo de color, donde los mensajes toman el color del texto del fondo.
 export function Newsletter({
   source = "boletin",
   product,
@@ -14,8 +13,6 @@ export function Newsletter({
   done = "Listo. Te avisaremos por correo.",
   compact = false,
   testId,
-  tone = "surface",
-  buttonStyle,
 }: {
   source?: "boletin" | "stock";
   product?: string;
@@ -24,8 +21,6 @@ export function Newsletter({
   done?: string;
   compact?: boolean;
   testId?: string;
-  tone?: "surface" | "field";
-  buttonStyle?: CSSProperties;
 }) {
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "busy" | "ok" | "error">("idle");
@@ -51,7 +46,6 @@ export function Newsletter({
     }
   }
 
-  const field = tone === "field";
   return (
     <div>
       {state !== "ok" && (
@@ -71,8 +65,7 @@ export function Newsletter({
           />
           <button
             disabled={state === "busy"}
-            style={buttonStyle}
-            className={`${buttonStyle ? "inline-flex min-h-11 shrink-0 items-center rounded-btn px-5 text-sm font-semibold transition-opacity hover:opacity-85 disabled:opacity-60" : "btn-primary shrink-0 text-sm"}`}
+            className="btn-primary shrink-0 text-sm"
           >
             {state === "busy" ? "Guardando…" : cta}
           </button>
@@ -83,7 +76,7 @@ export function Newsletter({
         id={`${uid}-estado`}
         role="status"
         aria-live="polite"
-        className={state === "idle" || state === "busy" ? "sr-only" : `mt-2 text-sm ${field ? "font-medium" : state === "error" ? "text-red-700 dark:text-red-300" : "text-fg"}`}
+        className={state === "idle" || state === "busy" ? "sr-only" : `mt-2 text-sm ${state === "error" ? "text-red-700 dark:text-red-300" : "text-fg"}`}
       >
         {state === "ok" || state === "error" ? msg : ""}
       </p>

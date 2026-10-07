@@ -63,7 +63,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           Saltar al contenido
         </a>
         {/* Aviso de uso: fijo arriba en todas las páginas, también en la portada. En celular, versión corta de una línea */}
-        <section aria-label="Aviso de uso y envío" className="sticky top-0 z-40 flex h-[var(--bar-h)] items-center justify-center gap-x-8 overflow-hidden whitespace-nowrap bg-fg px-4 text-center font-mono text-xs uppercase tracking-[0.14em] text-bg">
+        <section aria-label="Aviso de uso y envío" className="sticky top-0 z-40 flex h-[var(--bar-h)] items-center justify-center gap-x-8 overflow-hidden whitespace-nowrap bg-fg px-4 text-center text-sm font-medium text-bg">
           <span className="sm:hidden">Solo investigación · +18</span>
           <span className="hidden sm:inline">Solo para uso en investigación · Mayores de 18 años</span>
           <span className="hidden lg:inline">Envío gratis sobre {formatCLP(settings.freeShippingFrom)}</span>

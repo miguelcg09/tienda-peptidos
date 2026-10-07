@@ -27,7 +27,7 @@ const FALLBACK = "#0b0f10";
 function Row({ label, value, mono = true }: { label: string; value: string; mono?: boolean }) {
   return (
     <div className="flex justify-between gap-3 border-t border-[#e3e8e9] py-2.5">
-      <dt className="font-mono text-xs uppercase tracking-widest text-[#5b676b]">{label}</dt>
+      <dt className="text-sm text-[#5b676b]">{label}</dt>
       <dd className={`text-right text-sm ${mono ? "font-mono text-[0.8rem]" : ""}`}>{value}</dd>
     </div>
   );
@@ -50,7 +50,7 @@ export function HomeHero({ items }: { items: HeroItem[] }) {
       {/* Texto a la izquierda; a la derecha la pieza con su ficha encima del vial y, alineado con la ficha, el selector que la cambia */}
       <div className="mx-auto grid w-full max-w-[1280px] gap-10 px-4 pb-16 pt-4 md:px-12 md:pt-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:gap-x-12">
         <div className="flex min-w-0 flex-col gap-5 md:gap-6">
-          <p className="font-mono text-xs uppercase tracking-[0.14em]">Para quienes investigan por su cuenta</p>
+          <p className="text-sm font-medium">Para quienes investigan por su cuenta</p>
           <h1 id="titulo-portada" className="font-display text-[clamp(2.75rem,5.6vw,5.25rem)] font-light leading-[0.98] tracking-[-0.035em]">
             Péptidos de investigación.
             <span className="mt-4 block text-[clamp(1.5rem,2.6vw,2.25rem)] font-normal leading-[1.12] tracking-[-0.02em]">
@@ -80,7 +80,7 @@ export function HomeHero({ items }: { items: HeroItem[] }) {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={cur.imageUrl} alt={cur.name} className="max-h-[520px] w-auto max-w-full object-contain" />
                 ) : (
-                  <Vial color={cur.color} label={cur.name} tone="field" lot={cur.lot} format={cur.format} className="h-[360px] w-auto max-w-full lg:h-[500px]" />
+                  <Vial color={cur.color} label={cur.name} tone="field" lot={cur.lot} format={cur.format} kind={cur.category === "Accesorios" ? "liquid" : "powder"} className="h-[360px] w-auto max-w-full lg:h-[500px]" />
                 )}
               </div>
               {/* En escritorio la ficha se monta sobre el borde del vial: una sola pieza, no dos cajas lado a lado */}
@@ -102,7 +102,7 @@ export function HomeHero({ items }: { items: HeroItem[] }) {
 
           {n > 1 && (
             <div className="flex flex-col gap-3">
-              <p id="elegir-pieza" className="font-mono text-xs uppercase tracking-[0.14em]">Elegir pieza</p>
+              <p id="elegir-pieza" className="text-sm font-medium">Elegir pieza</p>
               <div className="flex flex-wrap gap-2" role="group" aria-labelledby="elegir-pieza">
                 {items.map((it, i) => (
                   <button

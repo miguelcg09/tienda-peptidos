@@ -76,7 +76,7 @@ export function ProductSearch({ variant = "header", className = "", label = "Bus
         onSubmit={(e) => { e.preventDefault(); go(active >= 0 ? results[active] : results.find((r) => plain(r.name) === plain(q))); }}
         className="relative"
       >
-        <label htmlFor={inputId} className={hero ? "mb-2 block font-mono text-xs uppercase tracking-[0.14em]" : "sr-only"}>
+        <label htmlFor={inputId} className={hero ? "mb-2 block text-sm font-medium" : "sr-only"}>
           Buscar un producto
         </label>
         <div className={hero ? "flex gap-2" : ""}>
@@ -124,7 +124,7 @@ export function ProductSearch({ variant = "header", className = "", label = "Bus
                   >
                     <span className="min-w-0">
                       <span className="block font-medium">{p.name}</span>
-                      <span className="block font-mono text-xs uppercase tracking-widest text-muted">{p.category}</span>
+                      <span className="block text-sm text-muted">{p.category}</span>
                     </span>
                     <span className="shrink-0 text-sm">{p.variants.length > 1 ? "Desde " : ""}{formatCLP(Math.min(...p.variants.map((v) => v.price)))}</span>
                   </li>

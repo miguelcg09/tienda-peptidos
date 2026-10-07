@@ -27,8 +27,8 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
         className="relative block aspect-square rounded-card bg-[var(--card-bg)] text-[#0b0f10] outline-2 outline-offset-2 transition-colors duration-300 hover:bg-[var(--card-hover)] group-has-[h2_a:focus-visible,h3_a:focus-visible]/card:outline sm:aspect-[4/5]"
       >
         {index !== undefined && <span className="absolute left-5 top-4 font-mono text-xs tracking-widest">{String(index + 1).padStart(2, "0")}</span>}
-        {soldOut && <span className="absolute right-4 top-4 rounded-btn bg-[#0b0f10] px-2.5 py-1 font-mono text-xs uppercase tracking-widest text-[#f4f6f6]">Agotado</span>}
-        {!soldOut && lowStock !== null && <span className="absolute right-4 top-4 rounded-btn bg-[#0b0f10] px-2.5 py-1 font-mono text-xs uppercase tracking-widest text-[#f4f6f6]">Últimas {lowStock}</span>}
+        {soldOut && <span className="absolute right-4 top-4 rounded-btn bg-[#0b0f10] px-2.5 py-1 text-xs font-semibold text-[#f4f6f6]">Agotado</span>}
+        {!soldOut && lowStock !== null && <span className="absolute right-4 top-4 rounded-btn bg-[#0b0f10] px-2.5 py-1 text-xs font-semibold text-[#f4f6f6]">Últimas {lowStock}</span>}
         <span className="absolute inset-x-0 inset-y-[11%] flex justify-center">
           <ProductImage product={product} className="h-full w-auto max-w-[80%]" />
         </span>
@@ -37,7 +37,7 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
         <Heading className="break-words font-display text-2xl font-medium leading-tight tracking-tight">
           <Link href={`/productos/${product.slug}`} className="underline-offset-[5px] hover:underline focus-visible:outline-none focus-visible:underline">{product.name}</Link>
         </Heading>
-        <p className="font-mono text-xs uppercase tracking-widest text-muted">{product.category}</p>
+        <p className="text-sm text-muted">{product.category}</p>
         <p className="font-mono text-xs text-muted">{product.variants.map((v) => v.label).join(" / ")} · {product.form}</p>
         {product.rating && (
           <p className="flex items-center gap-1.5 text-xs text-muted">

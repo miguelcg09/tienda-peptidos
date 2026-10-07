@@ -68,7 +68,7 @@ export function ProductStage({
       <section className="relative overflow-hidden rounded-card" style={{ background: field(product.color), color: onColor(field(product.color)) }}>
         <div className="relative grid gap-6 p-6 md:grid-cols-[1.1fr_1fr] md:gap-8 md:px-12 md:py-9">
           <div className="flex flex-col justify-center">
-            <p className="font-mono text-xs uppercase tracking-[0.18em] opacity-80">{product.category}</p>
+            <p className="text-sm font-medium opacity-90">{product.category}</p>
             <h1 className="mt-3 font-display text-5xl font-medium leading-[0.98] tracking-tight md:text-7xl">{product.name}</h1>
             <p className="mt-5 max-w-md text-lg opacity-90">{product.short}</p>
             <ul className="mt-6 flex flex-wrap gap-2 text-xs font-medium">
