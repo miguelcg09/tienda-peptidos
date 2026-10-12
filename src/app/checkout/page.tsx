@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/CartProvider";
 import { formatCLP } from "@/lib/products";
 import { isValidRut } from "@/lib/rut";
@@ -12,7 +12,7 @@ type Method = "transferencia" | "tarjeta";
 type Coupon = { code: string; discount: number; description: string };
 
 export default function Checkout() {
-  const { lines, subtotal, find, settings } = useCart();
+  const { lines, subtotal, find, settings, ready } = useCart();
   const { payments } = settings;
   const methods: Method[] = [...(payments.transfer ? (["transferencia"] as const) : []), ...(payments.card ? (["tarjeta"] as const) : [])];
   const [method, setMethod] = useState<Method>(methods[0] ?? "transferencia");
@@ -22,6 +22,10 @@ export default function Checkout() {
   const [couponInput, setCouponInput] = useState("");
   const [couponMsg, setCouponMsg] = useState("");
   const [couponBusy, setCouponBusy] = useState(false);
+  const errorRef = useRef<HTMLParagraphElement>(null);
+
+  // Al aparecer un error, el foco va al mensaje: así se lee y se ve aunque el botón de pago esté fuera de pantalla.
+  useEffect(() => { if (error) errorRef.current?.focus(); }, [error]);
 
   // El descuento se muestra aquí; al crear el pedido el servidor lo vuelve a calcular.
   const discount = coupon ? Math.min(coupon.discount, subtotal) : 0;
@@ -29,6 +33,8 @@ export default function Checkout() {
   const shipping = afterDiscount >= settings.freeShippingFrom ? 0 : settings.shippingCost;
   const total = afterDiscount + shipping;
 
+  // Mientras se lee el carrito guardado no se muestra «vacío» (parpadeaba antes de cargar).
+  if (!ready) return <div className="mx-auto max-w-3xl px-4 py-24 text-center text-muted" role="status">Cargando tu carrito…</div>;
   if (lines.length === 0) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 text-center">
@@ -93,15 +99,15 @@ export default function Checkout() {
   const wa = whatsappLink(settings.whatsapp, waText);
 
   return (
-    <div className="wrap grid gap-10 py-12 md:grid-cols-[1fr_360px]">
+    <div className="wrap grid grid-cols-[minmax(0,1fr)] gap-10 py-12 lg:grid-cols-[minmax(0,1fr)_360px]">
       <form onSubmit={onSubmit} className="space-y-8">
         <h1 className="t-page">Finalizar compra</h1>
         <fieldset className="grid gap-4 sm:grid-cols-2">
           <legend className="mb-2 font-semibold">Datos de contacto</legend>
-          <label className="text-sm sm:col-span-2">Nombre completo<input name="name" required className={input} /></label>
-          <label className="text-sm">Correo electrónico<input name="email" type="email" required className={input} /></label>
-          <label className="text-sm">Teléfono<input name="phone" type="tel" required placeholder="+56 9" className={input} /></label>
-          <label className="text-sm">RUT<input name="rut" required placeholder="12.345.678-9" className={input} /></label>
+          <label className="text-sm sm:col-span-2">Nombre completo<input name="name" required minLength={2} maxLength={120} autoComplete="name" className={input} /></label>
+          <label className="text-sm">Correo electrónico<input name="email" type="email" required maxLength={254} autoComplete="email" pattern="[^\s@]+@[^\s@]+\.[^\s@]{2,}" title="Escribe un correo completo, por ejemplo nombre@correo.cl" className={input} /></label>
+          <label className="text-sm">Teléfono<input name="phone" type="tel" required maxLength={30} autoComplete="tel" pattern="[0-9+\(\)\s\-]{8,30}" title="Escribe un teléfono con al menos 8 números, por ejemplo +56 9 1234 5678" placeholder="+56 9" className={input} /></label>
+          <label className="text-sm">RUT<input name="rut" required maxLength={14} placeholder="12.345.678-9" className={input} /></label>
         </fieldset>
         <fieldset className="grid gap-4 sm:grid-cols-2">
           <legend className="mb-2 font-semibold">Dirección de despacho</legend>
@@ -149,7 +155,7 @@ export default function Checkout() {
             no para consumo humano o animal. Acepto los <Link href="/terminos" className="underline">términos y condiciones</Link>, la <Link href="/envios" className="underline">política de envíos y devoluciones</Link> y la <Link href="/privacidad" className="underline">política de privacidad</Link>.
           </span>
         </label>
-        {error && <p className="rounded-lg bg-red-500/10 p-3 text-sm text-red-700 dark:text-red-300">{error}</p>}
+        {error && <p ref={errorRef} role="alert" tabIndex={-1} className="rounded-lg bg-red-500/10 p-3 text-sm text-red-800 outline-none dark:text-red-200">{error}</p>}
         <button disabled={loading || methods.length === 0} className="btn-primary w-full">
           {loading
             ? method === "transferencia" ? "Creando tu pedido…" : "Redirigiendo al pago…"
@@ -168,8 +174,8 @@ export default function Checkout() {
             if (!f) return null;
             return (
               <li key={l.variantId} className="flex justify-between gap-3">
-                <span>{f.product.name} {f.variant.label} × {l.qty}</span>
-                <span>{formatCLP(f.variant.price * l.qty)}</span>
+                <span className="min-w-0 break-words">{f.product.name} {f.variant.label} × {l.qty}</span>
+                <span className="shrink-0">{formatCLP(f.variant.price * l.qty)}</span>
               </li>
             );
           })}
@@ -190,7 +196,7 @@ export default function Checkout() {
               {couponBusy ? "…" : "Aplicar"}
             </button>
           </div>
-          {couponMsg && <p className={`mt-2 text-xs ${coupon ? "text-accent" : "text-red-600 dark:text-red-300"}`} data-testid="cupon-msg">{couponMsg}</p>}
+          {couponMsg && <p role="status" className={`mt-2 text-xs ${coupon ? "text-accent" : "text-red-800 dark:text-red-200"}`} data-testid="cupon-msg">{couponMsg}</p>}
         </div>
 
         <dl className="mt-4 space-y-2 border-t pt-4 text-sm">

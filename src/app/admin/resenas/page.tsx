@@ -2,6 +2,7 @@ import { listAllReviews } from "@/lib/reviews";
 import { getProducts } from "@/lib/catalog";
 import { Stars } from "@/components/Stars";
 import { removeReview, setReviewStatusAction } from "../actions";
+import { ConfirmButton } from "../ConfirmButton";
 
 export const dynamic = "force-dynamic";
 
@@ -40,14 +41,14 @@ export default async function Resenas() {
                 <span className="ml-auto text-xs text-muted">{r.name} · pedido {r.orderId} · {fmtDate(r.createdAt)}</span>
               </div>
               <p className="mt-2 whitespace-pre-line">{r.body || <span className="text-muted">Sin comentario</span>}</p>
-              <div className="mt-3 flex flex-wrap gap-4 text-xs">
+              <div className="mt-2 flex flex-wrap gap-1">
                 {r.status !== "publicada" && (
-                  <form action={setReviewStatusAction.bind(null, r.id, "publicada")}><button className="font-medium text-accent hover:underline">Publicar</button></form>
+                  <form action={setReviewStatusAction.bind(null, r.id, "publicada")}><button className="inline-flex min-h-10 items-center px-3 text-sm font-medium text-accent hover:underline">Publicar</button></form>
                 )}
                 {r.status !== "oculta" && (
-                  <form action={setReviewStatusAction.bind(null, r.id, "oculta")}><button className="text-muted hover:underline">Ocultar</button></form>
+                  <form action={setReviewStatusAction.bind(null, r.id, "oculta")}><button className="inline-flex min-h-10 items-center px-3 text-sm text-muted hover:underline">Ocultar</button></form>
                 )}
-                <form action={removeReview.bind(null, r.id)}><button className="text-red-500 hover:underline">Eliminar</button></form>
+                <form action={removeReview.bind(null, r.id)}><ConfirmButton message="¿Eliminar esta reseña? No se puede deshacer. Si solo quieres sacarla de la tienda, usa «Ocultar»." className="inline-flex min-h-10 items-center px-3 text-sm text-red-700 hover:underline dark:text-red-300">Eliminar</ConfirmButton></form>
               </div>
             </li>
           ))}

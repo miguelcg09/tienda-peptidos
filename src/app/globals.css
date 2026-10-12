@@ -91,7 +91,7 @@
   }
 }
 
-html { scroll-behavior: smooth; scroll-padding-top: calc(var(--bar-h) + 5rem); }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--bar-h) + 5rem); scroll-padding-bottom: 5.5rem; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem; line-height: 1.65; }
 
@@ -175,12 +175,12 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
 .animate-slide { animation: slide-up 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
 
 /* Aparición al hacer scroll (ver Reveal.tsx) */
-.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.reveal.is-visible { opacity: 1; transform: none; }
+.reveal { transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.reveal.reveal-pending { opacity: 0; transform: translateY(24px); }
 
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after { animation: none !important; transition: none !important; }
-  .reveal { opacity: 1; transform: none; }
+  .reveal.reveal-pending { opacity: 1; transform: none; }
 }
 
 /* Mapa del checkout (Leaflet): marcador arrastrable en el color de acento */

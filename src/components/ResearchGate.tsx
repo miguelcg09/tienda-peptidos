@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "./CartProvider";
 import { useDialog } from "@/lib/useDialog";
@@ -9,9 +10,12 @@ const KEY = "research-ack-v1";
 // Aviso de ingreso: confirma mayoría de edad y uso exclusivo en investigación.
 export function ResearchGate() {
   const { settings } = useStore();
+  const pathname = usePathname();
   const [show, setShow] = useState(false);
   const box = useRef<HTMLDivElement>(null);
-  useDialog(box, show);
+  // El panel de administración es privado: el aviso de ingreso es para el público de la tienda.
+  const visible = show && !pathname.startsWith("/admin");
+  useDialog(box, visible);
 
   useEffect(() => {
     try {
@@ -21,7 +25,7 @@ export function ResearchGate() {
     }
   }, []);
 
-  if (!show) return null;
+  if (!visible) return null;
 
   return (
     <div className="animate-fade fixed inset-0 z-[60] grid place-items-center overflow-y-auto bg-black/80 p-4">

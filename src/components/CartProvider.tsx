@@ -11,6 +11,7 @@ type StoreContextValue = {
   settings: StoreSettings;
   find: (variantId: string) => { product: Product; variant: Variant } | undefined;
   lines: CartLine[];
+  ready: boolean; // el carrito guardado en el navegador ya se leyó (antes de eso «vacío» no significa vacío)
   count: number;
   subtotal: number;
   shipping: number;
@@ -25,6 +26,30 @@ type StoreContextValue = {
 
 const StoreContext = createContext<StoreContextValue | null>(null);
 const STORAGE_KEY = "cart-v1";
+const MAX_QTY = 99;
+
+// Lo guardado en el navegador puede estar dañado o ser de una versión anterior: se aceptan solo líneas con
+// una presentación que existe, cantidad entera entre 1 y el tope (99 o el stock), y sin repetir presentación.
+function cleanLines(raw: unknown, catalog: Product[]): CartLine[] {
+  if (!Array.isArray(raw)) return [];
+  const merged = new Map<string, number>();
+  for (const l of raw) {
+    if (!l || typeof l !== "object") continue;
+    const { variantId, qty } = l as { variantId?: unknown; qty?: unknown };
+    const n = Math.floor(Number(qty));
+    if (typeof variantId !== "string" || !Number.isFinite(n) || n < 1) continue;
+    merged.set(variantId, (merged.get(variantId) ?? 0) + n);
+  }
+  const out: CartLine[] = [];
+  for (const [variantId, n] of merged) {
+    const found = findVariantIn(catalog, variantId);
+    if (!found) continue;
+    const stock = found.variant.stock;
+    const max = stock == null ? MAX_QTY : Math.min(MAX_QTY, stock);
+    if (max >= 1) out.push({ variantId, qty: Math.min(n, max) });
+  }
+  return out;
+}
 
 // Catálogo, ajustes de la tienda y carrito, disponibles en todos los componentes de cliente.
 export function StoreProvider({
@@ -43,10 +68,7 @@ export function StoreProvider({
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved) as CartLine[];
-        setLines(parsed.filter((l) => findVariantIn(catalog, l.variantId)));
-      }
+      if (saved) setLines(cleanLines(JSON.parse(saved), catalog));
     } catch {}
     setLoaded(true);
   }, [catalog]);
@@ -71,6 +93,7 @@ export function StoreProvider({
       settings,
       find,
       lines,
+      ready: loaded,
       count: lines.reduce((n, l) => n + l.qty, 0),
       subtotal,
       shipping,
@@ -98,7 +121,7 @@ export function StoreProvider({
       open,
       setOpen,
     };
-  }, [catalog, settings, lines, open]);
+  }, [catalog, settings, lines, open, loaded]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }

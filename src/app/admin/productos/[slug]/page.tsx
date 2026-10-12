@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProduct } from "@/lib/catalog";
 import { categories, type Product } from "@/lib/products";
@@ -21,8 +22,9 @@ const empty: Product = {
   sort: 99,
 };
 
-export default async function EditarProducto({ params }: { params: Promise<{ slug: string }> }) {
+export default async function EditarProducto({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ error?: string; slug?: string }> }) {
   const { slug } = await params;
+  const { error, slug: clash } = await searchParams;
   const isNew = slug === "nuevo";
   const product = isNew ? empty : await getProduct(slug, { includeHidden: true });
   if (!product) notFound();
@@ -31,7 +33,12 @@ export default async function EditarProducto({ params }: { params: Promise<{ slu
 
   return (
     <div className="max-w-3xl">
-      <h1 className="font-display text-3xl font-bold">{isNew ? "Nuevo producto" : `Editar ${product.name}`}</h1>
+      <h1 className="break-words font-display text-3xl font-bold">{isNew ? "Nuevo producto" : `Editar ${product.name}`}</h1>
+      {isNew && error === "existe" && clash && (
+        <p role="alert" className="mt-4 rounded-lg bg-red-500/10 p-3 text-sm text-red-800 dark:text-red-200">
+          No se guardó: ya existe un producto con la dirección «{clash}». Cambia el nombre, o <Link href={`/admin/productos/${clash}`} className="font-medium underline">edita el que ya existe</Link>.
+        </p>
+      )}
 
       <form action={saveProduct} className="mt-8 space-y-8">
         {!isNew && <input type="hidden" name="originalSlug" value={product.slug} />}
@@ -103,14 +110,14 @@ export default async function EditarProducto({ params }: { params: Promise<{ slu
             Deja el stock vacío para no controlarlo; con 0 aparece como agotado. Si pones un precio anterior mayor al precio, la ficha muestra el descuento.
           </p>
           <div className="space-y-2">
-            <div className="grid grid-cols-[1fr_110px_110px_90px] gap-2 text-xs text-muted"><span>Presentación</span><span>Precio CLP</span><span>Precio anterior</span><span>Stock</span></div>
+            <div className="hidden grid-cols-[minmax(0,1fr)_5.5rem_5.5rem_4.5rem] gap-2 text-xs text-muted sm:grid"><span>Presentación</span><span>Precio CLP</span><span>Precio anterior</span><span>Stock</span></div>
             {rows.map((v, i) => (
-              <div key={v?.id ?? `n${i}`} className="grid grid-cols-[1fr_110px_110px_90px] gap-2">
+              <div key={v?.id ?? `n${i}`} className="grid grid-cols-3 gap-2 border-b pb-3 sm:grid-cols-[minmax(0,1fr)_6.5rem_6.5rem_5rem] sm:border-0 sm:pb-0">
                 <input type="hidden" name="v_id" value={v?.id ?? ""} />
-                <input name="v_label" defaultValue={v?.label ?? ""} placeholder="5 mg" className="field mt-0" />
-                <input name="v_price" type="number" min={0} defaultValue={v?.price ?? ""} placeholder="34990" className="field mt-0" />
-                <input name="v_compare" type="number" min={0} defaultValue={v?.compareAt ?? ""} placeholder="—" className="field mt-0" />
-                <input name="v_stock" type="number" min={0} defaultValue={v?.stock ?? ""} placeholder="—" className="field mt-0" />
+                <input name="v_label" aria-label="Presentación" defaultValue={v?.label ?? ""} placeholder="Presentación (5 mg)" className="field mt-0 col-span-3 sm:col-span-1" />
+                <input name="v_price" type="number" min={0} aria-label="Precio en pesos" defaultValue={v?.price ?? ""} placeholder="Precio" className="field mt-0" />
+                <input name="v_compare" type="number" min={0} aria-label="Precio anterior" defaultValue={v?.compareAt ?? ""} placeholder="Antes" className="field mt-0" />
+                <input name="v_stock" type="number" min={0} aria-label="Stock" defaultValue={v?.stock ?? ""} placeholder="Stock" className="field mt-0" />
               </div>
             ))}
           </div>

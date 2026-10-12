@@ -9,7 +9,7 @@ import { ProductImage } from "./ProductImage";
 
 export function CartDrawer() {
   const { open, setOpen, lines, subtotal, setQty, remove, find, settings } = useCart();
-  const panel = useRef<HTMLElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
   useDialog(panel, open, () => setOpen(false));
   if (!open) return null;
   const missing = settings.freeShippingFrom - subtotal;
@@ -17,7 +17,7 @@ export function CartDrawer() {
   return (
     <div className="fixed inset-0 z-50">
       <div className="animate-fade absolute inset-0 bg-black/70" onClick={() => setOpen(false)} aria-hidden="true" />
-      <aside ref={panel} role="dialog" aria-modal="true" aria-labelledby="carrito-titulo" className="animate-drawer absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l bg-surface shadow-2xl">
+      <div ref={panel} role="dialog" aria-modal="true" aria-labelledby="carrito-titulo" className="animate-drawer absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l bg-surface shadow-2xl">
         <div className="flex items-center justify-between border-b px-5 py-4">
           <h2 id="carrito-titulo" className="font-display text-lg font-semibold">Tu carrito</h2>
           <button onClick={() => setOpen(false)} className="grid h-11 w-11 place-items-center text-2xl leading-none text-muted hover:text-fg" aria-label="Cerrar el carrito"><span aria-hidden="true">×</span></button>
@@ -49,9 +49,9 @@ export function CartDrawer() {
                     <div className="grid h-20 w-14 shrink-0 place-items-center rounded-btn bg-tint/5 p-1">
                       <ProductImage product={product} className="h-full w-full" />
                     </div>
-                    <div className="flex-1">
-                      <p className="font-medium">{product.name}</p>
-                      <p className="text-sm text-muted">{variant.label}</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="break-words font-medium">{product.name}</p>
+                      <p className="break-words text-sm text-muted">{variant.label}</p>
                       <div className="mt-2 flex items-center gap-2">
                         <button onClick={() => setQty(line.variantId, line.qty - 1)} className="h-9 w-9 rounded-btn border hover:border-accent" aria-label={`Quitar uno de ${product.name}`}>−</button>
                         <span className="w-6 text-center text-sm">{line.qty}<span className="sr-only"> {line.qty === 1 ? "unidad" : "unidades"}</span></span>
@@ -78,7 +78,7 @@ export function CartDrawer() {
             </div>
           </>
         )}
-      </aside>
+      </div>
     </div>
   );
 }

@@ -174,6 +174,8 @@ export function AddressPicker() {
             ref={inputRef}
             name="address"
             required
+            minLength={3}
+            maxLength={200}
             autoComplete="off"
             value={address}
             onChange={(e) => onType(e.target.value)}
@@ -215,7 +217,7 @@ export function AddressPicker() {
         {hint && <p className="mt-2 text-xs text-amber-700 dark:text-amber-200">{hint}</p>}
       </div>
 
-      <label className="text-sm sm:col-span-2">Depto., casa u otra referencia (opcional)<input name="reference" placeholder="Depto. 402, torre B; portón verde" className="field" /></label>
+      <label className="text-sm sm:col-span-2">Depto., casa u otra referencia (opcional)<input name="reference" maxLength={200} placeholder="Depto. 402, torre B; portón verde" className="field" /></label>
 
       <input type="hidden" name="lat" value={coords?.lat ?? ""} />
       <input type="hidden" name="lng" value={coords?.lng ?? ""} />

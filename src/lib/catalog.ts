@@ -179,6 +179,28 @@ export async function releaseStock(items: { variantId: string; qty: number }[]) 
   }
 }
 
+// Reserva stock de forma atómica: descuenta solo si alcanza (dos pedidos simultáneos no pueden quedarse con la
+// misma unidad). Si una presentación no alcanza, devuelve lo ya reservado y entrega esa presentación; si todo
+// quedó reservado devuelve null. Las presentaciones sin control de stock no se tocan.
+export async function reserveStock(items: { variantId: string; qty: number }[]) {
+  const done: { variantId: string; qty: number }[] = [];
+  for (const it of items) {
+    const rows = await query<{ id: string }>(
+      "UPDATE variants SET stock = stock - $2 WHERE id = $1 AND stock IS NOT NULL AND stock >= $2 RETURNING id",
+      [it.variantId, it.qty],
+    );
+    if (rows.length > 0) {
+      done.push(it);
+      continue;
+    }
+    const [v] = await query<{ stock: number | null }>("SELECT stock FROM variants WHERE id = $1", [it.variantId]);
+    if (v && v.stock === null) continue; // sin control de stock: no hay nada que reservar
+    await releaseStock(done);
+    return it;
+  }
+  return null;
+}
+
 // Descuenta stock de las presentaciones con control de stock (stock no nulo).
 export async function decrementStock(items: { variantId: string; qty: number }[]) {
   for (const it of items) {

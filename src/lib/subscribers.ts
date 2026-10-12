@@ -1,5 +1,8 @@
 import "server-only";
 import { query } from "./db";
+import { isEmail } from "./validate";
+
+export { isEmail };
 
 // Correos que dejan los visitantes: boletín (pie de página) o "avísame cuando vuelva" (ficha agotada).
 export type Subscriber = { id: number; email: string; source: string; productSlug: string; createdAt: string };
@@ -12,8 +15,6 @@ const toSub = (r: Row): Subscriber => ({
   productSlug: r.product_slug,
   createdAt: new Date(r.created_at).toISOString(),
 });
-
-export const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s.trim());
 
 // Devuelve true si es un registro nuevo (false si ese correo ya estaba anotado para ese producto).
 export async function addSubscriber(email: string, source: string, productSlug = "") {

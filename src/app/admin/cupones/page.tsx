@@ -1,6 +1,7 @@
 import { describeCoupon, listCoupons } from "@/lib/coupons";
 import { formatCLP } from "@/lib/products";
 import { removeCoupon, saveCouponAction, toggleCoupon } from "../actions";
+import { ConfirmButton } from "../ConfirmButton";
 
 export const dynamic = "force-dynamic";
 
@@ -58,12 +59,12 @@ export default async function Cupones({ searchParams }: { searchParams: Promise<
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex justify-end gap-3 whitespace-nowrap text-xs">
+                      <div className="flex justify-end gap-1 whitespace-nowrap">
                         <form action={toggleCoupon.bind(null, c.code, !c.active)}>
-                          <button className="text-accent hover:underline">{c.active ? "Desactivar" : "Activar"}</button>
+                          <button className="inline-flex min-h-10 items-center px-3 text-sm text-accent hover:underline">{c.active ? "Desactivar" : "Activar"}</button>
                         </form>
                         <form action={removeCoupon.bind(null, c.code)}>
-                          <button className="text-red-500 hover:underline">Eliminar</button>
+                          <ConfirmButton message={`¿Eliminar el cupón ${c.code}? Los pedidos ya hechos con él no cambian.`} className="inline-flex min-h-10 items-center px-3 text-sm text-red-700 hover:underline dark:text-red-300">Eliminar</ConfirmButton>
                         </form>
                       </div>
                     </td>

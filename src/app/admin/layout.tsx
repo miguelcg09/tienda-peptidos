@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { isAdmin } from "@/lib/admin";
 import { pendingReviewCount } from "@/lib/reviews";
+import { LoginNotice } from "./LoginNotice";
 
 export const metadata: Metadata = { title: "Administración", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -27,9 +29,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             : "Configura ADMIN_PASSWORD para habilitar la administración."}
         </p>
         <form method="post" action="/admin/entrar" className="mt-6 flex gap-2">
-          <input name="clave" type="password" placeholder="Clave" autoFocus className="field mt-0" />
+          <label htmlFor="clave" className="sr-only">Clave de administrador</label>
+          <input id="clave" name="clave" type="password" placeholder="Clave" autoComplete="current-password" autoFocus className="field mt-0" />
           <button className="btn-primary text-sm">Entrar</button>
         </form>
+        <Suspense><LoginNotice /></Suspense>
       </div>
     );
   }
@@ -40,12 +44,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="mb-8 flex flex-wrap items-center gap-2 border-b pb-4">
         <span className="mr-2 text-xs font-semibold uppercase tracking-[0.25em] text-accent">Administración</span>
         {nav.map((n) => (
-          <Link key={n.href} href={n.href} className="rounded-full border px-4 py-1.5 text-sm hover:border-accent">
+          <Link key={n.href} href={n.href} className="inline-flex min-h-9 items-center rounded-full border px-4 text-sm hover:border-accent">
             {n.label}{n.href === "/admin/resenas" && pendingReviews > 0 && <span className="ml-1.5 rounded-full bg-accent-2 px-1.5 text-xs font-bold text-white">{pendingReviews}</span>}
           </Link>
         ))}
         <form method="post" action="/admin/salir" className="ml-auto">
-          <button className="text-sm text-muted hover:text-fg">Salir</button>
+          <button className="inline-flex min-h-9 items-center px-3 text-sm text-muted hover:text-fg">Salir</button>
         </form>
       </div>
       {children}

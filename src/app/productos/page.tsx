@@ -23,7 +23,7 @@ export default async function Productos({ searchParams }: { searchParams: Promis
       <h1 className="t-page">Productos</h1>
       <form method="get" role="search" className="mt-6 flex max-w-md gap-2">
         {categoria && <input type="hidden" name="categoria" value={categoria} />}
-        <input name="q" defaultValue={q} placeholder="Buscar por nombre o CAS" aria-label="Buscar productos" className="field mt-0 flex-1" />
+        <input name="q" maxLength={80} defaultValue={q} placeholder="Buscar por nombre o CAS" aria-label="Buscar productos" className="field mt-0 flex-1" />
         <button className="btn-primary text-sm">Buscar</button>
       </form>
       <div className="mt-6 flex flex-wrap gap-2">

@@ -3,6 +3,7 @@ import { getProducts } from "@/lib/catalog";
 import { formatCLP } from "@/lib/products";
 import { ProductImage } from "@/components/ProductImage";
 import { removeProduct, toggleProductVisible } from "../actions";
+import { ConfirmButton } from "../ConfirmButton";
 
 export const dynamic = "force-dynamic";
 
@@ -42,7 +43,7 @@ export default async function Productos() {
                 <button className="btn-ghost text-sm">{p.visible ? "Ocultar" : "Mostrar"}</button>
               </form>
               <form action={removeProduct.bind(null, p.slug)}>
-                <button className="px-2 text-xs text-red-500 hover:underline">Borrar</button>
+                <ConfirmButton message={`¿Borrar «${p.name}»? Se elimina el producto con todas sus presentaciones y no se puede deshacer. Si solo quieres sacarlo de la tienda, usa «Ocultar».`} className="inline-flex min-h-10 items-center px-3 text-sm text-red-700 hover:underline dark:text-red-300">Borrar</ConfirmButton>
               </form>
             </div>
           </div>

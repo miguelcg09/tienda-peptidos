@@ -66,10 +66,10 @@ export function ProductStage({
     <>
       {/* Portada: campo plano del color del producto, texto a la izquierda y vial a la derecha */}
       <section className="relative overflow-hidden rounded-card" style={{ background: field(product.color), color: onColor(field(product.color)) }}>
-        <div className="relative grid gap-6 p-6 md:grid-cols-[1.1fr_1fr] md:gap-8 md:px-12 md:py-9">
-          <div className="flex flex-col justify-center">
+        <div className="relative grid gap-6 p-6 md:grid-cols-[minmax(0,1fr)_10rem] md:gap-8 md:px-12 md:py-9 lg:grid-cols-[1.1fr_1fr]">
+          <div className="flex min-w-0 flex-col justify-center">
             <p className="text-sm font-medium opacity-90">{product.category}</p>
-            <h1 className="mt-3 font-display text-5xl font-medium leading-[0.98] tracking-tight md:text-7xl">{product.name}</h1>
+            <h1 className="mt-3 break-words font-display text-[clamp(2rem,10vw,3rem)] font-medium leading-[0.98] tracking-tight md:text-[clamp(2.5rem,5.4vw,4.5rem)] lg:text-[clamp(3rem,5vw,4.5rem)]">{product.name}</h1>
             <p className="mt-5 max-w-md text-lg opacity-90">{product.short}</p>
             <ul className="mt-6 flex flex-wrap gap-2 text-xs font-medium">
               <li className="rounded-btn bg-[#0b0f10] px-3 py-1.5 text-[#f4f6f6]">{stockLine}</li>
@@ -86,19 +86,19 @@ export function ProductStage({
               {product.cas && <li className="rounded-btn border border-current px-3 py-1.5">CAS {product.cas}</li>}
             </ul>
           </div>
-          <div className="relative grid min-h-[220px] place-items-center md:min-h-0">
+          <div className="relative grid min-h-[220px] min-w-0 place-items-center md:min-h-0">
             <ProductImage product={product} tone="field" className="relative h-56 w-auto max-w-full md:h-[16.5rem]" />
           </div>
         </div>
       </section>
 
-      <div className="mt-8 grid gap-8 md:grid-cols-[150px_minmax(0,1fr)_360px]">
+      <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[150px_minmax(0,1fr)_360px]">
         <SectionIndex items={index} />
         <div className="min-w-0">{children}</div>
 
         {/* Tarjeta de compra: fija mientras se lee el contenido */}
-        <aside className="order-first md:order-none">
-          <div ref={cardRef} className="rounded-card border bg-surface p-5 shadow-lg md:sticky md:top-32">
+        <aside className="order-first lg:order-none">
+          <div ref={cardRef} className="rounded-card border bg-surface p-5 shadow-lg lg:sticky lg:top-32">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">Presentación</p>
             <div className="mt-2 divide-y rounded-card border">
               {product.variants.map((v) => {
@@ -112,14 +112,14 @@ export function ProductStage({
                       on ? "bg-accent/10" : "hover:bg-surface-2"
                     } ${v.stock === 0 ? "opacity-50" : ""}`}
                   >
-                    <span className={`grid h-4 w-4 place-items-center rounded-full border ${on ? "border-accent bg-accent text-on-accent" : ""}`}>
+                    <span className={`grid h-4 w-4 shrink-0 place-items-center rounded-full border ${on ? "border-accent bg-accent text-on-accent" : ""}`}>
                       {on && <span className="h-1.5 w-1.5 rounded-full bg-on-accent" />}
                     </span>
-                    <span className="grow font-medium">{v.label}</span>
+                    <span className="min-w-0 grow font-medium [overflow-wrap:anywhere]">{v.label}</span>
                     {v.stock === 0 ? (
-                      <span className="text-xs text-muted">Sin stock</span>
+                      <span className="shrink-0 text-xs text-muted">Sin stock</span>
                     ) : (
-                      <span className="text-right">
+                      <span className="shrink-0 text-right">
                         <span className="block font-semibold">{formatCLP(v.price)}</span>
                         {v.compareAt && v.compareAt > v.price && <span className="block text-[0.8125rem] text-muted line-through">{formatCLP(v.compareAt)}</span>}
                       </span>
@@ -174,7 +174,7 @@ export function ProductStage({
       {!cardVisible && !soldOut && (
         <button
           onClick={() => add(variant.id, qty)}
-          className="btn-primary animate-fade fixed bottom-5 right-4 z-40 shadow-2xl md:hidden"
+          className="btn-primary animate-fade fixed bottom-5 right-4 z-40 shadow-2xl lg:hidden"
         >
           {inCart > 0 ? `En carrito · ${inCart}` : `Agregar · ${formatCLP(variant.price)}`}
         </button>
@@ -199,7 +199,7 @@ function SectionIndex({ items }: { items: IndexItem[] }) {
     return () => io.disconnect();
   }, [items]);
   return (
-    <nav aria-label="Índice de la ficha" className="hidden md:block">
+    <nav aria-label="Índice de la ficha" className="hidden xl:block">
       <ol className="sticky top-32 space-y-1 text-sm">
         {items.map((it, i) => (
           <li key={it.id}>

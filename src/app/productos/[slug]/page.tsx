@@ -108,20 +108,20 @@ export default async function ProductPage({ params }: Props) {
     <div className="animate-fade wrap pb-24 pt-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <nav aria-label="Ruta de navegación" className="mb-5 flex flex-wrap gap-2 text-sm text-muted">
-        <Link href="/" className="hover:text-accent">Inicio</Link>
+        <Link href="/" className="inline-block py-1 hover:text-accent">Inicio</Link>
         <span aria-hidden="true">/</span>
-        <Link href={`/productos?categoria=${encodeURIComponent(product.category)}`} className="hover:text-accent">{product.category}</Link>
+        <Link href={`/productos?categoria=${encodeURIComponent(product.category)}`} className="inline-block py-1 hover:text-accent">{product.category}</Link>
         <span aria-hidden="true">/</span>
-        <span className="text-fg" aria-current="page">{product.name}</span>
+        <span className="min-w-0 text-fg [overflow-wrap:anywhere]" aria-current="page">{product.name}</span>
       </nav>
 
       <ProductStage product={product} settings={settings} index={index} showCertificates={certs}>
         {/* Franja de datos técnicos */}
         <dl className="mb-10 grid grid-cols-2 gap-x-6 gap-y-5 rounded-card border bg-surface p-5 text-sm sm:grid-cols-[repeat(auto-fit,minmax(7.5rem,1fr))]">
           {specs.map(([k, v], i) => (
-            <div key={k} className={i === 0 ? "col-span-full border-b pb-5" : ""}>
+            <div key={k} className={`min-w-0 ${i === 0 ? "col-span-full border-b pb-5" : ""}`}>
               <dt className="text-[0.8125rem] font-semibold uppercase tracking-widest text-muted">{k}</dt>
-              <dd className={`mt-1 font-medium ${k === "CAS" ? "whitespace-nowrap" : ""}`}>{v}</dd>
+              <dd className={`mt-1 font-medium [overflow-wrap:anywhere] ${k === "CAS" && v.length <= 14 ? "whitespace-nowrap" : ""}`}>{v}</dd>
             </div>
           ))}
         </dl>
@@ -160,7 +160,7 @@ export default async function ProductPage({ params }: Props) {
           )}
           <dl className="mt-6 grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
             {[["Método de pureza", "HPLC"], ["Identidad", "Espectrometría de masas"], ["Pureza declarada", product.purity]].map(([k, v]) => (
-              <div key={k} className="rounded-card border bg-surface p-3"><dt className="text-xs text-muted">{k}</dt><dd className="mt-1 font-medium">{v}</dd></div>
+              <div key={k} className="min-w-0 rounded-card border bg-surface p-3"><dt className="text-xs text-muted">{k}</dt><dd className="mt-1 font-medium [overflow-wrap:anywhere]">{v}</dd></div>
             ))}
           </dl>
         </Section>}
@@ -171,7 +171,7 @@ export default async function ProductPage({ params }: Props) {
           ) : (
             <Paragraphs text={product.reconstitution ?? defaultReconstitution} />
           )}
-          {!isAccessory && <p className="mt-4 text-sm"><Link href="/calculadora" className="text-accent hover:underline">Calcular la concentración y el volumen →</Link></p>}
+          {!isAccessory && <p className="mt-4 text-sm"><Link href="/calculadora" className="inline-block py-1 text-accent hover:underline">Calcular la concentración y el volumen →</Link></p>}
           <p className="mt-4 text-xs text-muted">Información técnica de manipulación. No constituye indicación de uso ni de dosis.</p>
         </Section>
 
@@ -231,7 +231,7 @@ export default async function ProductPage({ params }: Props) {
         <section className="mt-20">
           <div className="flex items-end justify-between">
             <h2 className="t-h2">Seguir explorando</h2>
-            <Link href="/productos" className="text-sm text-accent hover:underline">Ver todo el catálogo →</Link>
+            <Link href="/productos" className="inline-block py-1.5 text-sm text-accent hover:underline">Ver todo el catálogo →</Link>
           </div>
           <div className="-mx-4 mt-6 flex snap-x gap-4 overflow-x-auto px-4 pb-4 md:mx-0 md:px-0">
             {related.map((p) => (

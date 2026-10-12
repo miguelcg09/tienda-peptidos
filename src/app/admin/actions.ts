@@ -84,7 +84,9 @@ export async function saveProduct(form: FormData) {
     const label = labels[i].trim();
     const price = Number(prices[i].replace(/[^\d]/g, ""));
     if (!label || !Number.isFinite(price) || price <= 0) continue;
-    const id = ids[i]?.trim() || `${slug}-${slugify(label)}`;
+    let id = ids[i]?.trim() || `${slug}-${slugify(label)}`;
+    // Dos presentaciones con el mismo nombre no pueden compartir identificador (la segunda pisaría a la primera).
+    for (let n = 2; variants.some((v) => v.id === id); n++) id = `${slug}-${slugify(label)}-${n}`;
     const stockRaw = (stocks[i] ?? "").trim();
     const compareRaw = Number((compares[i] ?? "").replace(/[^\d]/g, ""));
     variants.push({
@@ -98,6 +100,10 @@ export async function saveProduct(form: FormData) {
   if (variants.length === 0) throw new Error("Agrega al menos una presentación con precio");
 
   const before = original ? await getProduct(slug, { includeHidden: true }) : null;
+  // Un producto nuevo no puede pisar a uno que ya existe con la misma dirección (perdería sus presentaciones).
+  if (!original && (await getProduct(slug, { includeHidden: true }))) {
+    redirect(`/admin/productos/nuevo?error=existe&slug=${encodeURIComponent(slug)}`);
+  }
   await upsertProduct(product);
   await setVariants(slug, variants);
 

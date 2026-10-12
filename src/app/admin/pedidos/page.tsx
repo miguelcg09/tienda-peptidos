@@ -1,6 +1,7 @@
 import { listOrders } from "@/lib/orders";
 import { formatCLP } from "@/lib/products";
 import { confirmTransfer, removeOrder, saveOrderNote, shipOrder } from "../actions";
+import { ConfirmButton } from "../ConfirmButton";
 
 export const dynamic = "force-dynamic";
 
@@ -11,8 +12,7 @@ const tone: Record<string, string> = {
   fallido: "bg-red-500/15 text-red-600 dark:text-red-300",
 };
 
-export default async function Pedidos({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
-  const { error } = await searchParams;
+export default async function Pedidos() {
   const orders = await listOrders(200);
   const fmtDate = (iso: string) => new Date(iso).toLocaleString("es-CL", { timeZone: "America/Santiago" });
 
@@ -20,7 +20,6 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
     <div>
       <h1 className="font-display text-3xl font-bold">Pedidos</h1>
       <p className="mt-1 text-sm text-muted">{orders.length} pedidos, del más reciente al más antiguo.</p>
-      {error && <p className="mt-4 rounded-lg bg-red-500/10 p-3 text-sm text-red-700 dark:text-red-300">La clave no es válida.</p>}
       {orders.length === 0 ? (
         <p className="mt-10 text-muted">Todavía no hay pedidos.</p>
       ) : (
@@ -106,9 +105,13 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
                     </label>
                     <button className="btn-ghost text-sm">Guardar nota</button>
                     {deletable && (
-                      <button formAction={removeOrder.bind(null, o.id)} className="ml-auto text-xs text-red-500 hover:underline">
+                      <ConfirmButton
+                        formAction={removeOrder.bind(null, o.id)}
+                        message={o.status === "pendiente" && o.stockHeld ? `¿Anular el pedido ${o.id}? Se devuelve el stock reservado y el pedido se elimina.` : `¿Eliminar el pedido ${o.id}? No se puede deshacer.`}
+                        className="ml-auto inline-flex min-h-10 items-center px-3 text-sm text-red-700 hover:underline dark:text-red-300"
+                      >
                         {o.status === "pendiente" && o.stockHeld ? "Anular pedido y liberar stock" : "Eliminar pedido"}
-                      </button>
+                      </ConfirmButton>
                     )}
                   </form>
                 </div>

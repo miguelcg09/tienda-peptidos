@@ -6,8 +6,9 @@ import { formatCLP } from "@/lib/products";
 import { ProductImage } from "@/components/ProductImage";
 
 export default function Carrito() {
-  const { lines, subtotal, shipping, total, setQty, remove, find } = useCart();
+  const { lines, subtotal, shipping, total, setQty, remove, find, ready } = useCart();
 
+  if (!ready) return <div className="mx-auto max-w-3xl px-4 py-24 text-center text-muted" role="status">Cargando tu carrito…</div>;
   if (lines.length === 0) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 text-center">
@@ -20,8 +21,8 @@ export default function Carrito() {
   }
 
   return (
-    <div className="wrap grid gap-10 py-12 md:grid-cols-[1fr_340px]">
-      <div>
+    <div className="wrap grid grid-cols-[minmax(0,1fr)] gap-10 py-12 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <div className="min-w-0">
         <h1 className="t-page">Carrito</h1>
         <ul className="mt-6 divide-y rounded-card border">
           {lines.map((line) => {
@@ -29,21 +30,21 @@ export default function Carrito() {
             if (!found) return null;
             const { product, variant } = found;
             return (
-              <li key={line.variantId} className="flex items-center gap-4 p-4">
+              <li key={line.variantId} className="flex flex-wrap items-center gap-x-4 gap-y-3 p-4">
                 <div className="h-24 w-16 shrink-0 rounded-lg bg-surface border p-1">
                   <ProductImage product={product} className="h-full w-full" />
                 </div>
-                <div className="flex-1">
-                  <Link href={`/productos/${product.slug}`} className="font-medium hover:text-accent">{product.name}</Link>
-                  <p className="text-sm text-muted">{variant.label} · {formatCLP(variant.price)}</p>
-                  <button onClick={() => remove(line.variantId)} className="mt-1 text-xs text-muted hover:text-red-500">Eliminar</button>
+                <div className="min-w-0 flex-1 basis-40">
+                  <Link href={`/productos/${product.slug}`} className="break-words font-medium hover:text-accent">{product.name}</Link>
+                  <p className="break-words text-sm text-muted">{variant.label} · {formatCLP(variant.price)}</p>
+                  <button onClick={() => remove(line.variantId)} aria-label={`Eliminar ${product.name} del carrito`} className="mt-1 min-h-8 pr-3 text-xs text-muted hover:text-red-500">Eliminar</button>
                 </div>
                 <div className="flex items-center rounded-btn border">
-                  <button onClick={() => setQty(line.variantId, line.qty - 1)} className="px-3 py-1" aria-label="Menos">−</button>
-                  <span className="w-6 text-center text-sm">{line.qty}</span>
-                  <button onClick={() => setQty(line.variantId, line.qty + 1)} className="px-3 py-1" aria-label="Más">+</button>
+                  <button onClick={() => setQty(line.variantId, line.qty - 1)} className="px-3 py-2" aria-label={`Quitar uno de ${product.name}`}>−</button>
+                  <span className="w-8 text-center text-sm">{line.qty}</span>
+                  <button onClick={() => setQty(line.variantId, line.qty + 1)} className="px-3 py-2" aria-label={`Agregar uno de ${product.name}`}>+</button>
                 </div>
-                <p className="w-24 text-right font-semibold">{formatCLP(variant.price * line.qty)}</p>
+                <p className="ml-auto min-w-24 text-right font-semibold">{formatCLP(variant.price * line.qty)}</p>
               </li>
             );
           })}

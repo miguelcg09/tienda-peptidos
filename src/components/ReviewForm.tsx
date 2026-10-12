@@ -62,7 +62,7 @@ function One({ orden, email, item }: { orden: string; email: string; item: Revie
             aria-label={`Comentario sobre ${item.name}`}
           />
           <p className="mt-1 text-xs text-muted">No describas usos en personas ni animales: esas reseñas no se publican.</p>
-          {state === "error" && <p className="mt-2 text-xs text-red-600 dark:text-red-300">{msg}</p>}
+          {state === "error" && <p className="mt-2 text-xs text-red-800 dark:text-red-200">{msg}</p>}
           <button disabled={state === "busy"} className="btn-primary mt-3 text-sm">{state === "busy" ? "Enviando…" : "Enviar reseña"}</button>
         </>
       )}

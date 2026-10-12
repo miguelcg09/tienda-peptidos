@@ -64,7 +64,7 @@ export function Calculadora() {
           <p className="text-sm text-muted">Alícuotas de esa cantidad por vial</p>
           <p className="font-display text-2xl font-bold" data-testid="alicuotas">{fmt(Math.floor(aliquots), 0)}</p>
         </div>
-        {!valid && <p className="text-xs text-red-600 dark:text-red-300">Escribe números mayores a cero en el vial y el diluyente.</p>}
+        {!valid && <p className="text-xs text-red-800 dark:text-red-200">Escribe números mayores a cero en el vial y el diluyente.</p>}
       </div>
 
       <p className="text-xs text-muted md:col-span-2">

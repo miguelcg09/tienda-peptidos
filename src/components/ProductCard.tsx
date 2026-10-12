@@ -38,7 +38,7 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
           <Link href={`/productos/${product.slug}`} className="underline-offset-[5px] hover:underline focus-visible:outline-none focus-visible:underline">{product.name}</Link>
         </Heading>
         <p className="text-sm text-muted">{product.category}</p>
-        <p className="font-mono text-xs text-muted">{product.variants.map((v) => v.label).join(" / ")} · {product.form}</p>
+        <p className="break-words font-mono text-xs text-muted">{product.variants.map((v) => v.label).join(" / ")} · {product.form}</p>
         {product.rating && (
           <p className="flex items-center gap-1.5 text-xs text-muted">
             <Stars value={product.rating.avg} className="text-sm" />

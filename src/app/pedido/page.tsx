@@ -46,6 +46,9 @@ function Seguimiento() {
       } else {
         setData(await r.json());
       }
+    } catch {
+      setData(null);
+      setError("No pudimos conectarnos. Revisa tu conexión e inténtalo de nuevo.");
     } finally {
       setLoading(false);
     }
@@ -80,14 +83,14 @@ function Seguimiento() {
         </label>
         <button disabled={loading} className="btn-primary self-end">{loading ? "Buscando…" : "Buscar"}</button>
       </form>
-      {error && <p className="mt-4 rounded-card bg-red-500/10 p-3 text-sm text-red-600 dark:text-red-300">{error}</p>}
+      {error && <p role="alert" className="mt-4 rounded-card bg-red-500/10 p-3 text-sm text-red-800 dark:text-red-200">{error}</p>}
 
       {data && (
         <div className="mt-10 rounded-card border bg-surface p-6">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="t-h2">Pedido {data.id}</h2>
             <span className={`rounded-btn px-3 py-1 text-xs font-semibold ${
-              data.status === "fallido" ? "bg-red-500/15 text-red-600 dark:text-red-300" : data.status === "pendiente" ? "bg-amber-400/15 text-amber-700 dark:text-amber-200" : "bg-accent/15 text-accent"
+              data.status === "fallido" ? "bg-red-500/15 text-red-800 dark:text-red-200" : data.status === "pendiente" ? "bg-amber-400/15 text-amber-700 dark:text-amber-200" : "bg-accent/15 text-accent"
             }`}>
               {{ pendiente: "Pago pendiente", pagado: "Pagado, preparando envío", despachado: "Despachado", fallido: "Pago no completado" }[data.status]}
             </span>
@@ -133,7 +136,7 @@ function Seguimiento() {
 
           <ul className="mt-6 space-y-2 border-t pt-4 text-sm">
             {data.items.map((i) => (
-              <li key={i.variantId} className="flex justify-between gap-4"><span>{i.name} × {i.qty}</span><span>{formatCLP(i.unitPrice * i.qty)}</span></li>
+              <li key={i.variantId} className="flex justify-between gap-4"><span className="min-w-0 break-words">{i.name} × {i.qty}</span><span className="shrink-0">{formatCLP(i.unitPrice * i.qty)}</span></li>
             ))}
             <li className="flex justify-between text-muted"><span>Envío</span><span>{data.shipping ? formatCLP(data.shipping) : "Gratis"}</span></li>
             <li className="flex justify-between font-semibold"><span>Total</span><span>{formatCLP(data.total)}</span></li>

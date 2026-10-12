@@ -15,27 +15,27 @@ export function Footer({ settings }: { settings: StoreSettings }) {
           <p className="mt-2 text-sm text-muted">{settings.tagline}</p>
           <div className="mt-4 flex gap-2">
             {settings.instagram && (
-              <a href={instagramUrl(settings.instagram)} target="_blank" rel="noreferrer" className="rounded-btn border px-3 py-1 text-xs transition hover:border-accent">Instagram</a>
+              <a href={instagramUrl(settings.instagram)} target="_blank" rel="noreferrer" className="inline-flex min-h-9 items-center rounded-btn border px-3 text-xs transition hover:border-accent">Instagram</a>
             )}
-            {wa && <a href={wa} target="_blank" rel="noreferrer" className="rounded-btn border px-3 py-1 text-xs transition hover:border-accent">WhatsApp</a>}
+            {wa && <a href={wa} target="_blank" rel="noreferrer" className="inline-flex min-h-9 items-center rounded-btn border px-3 text-xs transition hover:border-accent">WhatsApp</a>}
           </div>
         </div>
         <div className="text-sm">
           <p className="font-semibold">Tienda</p>
-          <ul className="mt-3 space-y-2 text-muted">
-            <li><Link href="/productos" className="hover:text-accent">Productos</Link></li>
-            <li><Link href="/calculadora" className="hover:text-accent">Calculadora de reconstitución</Link></li>
-            <li><Link href="/guias" className="hover:text-accent">Guías</Link></li>
-            <li><Link href="/pedido" className="hover:text-accent">Seguir mi pedido</Link></li>
+          <ul className="mt-2 space-y-0.5 text-muted">
+            <li><Link href="/productos" className="inline-block py-1 hover:text-accent">Productos</Link></li>
+            <li><Link href="/calculadora" className="inline-block py-1 hover:text-accent">Calculadora de reconstitución</Link></li>
+            <li><Link href="/guias" className="inline-block py-1 hover:text-accent">Guías</Link></li>
+            <li><Link href="/pedido" className="inline-block py-1 hover:text-accent">Seguir mi pedido</Link></li>
           </ul>
         </div>
         <div className="text-sm">
           <p className="font-semibold">Ayuda</p>
-          <ul className="mt-3 space-y-2 text-muted">
-            <li><Link href="/#faq" className="hover:text-accent">Preguntas frecuentes</Link></li>
-            <li><Link href="/terminos" className="hover:text-accent">Términos y condiciones</Link></li>
-            <li><Link href="/envios" className="hover:text-accent">Envíos y devoluciones</Link></li>
-            <li><Link href="/privacidad" className="hover:text-accent">Privacidad</Link></li>
+          <ul className="mt-2 space-y-0.5 text-muted">
+            <li><Link href="/#faq" className="inline-block py-1 hover:text-accent">Preguntas frecuentes</Link></li>
+            <li><Link href="/terminos" className="inline-block py-1 hover:text-accent">Términos y condiciones</Link></li>
+            <li><Link href="/envios" className="inline-block py-1 hover:text-accent">Envíos y devoluciones</Link></li>
+            <li><Link href="/privacidad" className="inline-block py-1 hover:text-accent">Privacidad</Link></li>
             <li className="pt-2">{settings.email}</li>
             <li>{settings.whatsapp}</li>
           </ul>

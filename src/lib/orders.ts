@@ -115,11 +115,13 @@ export async function getOrder(id: string) {
   return row ? toOrder(row) : null;
 }
 
-// Marca el pedido como pagado una sola vez; devuelve null si ya lo estaba (evita correos duplicados).
+// Marca el pedido como pagado una sola vez; devuelve null si ya estaba pagado o despachado (evita correos
+// y descuentos de stock duplicados, y que un aviso repetido de la pasarela o una pestaña vieja del panel
+// devuelvan un pedido despachado al estado «pagado»).
 export async function markPaid(id: string, paymentRef: string | null) {
   const [row] = await query<OrderRow>(
     `UPDATE orders SET status = 'pagado', payment_ref = $2, paid_at = now()
-     WHERE id = $1 AND status <> 'pagado' RETURNING *`,
+     WHERE id = $1 AND status IN ('pendiente', 'fallido') RETURNING *`,
     [id, paymentRef],
   );
   return row ? toOrder(row) : null;

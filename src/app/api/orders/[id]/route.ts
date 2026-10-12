@@ -7,7 +7,10 @@ import { reviewedSlugs } from "@/lib/reviews";
 // del comprador y coincide, se devuelve el seguimiento completo.
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const order = await getOrder(id.trim().toUpperCase());
+  // Un número de pedido real es corto y sin caracteres de control.
+  const clean = id.trim().toUpperCase();
+  if (clean.length > 40 || /[\u0000-\u001f]/.test(clean)) return NextResponse.json({ error: "Pedido no encontrado" }, { status: 404 });
+  const order = await getOrder(clean);
   if (!order) return NextResponse.json({ error: "Pedido no encontrado" }, { status: 404 });
 
   const email = new URL(req.url).searchParams.get("email")?.trim().toLowerCase();

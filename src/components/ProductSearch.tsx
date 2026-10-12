@@ -86,6 +86,7 @@ export function ProductSearch({ variant = "header", className = "", label = "Bus
               id={inputId}
               name="q"
               type="search"
+              maxLength={80}
               role="combobox"
               aria-expanded={showPanel && results.length > 0}
               aria-controls={listId}
@@ -93,7 +94,7 @@ export function ProductSearch({ variant = "header", className = "", label = "Bus
               aria-activedescendant={active >= 0 ? optionId(active) : undefined}
               autoComplete="off"
               enterKeyHint="search"
-              placeholder={hero ? "Ej.: BPC-157" : "Buscar un producto"}
+              placeholder={hero ? "Ej.: BPC-157" : "Buscar"}
               value={q}
               onChange={(e) => { setQ(e.target.value); setOpen(true); setActive(-1); }}
               onFocus={() => setOpen(true)}

@@ -30,7 +30,7 @@ export default async function Certificados({ searchParams }: { searchParams: Pro
       </p>
 
       <form method="get" className="mt-8 flex max-w-xl gap-2" role="search">
-        <input name="q" defaultValue={q} placeholder="Número de lote, producto o CAS" aria-label="Buscar certificado" className="field mt-0 flex-1" />
+        <input name="q" maxLength={80} defaultValue={q} placeholder="Número de lote, producto o CAS" aria-label="Buscar certificado" className="field mt-0 flex-1" />
         <button className="btn-primary text-sm">Buscar</button>
         {q && <Link href="/certificados" className="btn-ghost text-sm">Limpiar</Link>}
       </form>
@@ -43,7 +43,7 @@ export default async function Certificados({ searchParams }: { searchParams: Pro
         <div className="mt-8 overflow-hidden rounded-card border bg-surface">
           <ul className="divide-y" data-testid="certificados">
             {list.map((p) => (
-              <li key={p.slug} className="grid gap-3 p-5 text-sm sm:grid-cols-[1.3fr_1fr_1fr_auto] sm:items-center">
+              <li key={p.slug} className="grid grid-cols-[minmax(0,1fr)] gap-3 p-5 text-sm sm:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-center [&>div]:min-w-0 [&_a]:[overflow-wrap:anywhere] [&_p]:[overflow-wrap:anywhere]">
                 <div>
                   <Link href={`/productos/${p.slug}`} className="font-display text-lg font-semibold hover:text-accent">{p.name}</Link>
                   <p className="text-xs text-muted">{p.category} · {p.variants.map((v) => v.label).join(" / ")}</p>

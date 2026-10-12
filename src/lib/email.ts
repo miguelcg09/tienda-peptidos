@@ -10,6 +10,8 @@ import { publicUrl } from "@/lib/site";
 
 type Mail = { to: string; subject: string; html: string; text: string };
 
+// Un fallo al enviar un correo (caída de internet o del proveedor) nunca debe tumbar el pedido: el pedido ya
+// quedó guardado, así que el error se anota en el registro y se sigue.
 async function send(mail: Mail, settings: Settings) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.EMAIL_FROM ?? `${settings.name} <onboarding@resend.dev>`;
@@ -17,12 +19,17 @@ async function send(mail: Mail, settings: Settings) {
     console.log(`[correo no enviado: falta RESEND_API_KEY]\nPara: ${mail.to}\nAsunto: ${mail.subject}\n\n${mail.text}`);
     return;
   }
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from, to: [mail.to], subject: mail.subject, html: mail.html, text: mail.text }),
-  });
-  if (!res.ok) console.error(`Resend respondió ${res.status}: ${await res.text()}`);
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from, to: [mail.to], subject: mail.subject, html: mail.html, text: mail.text }),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) console.error(`Resend respondió ${res.status}: ${await res.text()}`);
+  } catch (err) {
+    console.error(`No se pudo enviar el correo a ${mail.to}:`, err);
+  }
 }
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);

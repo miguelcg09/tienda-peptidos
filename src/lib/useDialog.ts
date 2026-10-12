@@ -1,10 +1,17 @@
-import { useEffect, type RefObject } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 // Comportamiento común de las ventanas modales (carrito, aviso de ingreso): al abrir, el foco entra
 // en la ventana; Tab no se sale de ella; Escape la cierra (si se puede) y el foco vuelve a donde estaba.
 export function useDialog(ref: RefObject<HTMLElement | null>, open: boolean, onClose?: () => void) {
+  // onClose suele llegar como función nueva en cada render: se guarda en una referencia para que el efecto
+  // no se reinicie (y el foco no salte al primer botón) cada vez que cambia algo dentro de la ventana,
+  // por ejemplo al sumar una unidad en el carrito con el teclado.
+  const closeRef = useRef(onClose);
+  useEffect(() => { closeRef.current = onClose; });
+  const closable = Boolean(onClose);
+
   useEffect(() => {
     if (!open) return;
     const el = ref.current;
@@ -16,9 +23,9 @@ export function useDialog(ref: RefObject<HTMLElement | null>, open: boolean, onC
     document.body.style.overflow = "hidden";
 
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape" && onClose) {
+      if (e.key === "Escape" && closable) {
         e.stopPropagation();
-        onClose();
+        closeRef.current?.();
         return;
       }
       if (e.key !== "Tab" || !el) return;
@@ -35,5 +42,5 @@ export function useDialog(ref: RefObject<HTMLElement | null>, open: boolean, onC
       document.body.style.overflow = prevOverflow;
       if (before && document.contains(before)) before.focus({ preventScroll: true });
     };
-  }, [open, onClose, ref]);
+  }, [open, closable, ref]);
 }

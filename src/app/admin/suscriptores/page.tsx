@@ -1,6 +1,7 @@
 import { listSubscribers } from "@/lib/subscribers";
 import { getProducts } from "@/lib/catalog";
 import { removeSubscriber } from "../actions";
+import { ConfirmButton } from "../ConfirmButton";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +39,7 @@ export default async function Suscriptores() {
                   <td className="px-4 py-3 text-muted">{fmtDate(s.createdAt)}</td>
                   <td className="px-4 py-3 text-right">
                     <form action={removeSubscriber.bind(null, s.id)}>
-                      <button className="text-xs text-red-500 hover:underline">Eliminar</button>
+                      <ConfirmButton message={`¿Eliminar a ${s.email} de la lista?`} className="inline-flex min-h-10 items-center px-3 text-sm text-red-700 hover:underline dark:text-red-300">Eliminar</ConfirmButton>
                     </form>
                   </td>
                 </tr>

@@ -58,7 +58,7 @@ export default function Guias() {
             <div key={t} className="rounded-card border bg-surface p-4"><dt className="font-semibold">{t}</dt><dd className="mt-1 text-sm text-muted">{d}</dd></div>
           ))}
         </dl>
-        <p className="mt-4 text-sm"><Link href="/certificados" className="text-accent hover:underline">Buscar el certificado de mi lote →</Link></p>
+        <p className="mt-4 text-sm"><Link href="/certificados" className="inline-block py-1 text-accent hover:underline">Buscar el certificado de mi lote →</Link></p>
       </section>
       )}
 
@@ -69,7 +69,7 @@ export default function Guias() {
             <div key={t} className="rounded-card border bg-surface p-4"><dt className="font-semibold">{t}</dt><dd className="mt-1 text-sm text-muted">{d}</dd></div>
           ))}
         </dl>
-        <p className="mt-4 text-sm"><Link href="/calculadora" className="text-accent hover:underline">Calculadora de reconstitución →</Link></p>
+        <p className="mt-4 text-sm"><Link href="/calculadora" className="inline-block py-1 text-accent hover:underline">Calculadora de reconstitución →</Link></p>
       </section>
 
       <p className="mt-14 rounded-card border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-800 dark:text-amber-200">

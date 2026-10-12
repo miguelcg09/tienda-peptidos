@@ -91,6 +91,16 @@ export async function applyCoupon(
   return { ok: true, coupon: c, discount };
 }
 
+// Canjea un uso del cupón de forma atómica: devuelve false si otro pedido se quedó con el último uso.
 export async function redeemCoupon(code: string) {
-  await query("UPDATE coupons SET uses = uses + 1 WHERE code = $1", [normalizeCode(code)]);
+  const rows = await query<{ code: string }>(
+    "UPDATE coupons SET uses = uses + 1 WHERE code = $1 AND (max_uses IS NULL OR uses < max_uses) RETURNING code",
+    [normalizeCode(code)],
+  );
+  return rows.length > 0;
+}
+
+// Devuelve un uso si el pedido no llegó a crearse.
+export async function releaseCoupon(code: string) {
+  await query("UPDATE coupons SET uses = GREATEST(uses - 1, 0) WHERE code = $1", [normalizeCode(code)]);
 }

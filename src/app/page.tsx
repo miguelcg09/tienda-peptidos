@@ -275,7 +275,7 @@ export default async function Home() {
           <h2 id="titulo-faq" className={h2}>Lo que más preguntan antes de comprar</h2>
           <p className="mt-4 text-lg text-muted">Respuestas cortas. Si falta la tuya, escríbenos.</p>
           <p className="mt-6 text-sm">
-            <a href={contactHref} className="font-medium text-fg u-link">¿Otra duda? Escríbenos</a>
+            <a href={contactHref} className="inline-block py-1.5 font-medium text-fg u-link">¿Otra duda? Escríbenos</a>
           </p>
         </div>
         <div className="divide-y self-start rounded-card bg-surface" data-testid="faq-portada">
