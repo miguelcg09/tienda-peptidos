@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
+import { adminOrNull } from "@/lib/admin";
 import { databaseUrlVar, query } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-// Diagnóstico rápido del despliegue. No expone valores, solo si cada pieza está configurada.
+// Diagnóstico rápido del despliegue. Sin sesión del panel solo dice si todo funciona: el número de pedidos, sus
+// códigos, el servidor de la base y los mensajes de error son información del negocio y no deben ser públicos.
 export async function GET() {
+  const team = await adminOrNull();
   let db: { ok: boolean; detail: string; pedidos?: number; ultimos?: string[]; servidor?: string };
   try {
     const [row] = await query<{ n: number; db: string; host: string | null }>(
@@ -21,6 +24,7 @@ export async function GET() {
   } catch (err) {
     db = { ok: false, detail: err instanceof Error ? err.message : String(err) };
   }
+  if (!team) return NextResponse.json({ ok: db.ok, baseDeDatos: { ok: db.ok } }, { headers: { "Cache-Control": "no-store" } });
   return NextResponse.json({
     ok: db.ok,
     baseDeDatos: db,

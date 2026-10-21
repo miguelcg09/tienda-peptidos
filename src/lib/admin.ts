@@ -1,38 +1,44 @@
 import "server-only";
-import { createHash, createHmac, timingSafeEqual } from "node:crypto";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { currentActor, type Actor } from "./auth";
 
-// La cookie de sesión guarda una firma derivada de la clave, no la clave misma: si alguien ve la cookie
-// (copia del navegador, soporte técnico) no obtiene la clave real. Cambiar ADMIN_PASSWORD cierra todas
-// las sesiones abiertas.
-export function sessionToken() {
-  return createHmac("sha256", process.env.ADMIN_PASSWORD ?? "").update("helix-admin-session-v1").digest("hex");
-}
+export type { Actor };
 
-const digest = (s: string) => createHash("sha256").update(s).digest();
+// Acceso al panel. Hay tres tipos de sesión:
+// - persona con cuenta (lo normal);
+// - persona con cuenta que debe cambiar la clave que le dieron (solo ve /admin/cuenta);
+// - sesión de instalación (clave ADMIN_PASSWORD, solo mientras no existe ninguna cuenta; solo ve /admin/usuarios
+//   para crear la primera cuenta).
+export type AccessOptions = { allowMustChange?: boolean; allowBootstrap?: boolean };
 
-// Comparación de tiempo constante (no revela cuántas letras coinciden).
-export function passwordMatches(input: string) {
-  const password = process.env.ADMIN_PASSWORD;
-  if (!password) return false;
-  return timingSafeEqual(digest(input), digest(password));
-}
+const allowed = (a: Actor, o: AccessOptions) => (!a.mustChange || o.allowMustChange) && (!a.bootstrap || o.allowBootstrap);
 
+// ¿Hay una persona con acceso completo al panel?
 export async function isAdmin() {
-  if (!process.env.ADMIN_PASSWORD) return false;
-  const cookie = (await cookies()).get("admin")?.value;
-  if (!cookie) return false;
-  return timingSafeEqual(digest(cookie), digest(sessionToken()));
-}
-
-export async function requireAdmin() {
-  if (!(await isAdmin())) throw new Error("No autorizado");
+  const a = await currentActor();
+  return Boolean(a && allowed(a, {}));
 }
 
 // Cada página del panel debe llamar a esto ANTES de leer datos. No basta con revisar la sesión en el layout:
 // Next prepara la página en paralelo con el layout, y sus datos viajan en la respuesta aunque el layout muestre
 // solo el formulario de ingreso.
-export async function requirePage() {
-  if (!(await isAdmin())) redirect("/admin");
+export async function requirePage(options: AccessOptions = {}): Promise<Actor> {
+  const a = await currentActor();
+  if (!a) redirect("/admin");
+  if (a.bootstrap && !options.allowBootstrap) redirect("/admin/usuarios");
+  if (a.mustChange && !options.allowMustChange) redirect("/admin/cuenta");
+  return a;
+}
+
+// Para acciones del servidor: devuelve quién la ejecuta (para el registro de auditoría) o corta con un error.
+export async function requireAdmin(options: AccessOptions = {}): Promise<Actor> {
+  const a = await currentActor();
+  if (!a || !allowed(a, options)) throw new Error("No autorizado");
+  return a;
+}
+
+// Para rutas de descarga: devuelve la persona o null (la ruta responde 401).
+export async function adminOrNull(): Promise<Actor | null> {
+  const a = await currentActor();
+  return a && allowed(a, {}) ? a : null;
 }

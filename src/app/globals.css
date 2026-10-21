@@ -61,6 +61,8 @@
   --tint: #0b0f10;
   --on-accent: #f4f6f6;
   --glow: 11 15 16;
+  /* Color de las barras de los gráficos del panel (azul validado para claro y oscuro) */
+  --series: #2a78d6;
   --grain: 0;
   --btn-from: #0b0f10;
   --btn-to: #0b0f10;
@@ -86,10 +88,15 @@
     --tint: #f4f6f6;
     --on-accent: #0b0f10;
     --glow: 244 246 246;
+    --series: #3987e5;
     --btn-from: #f4f6f6;
     --btn-to: #f4f6f6;
   }
 }
+
+/* Barras de los gráficos del panel */
+.viz-bar { background: var(--series); }
+@media (forced-colors: active) { .viz-bar { background: CanvasText; } }
 
 html { scroll-behavior: smooth; scroll-padding-top: calc(var(--bar-h) + 5rem); scroll-padding-bottom: 5.5rem; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

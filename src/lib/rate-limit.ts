@@ -11,11 +11,12 @@ function clientId(req: Request) {
 }
 
 // true si este visitante ya superó `max` intentos de `scope` en la ventana de `windowMs`.
-export function tooManyRequests(req: Request, scope: string, max: number, windowMs: number) {
+// `who` permite contar por otra clave que la IP (por ejemplo, por nombre de usuario).
+export function tooManyRequests(req: Request, scope: string, max: number, windowMs: number, who?: string) {
   if (process.env.RATE_LIMIT_OFF) return false; // solo para las pruebas automáticas
   const now = Date.now();
   if (hits.size > 5000) for (const [k, v] of hits) if (v.reset < now) hits.delete(k);
-  const key = `${scope}:${clientId(req)}`;
+  const key = `${scope}:${who ?? clientId(req)}`;
   const cur = hits.get(key);
   if (!cur || cur.reset < now) {
     hits.set(key, { n: 1, reset: now + windowMs });

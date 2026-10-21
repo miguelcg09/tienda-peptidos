@@ -18,3 +18,9 @@ export function text(v: unknown, max: number): string | null {
 }
 
 export const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
+
+// Nombre de pantalla de una persona del equipo: 2 a 60 caracteres, sin saltos de línea.
+export function personName(v: unknown) {
+  const s = text(v, 60);
+  return s && s.length >= 2 && !/[\r\n\t<>]/.test(s) ? s : null;
+}

@@ -123,7 +123,37 @@ CREATE TABLE IF NOT EXISTS subscribers (
   created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE (email, product_slug)
 );
+CREATE TABLE IF NOT EXISTS admin_users (
+  id            SERIAL PRIMARY KEY,
+  username      TEXT NOT NULL UNIQUE,
+  name          TEXT NOT NULL,
+  password_hash TEXT NOT NULL,
+  active        BOOLEAN NOT NULL DEFAULT true,
+  must_change   BOOLEAN NOT NULL DEFAULT true,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+  last_login_at TIMESTAMPTZ
+);
+CREATE TABLE IF NOT EXISTS admin_sessions (
+  token_hash TEXT PRIMARY KEY,
+  user_id    INTEGER REFERENCES admin_users(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  expires_at TIMESTAMPTZ NOT NULL
+);
+CREATE INDEX IF NOT EXISTS admin_sessions_user ON admin_sessions (user_id);
+CREATE TABLE IF NOT EXISTS audit_log (
+  id         SERIAL PRIMARY KEY,
+  at         TIMESTAMPTZ NOT NULL DEFAULT now(),
+  actor_id   INTEGER,
+  actor_name TEXT NOT NULL,
+  action     TEXT NOT NULL,
+  entity     TEXT NOT NULL DEFAULT '',
+  entity_id  TEXT NOT NULL DEFAULT '',
+  summary    TEXT NOT NULL,
+  details    JSONB
+);
+CREATE INDEX IF NOT EXISTS audit_log_at ON audit_log (at DESC);
 `;
+
 
 async function getRunner() {
   if (!globalForDb.__runner) {
