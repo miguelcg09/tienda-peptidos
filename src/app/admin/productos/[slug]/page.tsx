@@ -4,6 +4,7 @@ import { getProduct } from "@/lib/catalog";
 import { categories, type Product } from "@/lib/products";
 import { ProductImage } from "@/components/ProductImage";
 import { saveProduct } from "../../actions";
+import { requirePage } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,7 @@ const empty: Product = {
 };
 
 export default async function EditarProducto({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ error?: string; slug?: string }> }) {
+  await requirePage();
   const { slug } = await params;
   const { error, slug: clash } = await searchParams;
   const isNew = slug === "nuevo";

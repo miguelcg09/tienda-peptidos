@@ -2,10 +2,12 @@ import { listSubscribers } from "@/lib/subscribers";
 import { getProducts } from "@/lib/catalog";
 import { removeSubscriber } from "../actions";
 import { ConfirmButton } from "../ConfirmButton";
+import { requirePage } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
 export default async function Suscriptores() {
+  await requirePage();
   const [subs, products] = await Promise.all([listSubscribers(), getProducts({ includeHidden: true })]);
   const nameOf = (slug: string) => products.find((p) => p.slug === slug)?.name ?? slug;
   const fmtDate = (iso: string) => new Date(iso).toLocaleString("es-CL", { timeZone: "America/Santiago", dateStyle: "medium", timeStyle: "short" });

@@ -4,7 +4,7 @@ import { tooManyRequests } from "@/lib/rate-limit";
 
 // Recibe la clave del formulario y, si es correcta, deja una cookie por 30 días.
 export async function POST(req: Request) {
-  const url = new URL("/admin/pedidos", req.url);
+  const url = new URL("/admin", req.url);
   if (tooManyRequests(req, "admin-entrar", 8, 10 * 60_000)) {
     url.searchParams.set("error", "espera");
     return NextResponse.redirect(url, 303);
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     url.searchParams.set("error", "1");
     return NextResponse.redirect(url, 303);
   }
-  const res = NextResponse.redirect(url, 303);
+  const res = NextResponse.redirect(new URL("/admin/pedidos", req.url), 303);
   res.cookies.set("admin", sessionToken(), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

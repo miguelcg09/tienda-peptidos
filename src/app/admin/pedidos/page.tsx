@@ -2,6 +2,7 @@ import { listOrders } from "@/lib/orders";
 import { formatCLP } from "@/lib/products";
 import { confirmTransfer, removeOrder, saveOrderNote, shipOrder } from "../actions";
 import { ConfirmButton } from "../ConfirmButton";
+import { requirePage } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,7 @@ const tone: Record<string, string> = {
 };
 
 export default async function Pedidos() {
+  await requirePage();
   const orders = await listOrders(200);
   const fmtDate = (iso: string) => new Date(iso).toLocaleString("es-CL", { timeZone: "America/Santiago" });
 

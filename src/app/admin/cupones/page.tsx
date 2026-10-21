@@ -2,10 +2,12 @@ import { describeCoupon, listCoupons } from "@/lib/coupons";
 import { formatCLP } from "@/lib/products";
 import { removeCoupon, saveCouponAction, toggleCoupon } from "../actions";
 import { ConfirmButton } from "../ConfirmButton";
+import { requirePage } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
 export default async function Cupones({ searchParams }: { searchParams: Promise<{ guardado?: string }> }) {
+  await requirePage();
   const { guardado } = await searchParams;
   const coupons = await listCoupons();
   const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/Santiago" });

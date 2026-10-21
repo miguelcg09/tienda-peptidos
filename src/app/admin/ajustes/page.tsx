@@ -2,10 +2,12 @@ import { getSettings } from "@/lib/settings";
 import { resetLegalAction, saveSettingsAction } from "../actions";
 import { palettes } from "@/lib/palettes";
 import { legalPlaceholders } from "@/lib/legal";
+import { requirePage } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
 export default async function Ajustes({ searchParams }: { searchParams: Promise<{ guardado?: string }> }) {
+  await requirePage();
   const { guardado } = await searchParams;
   const s = await getSettings();
 

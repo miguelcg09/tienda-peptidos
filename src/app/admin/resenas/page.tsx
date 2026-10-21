@@ -3,6 +3,7 @@ import { getProducts } from "@/lib/catalog";
 import { Stars } from "@/components/Stars";
 import { removeReview, setReviewStatusAction } from "../actions";
 import { ConfirmButton } from "../ConfirmButton";
+import { requirePage } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,7 @@ const tone: Record<string, string> = {
 };
 
 export default async function Resenas() {
+  await requirePage();
   const [reviews, products] = await Promise.all([listAllReviews(), getProducts({ includeHidden: true })]);
   const nameOf = (slug: string) => products.find((p) => p.slug === slug)?.name ?? slug;
   const fmtDate = (iso: string) => new Date(iso).toLocaleDateString("es-CL", { timeZone: "America/Santiago", day: "numeric", month: "short", year: "numeric" });

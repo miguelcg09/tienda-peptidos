@@ -4,10 +4,12 @@ import { formatCLP } from "@/lib/products";
 import { ProductImage } from "@/components/ProductImage";
 import { removeProduct, toggleProductVisible } from "../actions";
 import { ConfirmButton } from "../ConfirmButton";
+import { requirePage } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
 export default async function Productos() {
+  await requirePage();
   const products = await getProducts({ includeHidden: true });
 
   return (
