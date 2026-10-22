@@ -9,7 +9,6 @@ import { ResearchGate } from "@/components/ResearchGate";
 import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { formatCLP } from "@/lib/products";
-import { getPalette, paletteCss } from "@/lib/palettes";
 import { hasBankData, toStoreSettings } from "@/lib/config";
 import { cardProviderName } from "@/lib/payments";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
@@ -22,15 +21,13 @@ const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 // El catálogo y los ajustes viven en la base de datos, así que todo se renderiza por petición.
 export const dynamic = "force-dynamic";
 
-export async function generateViewport() {
-  const p = getPalette((await getSettings()).palette);
-  return {
-    themeColor: [
-      { media: "(prefers-color-scheme: light)", color: p.light.bg },
-      { media: "(prefers-color-scheme: dark)", color: p.dark.bg },
-    ],
-  };
-}
+// Una sola paleta (la de esta dirección de diseño): los colores del navegador salen de los mismos tokens de globals.css.
+export const viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f5f8f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#08120f" },
+  ],
+};
 
 const siteUrl = publicUrl();
 
@@ -51,19 +48,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const [catalog, settings] = await Promise.all([getProducts(), getSettings()]);
-  const palette = getPalette(settings.palette);
   const provider = cardProviderName();
   const storeSettings = toStoreSettings(settings, { card: provider !== null, test: provider === "mock", transfer: hasBankData(settings) });
   return (
     <html lang="es-CL" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       <body className="font-sans antialiased">
-        {/* Paleta elegida en /admin/ajustes */}
-        <style dangerouslySetInnerHTML={{ __html: paletteCss(palette) }} />
         <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-card focus:bg-accent focus:px-4 focus:py-2 focus:text-on-accent">
           Saltar al contenido
         </a>
         {/* Aviso de uso: fijo arriba en todas las páginas, también en la portada. En celular, versión corta de una línea */}
-        <section aria-label="Aviso de uso y envío" className="sticky top-0 z-40 flex h-[var(--bar-h)] items-center justify-center gap-x-8 overflow-hidden whitespace-nowrap bg-fg px-4 text-center text-sm font-medium text-bg">
+        <section aria-label="Aviso de uso y envío" className="sticky top-0 z-40 flex h-[var(--bar-h)] items-center justify-center gap-x-8 overflow-hidden whitespace-nowrap border-b border-line bg-[var(--bar-bg)] px-4 text-center text-sm font-medium text-[var(--bar-fg)]">
           <span className="sm:hidden">Solo investigación · +18</span>
           <span className="hidden sm:inline">Solo para uso en investigación · Mayores de 18 años</span>
           <span className="hidden lg:inline">Envío gratis sobre {formatCLP(settings.freeShippingFrom)}</span>

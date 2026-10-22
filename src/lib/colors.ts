@@ -83,3 +83,10 @@ const soft = (hex: string, l: number) => {
 export const deep = (hex: string) => mix(hex, "#000000", 0.42); // tapa sobre el color de la portada
 export const tint = (hex: string) => soft(hex, 0.92); // fondo claro de las tarjetas
 export const tintHover = (hex: string) => soft(hex, 0.87);
+
+// Para los fondos pastel de la dirección "Aire": el matiz del producto y cuánto color conserva. Los grises (saturación baja)
+// se quedan grises (k = 0 a 1 de lo que traían); el resto usa el 100 % de la saturación pastel definida en CSS (--k = 1).
+export function pastelVars(hex: string) {
+  const [h, s] = toHsl(hex);
+  return { "--h": Math.round(h), "--k": s < 0.12 ? Number((s * 2).toFixed(2)) : 1 } as Record<string, number>;
+}

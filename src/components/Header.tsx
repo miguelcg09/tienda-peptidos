@@ -8,7 +8,7 @@ import { useCart } from "./CartProvider";
 import { Icon } from "./Icon";
 import { ProductSearch } from "./ProductSearch";
 
-const control = "inline-flex min-h-11 items-center justify-center gap-2 rounded-btn border border-current text-sm font-medium transition-colors hover:bg-current/15";
+const control = "inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-current/30 text-sm font-medium transition-colors hover:border-current hover:bg-current/10";
 
 // Barra de navegación: toma el color del texto de su contenedor, así sirve sobre el fondo de color de la
 // portada y sobre el fondo normal de las demás páginas. En celular el menú y el buscador se abren con un
@@ -50,7 +50,7 @@ export function NavBar({ compact = false, navLabel = "Principal" }: { compact?: 
 
   return (
     <div className={`relative mx-auto flex w-full max-w-[1280px] flex-wrap items-center gap-x-6 gap-y-2 px-4 md:px-12 lg:flex-nowrap ${compact ? "py-3" : "py-5"}`}>
-      <Link href="/" className="order-1 shrink-0 font-display text-xl font-medium tracking-tight transition-opacity hover:opacity-80 md:text-2xl">
+      <Link href="/" className="order-1 shrink-0 font-display text-xl font-semibold tracking-tight transition-opacity hover:opacity-80 md:text-2xl">
         {settings.name}
       </Link>
 
@@ -91,7 +91,7 @@ export function NavBar({ compact = false, navLabel = "Principal" }: { compact?: 
         <button type="button" onClick={() => setOpen(true)} className={`${control} px-3 lg:px-5`}>
           <Icon name="cart" size={20} />
           <span className="sr-only lg:not-sr-only">Carrito</span>
-          {count > 0 && <span data-testid="carrito-cantidad" className="-ml-1 lg:ml-0">({count}<span className="sr-only"> {count === 1 ? "producto" : "productos"}</span>)</span>}
+          {count > 0 && <span data-testid="carrito-cantidad" className="grid h-6 min-w-6 place-items-center rounded-full bg-fg px-1.5 text-xs font-semibold text-bg">{count}<span className="sr-only"> {count === 1 ? "producto" : "productos"}</span></span>}
         </button>
         <button
           ref={menuBtn}
@@ -122,7 +122,7 @@ function StickyHome() {
   return (
     <header
       inert={!show}
-      className={`fixed inset-x-0 top-[var(--bar-h)] z-30 border-b bg-bg text-fg transition-transform duration-200 motion-reduce:transition-none ${show ? "translate-y-0" : "invisible -translate-y-full"}`}
+      className={`fixed inset-x-0 top-[var(--bar-h)] z-30 border-b bg-bg text-fg transition-transform duration-300 motion-reduce:transition-none ${show ? "translate-y-0" : "invisible -translate-y-full"}`}
     >
       <NavBar compact navLabel="Principal, barra fija" />
     </header>

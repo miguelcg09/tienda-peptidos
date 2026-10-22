@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useCart } from "./CartProvider";
 
-// Botón "Agregar" de las tarjetas: agrega la presentación única sin salir del listado.
-export function QuickAdd({ variantId, name, className = "" }: { variantId: string; name: string; className?: string }) {
+// Botón "Agregar" de las tarjetas: agrega la presentación única sin salir del listado. Con `icon` es un botón redondo con "+".
+export function QuickAdd({ variantId, name, className = "", icon = false }: { variantId: string; name: string; className?: string; icon?: boolean }) {
   const { add } = useCart();
   const [done, setDone] = useState(false);
   return (
@@ -17,8 +17,8 @@ export function QuickAdd({ variantId, name, className = "" }: { variantId: strin
       aria-label={done ? `${name} agregado al carrito` : `Agregar ${name} al carrito`}
       className={`${className} ${done ? "bg-fg text-bg" : ""}`}
     >
-      <span aria-hidden="true">{done ? "✓" : "+"}</span>
-      {done ? "Agregado" : "Agregar"}
+      <span aria-hidden="true" className={icon ? "text-2xl leading-none" : undefined}>{done ? "✓" : "+"}</span>
+      {!icon && (done ? "Agregado" : "Agregar")}
     </button>
   );
 }

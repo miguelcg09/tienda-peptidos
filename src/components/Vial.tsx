@@ -13,6 +13,28 @@ function splitName(label: string): [string, string] {
 // Tamaño de letra para que el nombre quepa en el ancho de la etiqueta.
 const fit = (line: string) => Math.max(8, Math.min(19, Math.floor(88 / (Math.max(line.length, 1) * 0.66))));
 
+type VialProps = {
+  color: string;
+  label: string;
+  className?: string;
+  tone?: "light" | "field";
+  lot?: string;
+  format?: string;
+  kind?: "powder" | "liquid";
+  decorative?: boolean; // miniatura dentro de un botón que ya tiene nombre: sin textos y oculta para lectores de pantalla
+};
+
+// Sobre los fondos pastel del sitio: la versión clara en el modo claro y la de fondo oscuro en el modo oscuro.
+export function VialAuto(props: Omit<VialProps, "tone">) {
+  const cls = props.className ?? "";
+  return (
+    <>
+      <Vial {...props} tone="light" className={`${cls} dark:hidden`} />
+      <Vial {...props} tone="field" className={`${cls} hidden dark:block`} />
+    </>
+  );
+}
+
 export function Vial({
   color,
   label,
@@ -21,15 +43,8 @@ export function Vial({
   lot,
   format,
   kind = "powder",
-}: {
-  color: string;
-  label: string;
-  className?: string;
-  tone?: "light" | "field";
-  lot?: string;
-  format?: string;
-  kind?: "powder" | "liquid";
-}) {
+  decorative = false,
+}: VialProps) {
   const field = tone === "field";
   const liquid = kind === "liquid";
   // Los líquidos (agua bacteriostática) llevan sello metálico y líquido en lugar de polvo, para no ser el mismo frasco de todos.
@@ -40,7 +55,7 @@ export function Vial({
   const mono = { fontFamily: "var(--font-geist-mono), ui-monospace, monospace" };
   const data = [lot ? `LOTE ${lot}` : "", format ?? ""].filter(Boolean);
   return (
-    <svg viewBox="38 38 124 278" className={className} role="img" aria-label={`Vial de ${label}`}>
+    <svg viewBox="38 38 124 278" className={className} {...(decorative ? { "aria-hidden": true } : { role: "img", "aria-label": `Vial de ${label}` })}>
       <ellipse cx="100" cy="306" rx="56" ry="5" fill="#0b0f10" opacity={field ? 0.2 : 0.14} />
       <rect
         x="50" y="116" width="100" height="186" rx="14"
@@ -66,12 +81,16 @@ export function Vial({
       <rect x="64" y="92" width="72" height="8" rx="3" fill={field ? "#0b0f10" : capTop} opacity={field ? 0.25 : 1} />
       <rect x="50" y="166" width="100" height="90" fill="#ffffff" />
       <rect x="50" y="166" width="100" height="7" fill={cap} />
-      <text x="100" y={l2 ? 196 : 205} textAnchor="middle" fontWeight="700" fontSize={fit(l1)} fill="#0b0f10" style={display}>{l1}</text>
-      {l2 && <text x="100" y="212" textAnchor="middle" fontWeight="700" fontSize={fit(l2)} fill="#0b0f10" style={display}>{l2}</text>}
-      {data.map((t, i) => (
-        <text key={t} x="100" y={231 + i * 10} textAnchor="middle" fontSize="8.5" fill="#0b0f10" style={mono}>{t}</text>
-      ))}
-      <text x="100" y="251" textAnchor="middle" fontSize="8" fill="#0b0f10" style={mono}>SOLO INVESTIGACIÓN</text>
+      {!decorative && (
+        <>
+        <text x="100" y={l2 ? 196 : 205} textAnchor="middle" fontWeight="700" fontSize={fit(l1)} fill="#0b0f10" style={display}>{l1}</text>
+        {l2 && <text x="100" y="212" textAnchor="middle" fontWeight="700" fontSize={fit(l2)} fill="#0b0f10" style={display}>{l2}</text>}
+        {data.map((t, i) => (
+          <text key={t} x="100" y={231 + i * 10} textAnchor="middle" fontSize="8.5" fill="#0b0f10" style={mono}>{t}</text>
+        ))}
+        <text x="100" y="251" textAnchor="middle" fontSize="8" fill="#0b0f10" style={mono}>SOLO INVESTIGACIÓN</text>
+        </>
+      )}
     </svg>
   );
 }

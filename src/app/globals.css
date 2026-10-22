@@ -49,25 +49,32 @@
 
 :root {
   color-scheme: light;
-  --bg: #f4f6f6;
+  --bg: #f5f8f7;
   --surface: #ffffff;
-  --surface-2: #e9eeee;
-  --line: rgb(11 15 16 / 0.12);
-  --fg: #0b0f10;
-  --muted: #5b676b;
-  --accent: #0b0f10;
-  --accent-2: #2e5aac;
-  --badge: #2e5aac;
-  --tint: #0b0f10;
-  --on-accent: #f4f6f6;
-  --glow: 11 15 16;
+  --surface-2: #e8f0ed;
+  --line: rgb(10 31 26 / 0.12);
+  --fg: #0a1f1a;
+  --muted: #536a62;
+  --accent: #0a1f1a;
+  --accent-2: #0e7a5a;
+  --badge: #0e7a5a;
+  --tint: #0a1f1a;
+  --on-accent: #f5f8f7;
+  --glow: 10 31 26;
   /* Color de las barras de los gráficos del panel (azul validado para claro y oscuro) */
   --series: #2a78d6;
   --grain: 0;
-  --btn-from: #0b0f10;
-  --btn-to: #0b0f10;
-  --r-card: 0.375rem;
-  --r-btn: 0.25rem;
+  --btn-from: #0a1f1a;
+  --btn-to: #0a1f1a;
+  --r-card: 0.875rem;
+  --r-btn: 0.625rem;
+  /* Fondos pastel: cada pieza aporta su matiz (--h) y la luminosidad/saturación salen de aquí */
+  --pastel-s: 44%;
+  --pastel-hero: 89%;
+  --pastel-card: 94%;
+  --pastel-card-hover: 90%;
+  --bar-bg: #ffffff;
+  --bar-fg: #0a1f1a;
   /* Alto de la barra fija con el aviso de uso: lo usan el encabezado fijo y los anclajes */
   --bar-h: 2.125rem;
 }
@@ -76,21 +83,27 @@
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --bg: #0b0f10;
-    --surface: #151b1d;
-    --surface-2: #1c2326;
-    --line: rgb(244 246 246 / 0.14);
-    --fg: #f4f6f6;
-    --muted: #9aa7ab;
-    --accent: #f4f6f6;
-    --accent-2: #7fa4e8;
-    --badge: #7fa4e8;
-    --tint: #f4f6f6;
-    --on-accent: #0b0f10;
-    --glow: 244 246 246;
+    --bg: #08120f;
+    --surface: #0f1b17;
+    --surface-2: #162620;
+    --line: rgb(234 245 240 / 0.14);
+    --fg: #eaf5f0;
+    --muted: #93aaa1;
+    --accent: #eaf5f0;
+    --accent-2: #4fd1a3;
+    --badge: #4fd1a3;
+    --tint: #eaf5f0;
+    --on-accent: #08120f;
+    --glow: 234 245 240;
     --series: #3987e5;
-    --btn-from: #f4f6f6;
-    --btn-to: #f4f6f6;
+    --btn-from: #eaf5f0;
+    --btn-to: #eaf5f0;
+    --pastel-s: 26%;
+    --pastel-hero: 19%;
+    --pastel-card: 15%;
+    --pastel-card-hover: 19%;
+    --bar-bg: #0f1b17;
+    --bar-fg: #eaf5f0;
   }
 }
 
@@ -141,9 +154,10 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
     font-weight: 600;
     color: var(--on-accent);
     background: var(--btn-from);
-    transition: opacity 0.2s;
+    transition: opacity 0.2s, transform 0.2s;
   }
-  .btn-primary:hover { opacity: 0.86; }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
   .btn-primary:disabled { opacity: 0.6; }
   .btn-ghost {
     display: inline-flex;
@@ -170,6 +184,11 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
   .field:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 }
 
+/* Fondos pastel por pieza: se arman con el matiz de cada producto (--h) y su nivel de color (--k) */
+.pastel-hero { background-color: hsl(var(--h) calc(var(--k) * var(--pastel-s)) var(--pastel-hero)); }
+.pastel-card { background-color: hsl(var(--h) calc(var(--k) * var(--pastel-s)) var(--pastel-card)); }
+.pastel-card-hover:hover, .group\/card:hover .pastel-card-hover { background-color: hsl(var(--h) calc(var(--k) * var(--pastel-s)) var(--pastel-card-hover)); }
+
 /* Bandas de sección: un tono apenas distinto del fondo, separadas por una línea */
 .band { background: var(--color-surface-2); border-top: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); }
 
@@ -177,6 +196,8 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
 @keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
 @keyframes slide-up { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
 @keyframes grow { from { width: 0 } to { width: 100% } }
+@keyframes float { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+.animate-float { animation: float 6s ease-in-out infinite; }
 .animate-drawer { animation: drawer-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .animate-fade { animation: fade-in 0.25s ease-out; }
 .animate-slide { animation: slide-up 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }

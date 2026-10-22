@@ -81,7 +81,7 @@ export function ProductSearch({ variant = "header", className = "", label = "Bus
         </label>
         <div className={hero ? "flex gap-2" : ""}>
           <div className="relative min-w-0 flex-1">
-            <Icon name="search" size={20} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+            <Icon name="search" size={20} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
             <input
               id={inputId}
               name="q"
@@ -99,11 +99,11 @@ export function ProductSearch({ variant = "header", className = "", label = "Bus
               onChange={(e) => { setQ(e.target.value); setOpen(true); setActive(-1); }}
               onFocus={() => setOpen(true)}
               onKeyDown={onKeyDown}
-              className={`w-full rounded-btn border border-line bg-surface pl-10 pr-3 text-fg placeholder:text-muted ${hero ? "min-h-14 text-base" : "min-h-11 text-sm"}`}
+              className={`w-full rounded-full border border-fg/20 bg-surface pl-11 pr-4 text-fg placeholder:text-muted transition-colors hover:border-fg/40 focus:border-fg ${hero ? "min-h-14 text-base" : "min-h-11 text-sm"}`}
             />
           </div>
           {hero && (
-            <button type="submit" className="inline-flex min-h-14 shrink-0 items-center rounded-btn border border-current px-6 text-base font-semibold transition-colors hover:bg-current/15">
+            <button type="submit" className="inline-flex min-h-14 shrink-0 items-center rounded-full bg-fg px-7 text-base font-semibold text-bg transition-opacity hover:opacity-85">
               Buscar
             </button>
           )}

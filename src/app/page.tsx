@@ -3,8 +3,10 @@ import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { CatalogTabs } from "@/components/CatalogTabs";
 import { HomeHero, type HeroItem } from "@/components/HomeHero";
-import { field, onColor } from "@/lib/colors";
-import { ProductCard } from "@/components/ProductCard";
+import { pastelVars } from "@/lib/colors";
+import { catalogGrid, MissingTile, ProductCard } from "@/components/ProductCard";
+import { Icon, type IconName } from "@/components/Icon";
+import { Reveal } from "@/components/Reveal";
 import { ProductImage } from "@/components/ProductImage";
 import { Stars } from "@/components/Stars";
 import { faqs } from "@/lib/faqs";
@@ -19,8 +21,8 @@ const HERO_MAX = 6;
 
 const words = ["Cero", "Un", "Dos", "Tres", "Cuatro", "Cinco", "Seis", "Siete", "Ocho", "Nueve", "Diez"];
 
-const eyebrow = "text-sm font-medium text-muted";
-const h2 = "mt-3 font-display text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-[-0.03em]";
+const eyebrow = "inline-block rounded-full bg-surface-2 px-3.5 py-1 text-sm font-medium text-fg";
+const h2 = "mt-4 font-display text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-[-0.03em]";
 
 // Pasos del seguimiento que ve el comprador (ejemplo ilustrativo).
 const tracking = [
@@ -56,11 +58,11 @@ export default async function Home() {
   const realEmail = settings.email && !settings.email.endsWith("@ejemplo.cl") ? settings.email : "";
   const n = products.length;
   const countWord = words[n] ?? String(n);
-  const proofs: { label: string; title: string; text: string; href: string; link: string }[] = [
-    { label: "Envío", title: "Con seguimiento", text: "Cada pedido sale con número de seguimiento a todo Chile.", href: "/pedido", link: "Seguir mi pedido" },
-    { label: "Pago", title: "En pesos", text: "Pagas en pesos chilenos, por transferencia bancaria.", href: "/guias#como-comprar", link: "Cómo comprar" },
-    { label: "Despacho", title: "Mismo día hábil", text: `${dispatch}. Envío gratis sobre ${formatCLP(settings.freeShippingFrom)}.`, href: "/envios", link: "Envíos y devoluciones" },
-    { label: "Si llega dañado", title: "48 horas", text: "Si tu pedido llega dañado, escríbenos dentro de 48 horas con tu número de pedido.", href: "/envios", link: "Envíos y devoluciones" },
+  const proofs: { icon: IconName; label: string; title: string; text: string; href: string; link: string }[] = [
+    { icon: "route", label: "Envío", title: "Con seguimiento", text: "Cada pedido sale con número de seguimiento a todo Chile.", href: "/pedido", link: "Seguir mi pedido" },
+    { icon: "peso", label: "Pago", title: "En pesos", text: "Pagas en pesos chilenos, por transferencia bancaria.", href: "/guias#como-comprar", link: "Cómo comprar" },
+    { icon: "clock", label: "Despacho", title: "Mismo día hábil", text: `${dispatch}. Envío gratis sobre ${formatCLP(settings.freeShippingFrom)}.`, href: "/envios", link: "Envíos y devoluciones" },
+    { icon: "box", label: "Si llega dañado", title: "48 horas", text: "Si tu pedido llega dañado, escríbenos dentro de 48 horas con tu número de pedido.", href: "/envios", link: "Envíos y devoluciones" },
   ];
   const steps: { title: string; text: string }[] = [
     { title: "Elige y agrega al carrito.", text: "No necesitas crear una cuenta. Pedimos nombre, RUT, contacto y dirección de despacho." },
@@ -74,7 +76,6 @@ export default async function Home() {
     ["Embalaje", "Viales sellados, en un embalaje protector y discreto. Refrigéralos al recibir."],
   ];
   const closing = hero[0];
-  const closingColor = field(closing.color);
   const totalReviews = Object.values(ratings).reduce((n, r) => n + r.count, 0);
   const avgReviews = totalReviews ? Object.values(ratings).reduce((n, r) => n + r.avg * r.count, 0) / totalReviews : 0;
 
@@ -108,15 +109,20 @@ export default async function Home() {
       <HomeHero items={items} />
 
       {/* Cuatro hechos de compra, cada uno con su enlace */}
-      <section aria-labelledby="titulo-datos" className="border-b border-fg/15">
+      <section aria-labelledby="titulo-datos" className="wrap py-14 md:py-20">
         <h2 id="titulo-datos" className="sr-only">Cómo compras</h2>
-        <ul className="mx-auto grid max-w-[1280px] px-4 sm:grid-cols-2 md:px-12 lg:grid-cols-4">
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {proofs.map((x, i) => (
-            <li key={x.title} className={`flex flex-col items-start gap-3 py-10 lg:py-12 ${i > 0 ? "lg:border-l lg:border-fg/15 lg:pl-8" : ""} ${i < 3 ? "lg:pr-8" : ""} ${i % 2 === 1 ? "sm:pl-8 lg:pl-8" : "sm:pr-8"}`}>
-              <p className="text-sm font-medium text-muted">{x.label}</p>
-              <h3 className="font-display text-3xl font-medium tracking-tight">{x.title}</h3>
-              <p className="text-muted">{x.text}</p>
-              <Link href={x.href} className="mt-auto inline-flex min-h-11 items-center text-sm font-medium u-link">{x.link}</Link>
+            <li key={x.title}>
+              <Reveal delay={i * 60} className="h-full">
+                <div className="group/proof flex h-full flex-col items-start gap-3 rounded-card bg-surface p-6 transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none">
+                  <span className="grid h-11 w-11 place-items-center rounded-full bg-surface-2 text-accent-2"><Icon name={x.icon} size={22} /></span>
+                  <p className="text-sm font-medium text-muted">{x.label}</p>
+                  <h3 className="font-display text-2xl font-medium tracking-tight">{x.title}</h3>
+                  <p className="text-muted">{x.text}</p>
+                  <Link href={x.href} className="mt-auto inline-flex min-h-11 items-center gap-1.5 text-sm font-medium u-link">{x.link}</Link>
+                </div>
+              </Reveal>
             </li>
           ))}
         </ul>
@@ -124,7 +130,7 @@ export default async function Home() {
 
       {/* La colección: todas las piezas juntas */}
       <section id="coleccion" aria-labelledby="titulo-coleccion" className="scroll-mt-4">
-        <div className="mx-auto flex max-w-[1280px] flex-col gap-14 px-4 py-24 md:px-12 md:py-28">
+        <div className="wrap flex flex-col gap-10 pb-20 pt-6 md:pb-28 md:pt-10">
           <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
             <div>
               <p className={eyebrow}>Catálogo</p>
@@ -135,10 +141,11 @@ export default async function Home() {
             <p className="max-w-[34ch] text-lg text-muted">Todos los precios incluyen IVA. Si algo se agota, lo marcamos.</p>
           </div>
           {products.length > SHOW_ALL_UP_TO ? (
-            <CatalogTabs products={products} />
+            <CatalogTabs products={products} contactHref={contactHref} />
           ) : (
-            <div className="grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3" data-testid="catalogo-portada">
+            <div className={catalogGrid} data-testid="catalogo-portada">
               {products.map((p, i) => <ProductCard key={p.slug} product={p} index={i} />)}
+              <MissingTile href={contactHref} />
             </div>
           )}
           <Link href="/productos" className="self-start text-base font-medium u-link">Ver {n === 1 ? "el producto" : `los ${n} productos`}</Link>
@@ -147,7 +154,7 @@ export default async function Home() {
 
       {/* Opiniones de compradores verificados: solo con al menos tres reseñas con comentario */}
       {reviews.length >= 3 && (
-        <section id="opiniones" aria-labelledby="titulo-opiniones" className="mx-auto max-w-[1280px] px-4 pb-24 md:px-12 md:pb-28">
+        <section id="opiniones" aria-labelledby="titulo-opiniones" className="wrap pb-20 md:pb-28">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className={eyebrow}>Opiniones</p>
@@ -160,88 +167,93 @@ export default async function Home() {
             </p>
           </div>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {reviews.slice(0, 3).map((r) => (
-              <figure key={r.id} className="flex h-full flex-col rounded-card bg-surface p-6">
-                <Stars value={r.rating} className="text-lg" />
-                <blockquote className="mt-3 grow text-base text-muted">“{r.body}”</blockquote>
-                <figcaption className="mt-5 text-sm">
-                  <span className="font-semibold">{r.name}</span> · {nameOf(r.productSlug)} · <span className="text-xs font-medium text-muted">Compra verificada</span>
-                </figcaption>
-              </figure>
+            {reviews.slice(0, 3).map((r, i) => (
+              <Reveal key={r.id} delay={i * 60} className="h-full">
+                <figure className="flex h-full flex-col rounded-card bg-surface p-6">
+                  <Stars value={r.rating} className="text-lg" />
+                  <blockquote className="mt-3 grow text-base text-muted">“{r.body}”</blockquote>
+                  <figcaption className="mt-5 text-sm">
+                    <span className="font-semibold">{r.name}</span> · {nameOf(r.productSlug)} · <span className="text-xs font-medium text-muted">Compra verificada</span>
+                  </figcaption>
+                </figure>
+              </Reveal>
             ))}
           </div>
         </section>
       )}
 
       {/* Después de comprar: qué pasa tras el pago */}
-      <section id="despacho" data-field aria-labelledby="titulo-despacho" className="scroll-mt-4 bg-[#0b0f10] text-[#f4f6f6] dark:border-y dark:border-white/10">
-        <div className="mx-auto flex max-w-[1280px] flex-col gap-16 px-4 py-24 md:px-12 md:py-28">
-          <div className="flex flex-col gap-6">
-            <p className="text-sm font-medium text-[#9aa7ab]">Después de comprar</p>
+      <section id="despacho" aria-labelledby="titulo-despacho" className="scroll-mt-4 bg-surface-2">
+        <div className="wrap flex flex-col gap-14 py-20 md:py-28">
+          <div className="flex flex-col items-start gap-5">
+            <p className="rounded-full bg-surface px-3.5 py-1 text-sm font-medium">Después de comprar</p>
             <h2 id="titulo-despacho" className="font-display text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-[-0.03em]">
               Qué pasa después de pagar
             </h2>
-            <p className="text-lg text-[#c4ced1]">Tres pasos. Sin cuenta. Con seguimiento.</p>
+            <p className="text-lg text-muted">Tres pasos. Sin cuenta. Con seguimiento.</p>
           </div>
 
-          <ol className="grid gap-10 md:grid-cols-3 md:gap-8" data-testid="pasos-compra">
+          <ol className="grid gap-4 md:grid-cols-3" data-testid="pasos-compra">
             {steps.map((st, i) => (
-              <li key={st.title} className="relative flex flex-col gap-4 border-t border-[#2a3336] pt-7">
-                <span aria-hidden="true" className="absolute -top-px left-0 h-0.5 w-14 bg-[#f4f6f6]" />
-                <p className="font-display text-5xl font-light leading-none tracking-tight"><span className="sr-only">Paso </span>{i + 1}</p>
-                <h3 className="text-2xl font-medium leading-snug tracking-tight">{st.title}</h3>
-                <p className="max-w-[44ch] text-[#c4ced1]">{st.text}</p>
+              <li key={st.title}>
+                <Reveal delay={i * 60} className="h-full">
+                  <div className="flex h-full flex-col gap-4 rounded-card bg-surface p-7">
+                    <p className="font-display text-5xl font-light leading-none tracking-tight text-accent-2"><span className="sr-only">Paso </span>{i + 1}</p>
+                    <h3 className="text-2xl font-medium leading-snug tracking-tight">{st.title}</h3>
+                    <p className="max-w-[44ch] text-muted">{st.text}</p>
+                  </div>
+                </Reveal>
               </li>
             ))}
           </ol>
 
-          <div className="grid gap-x-16 gap-y-14 lg:grid-cols-[1.1fr_1fr]">
+          <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[1.1fr_1fr]">
             <div className="flex min-w-0 flex-col gap-8">
-              <dl className="border-t border-[#2a3336]">
+              <dl className="border-t border-line">
                 {facts.map(([k, v]) => (
-                  <div key={k} className="grid gap-x-6 gap-y-1 border-b border-[#2a3336] py-4 sm:grid-cols-[8rem_1fr]">
-                    <dt className="text-sm font-medium text-[#9aa7ab]">{k}</dt>
+                  <div key={k} className="grid gap-x-6 gap-y-1 border-b border-line py-4 sm:grid-cols-[8rem_1fr]">
+                    <dt className="text-sm font-medium text-muted">{k}</dt>
                     <dd>{v}</dd>
                   </div>
                 ))}
               </dl>
-              <div className="flex flex-col gap-3 text-[#c4ced1]">
+              <div className="flex flex-col gap-3 text-muted">
                 <p>
-                  <span className="font-medium text-[#f4f6f6]">¿Llegó dañado?</span> Escríbenos dentro de 48 horas con tu número de pedido. Los reembolsos se hacen por el mismo medio de pago.{" "}
-                  <Link href="/envios" className="text-[#f4f6f6] u-link">Ver envíos y devoluciones</Link>
+                  <span className="font-medium text-fg">¿Llegó dañado?</span> Escríbenos dentro de 48 horas con tu número de pedido. Los reembolsos se hacen por el mismo medio de pago.{" "}
+                  <Link href="/envios" className="text-fg u-link">Ver envíos y devoluciones</Link>
                 </p>
                 {(wa || realEmail) && (
                   <p>
-                    ¿Dudas antes de pagar? Escríbenos por {wa ? <>WhatsApp al <a href={wa} className="text-[#f4f6f6] u-link">{settings.whatsapp}</a></> : null}
+                    ¿Dudas antes de pagar? Escríbenos por {wa ? <>WhatsApp al <a href={wa} className="text-fg u-link">{settings.whatsapp}</a></> : null}
                     {wa && realEmail ? " o a " : null}
-                    {realEmail ? <a href={`mailto:${realEmail}`} className="text-[#f4f6f6] u-link">{realEmail}</a> : null}.
+                    {realEmail ? <a href={`mailto:${realEmail}`} className="text-fg u-link">{realEmail}</a> : null}.
                   </p>
                 )}
               </div>
             </div>
 
             <div className="flex min-w-0 flex-col gap-8">
-              <div className="w-full rounded-card bg-[#151b1d] p-7 pb-8" role="group" aria-label="Ejemplo de seguimiento de un pedido">
+              <div className="w-full rounded-card bg-surface p-7 pb-8" role="group" aria-label="Ejemplo de seguimiento de un pedido">
                 <div className="flex items-center justify-between gap-3">
                   <span className="font-mono text-sm tracking-wider">PEDIDO HX-10482</span>
-                  <span className="rounded-[3px] bg-[#f4f6f6] px-2.5 py-1 font-mono text-xs tracking-widest text-[#0b0f10]">EJEMPLO</span>
+                  <span className="rounded-full bg-fg px-3 py-1 font-mono text-xs tracking-widest text-bg">EJEMPLO</span>
                 </div>
                 <ol className="mt-7 flex flex-col">
                   {tracking.map((t, i) => {
                     const last = i === tracking.length - 1;
-                    const line = t.state === "done" ? "border-[#f4f6f6]" : t.state === "now" ? "border-[#3a4548]" : "border-transparent";
+                    const line = t.state === "done" ? "border-accent-2" : t.state === "now" ? "border-line" : "border-transparent";
                     return (
                       <li key={t.label} className={`relative border-l-2 pl-6 ${last ? "" : "pb-7"} ${line}`} aria-current={t.state === "now" ? "step" : undefined}>
                         <span
                           aria-hidden="true"
                           className={`absolute rounded-full ${
-                            t.state === "now" ? "-left-[9px] top-0.5 h-4 w-4 border-[3px] border-[#f4f6f6] bg-[#0b0f10]"
-                            : t.state === "done" ? "-left-[7px] top-1 h-3 w-3 bg-[#f4f6f6]"
-                            : "-left-[7px] top-1 h-3 w-3 border-2 border-[#5e6a6e]"
+                            t.state === "now" ? "-left-[9px] top-0.5 h-4 w-4 border-[3px] border-accent-2 bg-surface"
+                            : t.state === "done" ? "-left-[7px] top-1 h-3 w-3 bg-accent-2"
+                            : "-left-[7px] top-1 h-3 w-3 border-2 border-muted"
                           }`}
                         />
-                        <p className={`text-lg ${t.state === "now" ? "font-semibold" : "font-medium"} ${t.state === "next" ? "text-[#9aa7ab]" : ""}`}>{t.label}</p>
-                        {"note" in t && <p className="pt-1.5 font-mono text-xs text-[#c4ced1]">{t.note}</p>}
+                        <p className={`text-lg ${t.state === "now" ? "font-semibold" : "font-medium"} ${t.state === "next" ? "text-muted" : ""}`}>{t.label}</p>
+                        {"note" in t && <p className="pt-1.5 font-mono text-xs text-muted">{t.note}</p>}
                       </li>
                     );
                   })}
@@ -249,7 +261,7 @@ export default async function Home() {
               </div>
 
               <form action="/pedido" method="get" className="flex flex-col gap-3" data-testid="seguir-pedido">
-                <label htmlFor="seguir-orden" className="text-sm font-medium text-[#9aa7ab]">Número de pedido</label>
+                <label htmlFor="seguir-orden" className="text-sm font-medium text-muted">Número de pedido</label>
                 <div className="flex flex-wrap gap-3">
                   <input
                     id="seguir-orden"
@@ -257,11 +269,11 @@ export default async function Home() {
                     required
                     autoComplete="off"
                     placeholder="Ej.: HX-10482"
-                    className="min-h-14 min-w-0 flex-1 basis-48 rounded-btn border border-[#3a4548] bg-[#151b1d] px-4 text-base text-[#f4f6f6] placeholder:text-[#9aa7ab]"
+                    className="min-h-14 min-w-0 flex-1 basis-48 rounded-full border border-fg/20 bg-surface px-5 text-base text-fg placeholder:text-muted"
                   />
-                  <button className="inline-flex min-h-14 items-center rounded-btn bg-[#f4f6f6] px-8 text-base font-semibold text-[#0b0f10] transition-opacity hover:opacity-90">Seguir mi pedido</button>
+                  <button className="btn-primary min-h-14 rounded-full px-8 text-base">Seguir mi pedido</button>
                 </div>
-                <p className="text-sm text-[#c4ced1]">Con tu correo ves también el número de seguimiento del courier.</p>
+                <p className="text-sm text-muted">Con tu correo ves también el número de seguimiento del courier.</p>
               </form>
             </div>
           </div>
@@ -269,7 +281,7 @@ export default async function Home() {
       </section>
 
       {/* Preguntas frecuentes: la primera abierta */}
-      <section id="faq" aria-labelledby="titulo-faq" className="wrap grid scroll-mt-4 gap-x-16 gap-y-10 py-24 md:py-28 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+      <section id="faq" aria-labelledby="titulo-faq" className="wrap grid scroll-mt-4 gap-x-16 gap-y-10 py-20 md:py-28 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <div>
           <p className={eyebrow}>Preguntas frecuentes</p>
           <h2 id="titulo-faq" className={h2}>Lo que más preguntan antes de comprar</h2>
@@ -278,12 +290,12 @@ export default async function Home() {
             <a href={contactHref} className="inline-block py-1.5 font-medium text-fg u-link">¿Otra duda? Escríbenos</a>
           </p>
         </div>
-        <div className="divide-y self-start rounded-card bg-surface" data-testid="faq-portada">
+        <div className="divide-y divide-line self-start rounded-card bg-surface" data-testid="faq-portada">
           {faqs.map((f, i) => (
-            <details key={f.q} open={i === 0} className="group px-6 py-5 transition-colors hover:bg-surface-2">
+            <details key={f.q} open={i === 0} className="group px-6 py-5 transition-colors first:rounded-t-card last:rounded-b-card hover:bg-surface-2">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-medium">
                 {f.q}
-                <span className="font-mono text-xl transition group-open:rotate-45" aria-hidden>+</span>
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-surface-2 font-mono text-xl transition-transform duration-300 group-open:rotate-45" aria-hidden>+</span>
               </summary>
               <p className="mt-2 text-muted">{f.a}</p>
             </details>
@@ -292,27 +304,27 @@ export default async function Home() {
       </section>
 
       {/* Cierre: una acción para quien decidió y una salida suave para quien aún no compra */}
-      <section aria-labelledby="titulo-cierre" data-field style={{ backgroundColor: closingColor, color: onColor(closingColor) }}>
-        <div className="mx-auto grid max-w-[1280px] items-center gap-x-16 gap-y-10 px-4 pb-14 pt-24 md:grid-cols-[1.2fr_0.8fr] md:px-12 md:pt-28">
-          <div className="flex min-w-0 flex-col items-start gap-7">
-            <h2 id="titulo-cierre" className="font-display text-[clamp(2.25rem,4.6vw,4rem)] font-light leading-[1.02] tracking-[-0.03em]">
-              Péptidos de investigación, en pesos y con seguimiento a todo Chile.
-            </h2>
-            <p className="max-w-[44ch] text-xl">Elige tu compuesto, paga en pesos y sigue tu pedido con su número de seguimiento.</p>
-            <a href="#coleccion" className="inline-flex min-h-14 items-center rounded-btn px-8 text-base font-semibold transition-opacity hover:opacity-90" style={{ backgroundColor: onColor(closingColor), color: closingColor }}>
-              Ver catálogo
-            </a>
+      <div className="px-0 pb-0 md:px-4 md:pb-4">
+        <section aria-labelledby="titulo-cierre" data-field className="pastel-hero md:rounded-[2.5rem]" style={pastelVars(closing.color)}>
+          <div className="mx-auto grid max-w-[1280px] items-center gap-x-16 gap-y-10 px-4 pb-14 pt-20 md:grid-cols-[1.2fr_0.8fr] md:px-12 md:pt-24">
+            <div className="flex min-w-0 flex-col items-start gap-7">
+              <h2 id="titulo-cierre" className="font-display text-[clamp(2.25rem,4.6vw,4rem)] font-light leading-[1.02] tracking-[-0.03em]">
+                Péptidos de investigación, en pesos y con seguimiento a todo Chile.
+              </h2>
+              <p className="max-w-[44ch] text-xl">Elige tu compuesto, paga en pesos y sigue tu pedido con su número de seguimiento.</p>
+              <a href="#coleccion" className="btn-primary min-h-14 rounded-full px-8 text-base">Ver catálogo</a>
+            </div>
+            <div className="flex justify-center">
+              <ProductImage product={closing} className="animate-float h-[300px] w-auto max-w-full md:h-[400px]" />
+            </div>
           </div>
-          <div className="flex justify-center">
-            <ProductImage product={closing} tone="field" className="h-[300px] w-auto max-w-full md:h-[400px]" />
+          <div className="mx-auto max-w-[1280px] px-4 md:px-12">
+            <p className="border-t border-current/25 py-8 text-sm">
+              ¿No ves el compuesto que buscas? <a href={contactHref} className="font-medium u-link">Escríbenos</a> y vemos si podemos incluirlo.
+            </p>
           </div>
-        </div>
-        <div className="wrap">
-          <p className="border-t border-current/30 py-8 pb-24 text-sm md:pb-28">
-            ¿No ves el compuesto que buscas? <a href={contactHref} className="font-medium u-link">Escríbenos</a> y vemos si podemos incluirlo.
-          </p>
-        </div>
-      </section>
+        </section>
+      </div>
     </>
   );
 }

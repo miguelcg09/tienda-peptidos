@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { formatCLP, type Product } from "@/lib/products";
 import type { Settings } from "@/lib/config";
 import { useCart } from "./CartProvider";
-import { field, onColor } from "@/lib/colors";
+import { pastelVars } from "@/lib/colors";
 import { ProductImage } from "./ProductImage";
 import { Newsletter } from "./Newsletter";
 import { Stars } from "./Stars";
@@ -65,29 +65,29 @@ export function ProductStage({
   return (
     <>
       {/* Portada: campo plano del color del producto, texto a la izquierda y vial a la derecha */}
-      <section className="relative overflow-hidden rounded-card" style={{ background: field(product.color), color: onColor(field(product.color)) }}>
+      <section className="pastel-hero relative overflow-hidden rounded-[1.75rem]" style={pastelVars(product.color)}>
         <div className="relative grid gap-6 p-6 md:grid-cols-[minmax(0,1fr)_10rem] md:gap-8 md:px-12 md:py-9 lg:grid-cols-[1.1fr_1fr]">
           <div className="flex min-w-0 flex-col justify-center">
             <p className="text-sm font-medium opacity-90">{product.category}</p>
             <h1 className="mt-3 break-words font-display text-[clamp(2rem,10vw,3rem)] font-medium leading-[0.98] tracking-tight md:text-[clamp(2.5rem,5.4vw,4.5rem)] lg:text-[clamp(3rem,5vw,4.5rem)]">{product.name}</h1>
             <p className="mt-5 max-w-md text-lg opacity-90">{product.short}</p>
             <ul className="mt-6 flex flex-wrap gap-2 text-xs font-medium">
-              <li className="rounded-btn bg-[#0b0f10] px-3 py-1.5 text-[#f4f6f6]">{stockLine}</li>
-              {showCertificates && <li className="rounded-btn border border-current px-3 py-1.5">Pureza {product.purity.replace(" (HPLC)", "")}</li>}
-              {showCertificates && <li className="rounded-btn border border-current px-3 py-1.5">COA por lote</li>}
+              <li className="rounded-full bg-fg px-3.5 py-1.5 text-bg">{stockLine}</li>
+              {showCertificates && <li className="rounded-full bg-surface px-3.5 py-1.5">Pureza {product.purity.replace(" (HPLC)", "")}</li>}
+              {showCertificates && <li className="rounded-full bg-surface px-3.5 py-1.5">COA por lote</li>}
               {product.rating && (
                 <li>
-                  <a href="#resenas" className="flex items-center gap-1.5 rounded-btn border border-current px-3 py-1.5 transition-opacity hover:opacity-70">
+                  <a href="#resenas" className="flex items-center gap-1.5 rounded-full bg-surface px-3.5 py-1.5 transition-opacity hover:opacity-70">
                     <Stars value={product.rating.avg} className="text-sm" />
                     {product.rating.avg.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} · {product.rating.count} {product.rating.count === 1 ? "reseña" : "reseñas"}
                   </a>
                 </li>
               )}
-              {product.cas && <li className="rounded-btn border border-current px-3 py-1.5">CAS {product.cas}</li>}
+              {product.cas && <li className="rounded-full bg-surface px-3.5 py-1.5 font-mono">CAS {product.cas}</li>}
             </ul>
           </div>
           <div className="relative grid min-h-[220px] min-w-0 place-items-center md:min-h-0">
-            <ProductImage product={product} tone="field" className="relative h-56 w-auto max-w-full md:h-[16.5rem]" />
+            <ProductImage product={product} className="animate-float relative h-60 w-auto max-w-full md:h-[19rem]" />
           </div>
         </div>
       </section>
@@ -98,9 +98,9 @@ export function ProductStage({
 
         {/* Tarjeta de compra: fija mientras se lee el contenido */}
         <aside className="order-first lg:order-none">
-          <div ref={cardRef} className="rounded-card border bg-surface p-5 shadow-lg lg:sticky lg:top-32">
+          <div ref={cardRef} className="rounded-card border bg-surface p-5 lg:sticky lg:top-32">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">Presentación</p>
-            <div className="mt-2 divide-y rounded-card border">
+            <div className="mt-2 divide-y overflow-hidden rounded-card border">
               {product.variants.map((v) => {
                 const on = v.id === variant.id;
                 return (
@@ -109,7 +109,7 @@ export function ProductStage({
                     onClick={() => { setVariantId(v.id); setQty(1); }}
                     aria-pressed={on}
                     className={`flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition first:rounded-t-card last:rounded-b-card ${
-                      on ? "bg-accent/10" : "hover:bg-surface-2"
+                      on ? "bg-surface-2" : "hover:bg-surface-2/60"
                     } ${v.stock === 0 ? "opacity-50" : ""}`}
                   >
                     <span className={`grid h-4 w-4 shrink-0 place-items-center rounded-full border ${on ? "border-accent bg-accent text-on-accent" : ""}`}>
@@ -135,17 +135,17 @@ export function ProductStage({
                 <p className="text-xs text-muted">IVA incluido</p>
               </div>
               {discount > 0 && (
-                <span className="rounded-btn bg-accent-2 px-2.5 py-1 text-xs font-bold text-white">-{pct}% · Ahorras {formatCLP(discount)}</span>
+                <span className="rounded-full bg-accent-2 px-2.5 py-1 text-xs font-bold text-bg">-{pct}% · Ahorras {formatCLP(discount)}</span>
               )}
             </div>
 
             <div className="mt-4 flex gap-2">
-              <div className="flex items-center rounded-btn border">
-                <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-3 py-2 text-muted hover:text-fg" aria-label="Menos">−</button>
+              <div className="flex items-center rounded-full border">
+                <button onClick={() => setQty(Math.max(1, qty - 1))} className="min-h-11 rounded-l-full px-4 text-muted hover:text-fg" aria-label="Menos">−</button>
                 <span className="w-6 text-center text-sm">{qty}</span>
-                <button onClick={() => setQty(Math.min(max, qty + 1))} className="px-3 py-2 text-muted hover:text-fg" aria-label="Más">+</button>
+                <button onClick={() => setQty(Math.min(max, qty + 1))} className="min-h-11 rounded-r-full px-4 text-muted hover:text-fg" aria-label="Más">+</button>
               </div>
-              <button disabled={soldOut} onClick={() => add(variant.id, qty)} className="btn-primary flex-1">
+              <button disabled={soldOut} onClick={() => add(variant.id, qty)} className="btn-primary flex-1 rounded-full">
                 {soldOut ? "Agotado" : inCart > 0 ? `En carrito · ${inCart}` : "Agregar al carrito"}
               </button>
             </div>
@@ -174,7 +174,7 @@ export function ProductStage({
       {!cardVisible && !soldOut && (
         <button
           onClick={() => add(variant.id, qty)}
-          className="btn-primary animate-fade fixed bottom-5 right-4 z-40 shadow-2xl lg:hidden"
+          className="btn-primary animate-fade fixed bottom-5 right-4 z-40 rounded-full shadow-2xl lg:hidden"
         >
           {inCart > 0 ? `En carrito · ${inCart}` : `Agregar · ${formatCLP(variant.price)}`}
         </button>
@@ -205,7 +205,7 @@ function SectionIndex({ items }: { items: IndexItem[] }) {
           <li key={it.id}>
             <a
               href={`#${it.id}`}
-              className={`flex items-baseline gap-2 rounded-lg px-2 py-1.5 transition ${active === it.id ? "bg-accent/10 text-accent" : "text-muted hover:text-fg"}`}
+              className={`flex items-baseline gap-2 rounded-full px-3 py-1.5 transition ${active === it.id ? "bg-surface-2 font-medium text-fg" : "text-muted hover:text-fg"}`}
             >
               <span className="font-mono text-[0.8125rem]">{String(i + 1).padStart(2, "0")}</span>
               {it.label}
