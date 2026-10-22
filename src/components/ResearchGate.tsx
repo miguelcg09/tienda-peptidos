@@ -29,9 +29,9 @@ export function ResearchGate() {
 
   return (
     <div className="animate-fade fixed inset-0 z-[60] grid place-items-center overflow-y-auto bg-black/80 p-4">
-      <div ref={box} role="dialog" aria-modal="true" aria-labelledby="aviso-titulo" aria-describedby="aviso-texto" className="relative max-w-md overflow-hidden rounded-card border bg-surface p-7 shadow-2xl">
-        <p className="relative text-xs font-semibold uppercase tracking-[0.2em] text-accent">Aviso importante</p>
-        <h2 id="aviso-titulo" className="relative mt-2 font-display text-2xl font-bold">Solo para investigación</h2>
+      <div ref={box} role="dialog" aria-modal="true" aria-labelledby="aviso-titulo" aria-describedby="aviso-texto" className="relative max-w-md overflow-hidden border border-fg bg-surface p-7">
+        <p className="label relative flex items-center gap-2.5 text-fg"><span className="mark" aria-hidden="true" />Aviso importante</p>
+        <h2 id="aviso-titulo" className="relative mt-3 font-display text-3xl font-medium tracking-tight">Solo para investigación</h2>
         <p id="aviso-texto" className="relative mt-3 text-sm text-muted">{settings.disclaimer}</p>
         <p className="relative mt-3 text-sm text-muted">
           Al continuar declaras ser mayor de 18 años y que adquirirás los productos solo con fines de investigación.

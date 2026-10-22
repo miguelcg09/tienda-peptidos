@@ -3,9 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { formatCLP } from "@/lib/products";
-import { field, onColor } from "@/lib/colors";
-import { NavBar } from "./Header";
 import { ProductSearch } from "./ProductSearch";
+import { Ruler } from "./Ruler";
 import { Vial } from "./Vial";
 
 export type HeroItem = {
@@ -19,108 +18,129 @@ export type HeroItem = {
   format: string;
   from: number;
   multi: boolean;
+  formats: string;
+  cas?: string;
 };
 
 const pad = (n: number) => String(n).padStart(2, "0");
-const FALLBACK = "#0b0f10";
 
 function Row({ label, value, mono = true }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div className="flex justify-between gap-3 border-t border-[#e3e8e9] py-2.5">
-      <dt className="text-sm text-[#5b676b]">{label}</dt>
-      <dd className={`text-right text-sm ${mono ? "font-mono text-[0.8rem]" : ""}`}>{value}</dd>
+    <div className="flex justify-between gap-4 border-t border-line py-2.5">
+      <dt className="text-sm text-muted">{label}</dt>
+      <dd className={`min-w-0 text-right text-sm [overflow-wrap:anywhere] ${mono ? "font-mono text-[0.8125rem]" : ""}`}>{value}</dd>
     </div>
   );
 }
 
-// Portada: el fondo toma el color de la pieza elegida; el vial queda quieto y cambia la ficha.
+// Portada: título grande a la izquierda; a la derecha el espécimen elegido (vial y hoja de datos) y debajo
+// el índice numerado de piezas, que cambia el espécimen. La barra bermellón se desliza de una pieza a otra.
 export function HomeHero({ items }: { items: HeroItem[] }) {
   const [sel, setSel] = useState(0);
   const n = items.length;
-  const cur = items[Math.min(sel, n - 1)];
-  const color = field(cur?.color ?? FALLBACK);
-  const fg = onColor(color);
-  const move = "transition-colors duration-500 motion-reduce:transition-none";
+  const i = Math.min(sel, n - 1);
+  const cur = items[i];
 
   return (
-    <section id="portada" data-field aria-labelledby="titulo-portada" className={move} style={{ backgroundColor: color, color: fg }} data-testid="portada">
-      <header>
-        <NavBar />
-      </header>
-      {/* Texto a la izquierda; a la derecha la pieza con su ficha encima del vial y, alineado con la ficha, el selector que la cambia */}
-      <div className="mx-auto grid w-full max-w-[1280px] gap-10 px-4 pb-16 pt-4 md:px-12 md:pt-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:gap-x-12">
-        <div className="flex min-w-0 flex-col gap-5 md:gap-6">
-          <p className="text-sm font-medium">Para quienes investigan por su cuenta</p>
-          <h1 id="titulo-portada" className="font-display text-[clamp(2.75rem,5.6vw,5.25rem)] font-light leading-[0.98] tracking-[-0.035em]">
+    <section id="portada" aria-labelledby="titulo-portada" className="border-b border-fg" data-testid="portada">
+      <div className="wrap grid gap-x-12 gap-y-12 py-10 md:py-14 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,1fr)] lg:items-center">
+        <div className="flex min-w-0 flex-col gap-6 md:gap-7">
+          <p className="label flex items-center gap-2.5 text-fg">
+            <span className="mark" aria-hidden="true" />
+            Para quienes investigan por su cuenta
+          </p>
+          <h1 id="titulo-portada" className="font-display text-[clamp(2.6rem,5.3vw,4.75rem)] font-medium leading-[0.95] tracking-[-0.045em]">
             Péptidos de investigación.
-            <span className="mt-4 block text-[clamp(1.5rem,2.6vw,2.25rem)] font-normal leading-[1.12] tracking-[-0.02em]">
+            <span className="mt-5 block max-w-[24ch] text-[clamp(1.25rem,2vw,1.75rem)] font-normal leading-[1.15] tracking-[-0.02em] text-muted">
               Pagas en pesos y sigues tu pedido.
             </span>
           </h1>
-          <p className="max-w-[34ch] text-lg leading-snug md:text-xl md:leading-relaxed">
+          <p className="max-w-[36ch] text-lg leading-snug md:text-xl md:leading-relaxed">
             Despachamos con seguimiento a todo Chile. No necesitas crear una cuenta.
           </p>
-          <div className="flex flex-wrap items-center gap-x-7 gap-y-5">
-            <a href="#coleccion" className={`inline-flex min-h-14 items-center rounded-btn px-8 text-base font-semibold hover:opacity-90 ${move}`} style={{ backgroundColor: fg, color }}>
-              Ver catálogo
-            </a>
+          <div className="flex flex-wrap items-center gap-x-7 gap-y-4">
+            <a href="#coleccion" className="btn-primary min-h-14 px-8 text-base">Ver catálogo</a>
             <a href="#despacho" className="inline-flex min-h-11 items-center text-base font-medium u-link">Cómo se despacha</a>
           </div>
           <ProductSearch variant="hero" className="hidden w-full max-w-[34rem] md:block" />
-          <p className="max-w-[44ch] text-sm leading-relaxed">
+          <p className="max-w-[46ch] border-l-2 border-signal pl-4 text-sm leading-relaxed">
             Solo para uso en investigación. Mayores de 18 años. No aptos para consumo humano ni animal.
           </p>
         </div>
 
-        <div className="flex min-w-0 flex-col gap-8 lg:ml-auto lg:w-fit">
-          {cur && (
-            <div className="flex min-w-0 flex-row-reverse flex-wrap items-end justify-center gap-x-6 gap-y-7 lg:flex-nowrap lg:justify-end lg:gap-x-0">
-              <div className="flex min-w-0 flex-[0_1_240px] justify-center">
-                {cur.imageUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={cur.imageUrl} alt={cur.name} className="max-h-[520px] w-auto max-w-full object-contain" />
-                ) : (
-                  <Vial color={cur.color} label={cur.name} tone="field" lot={cur.lot} format={cur.format} kind={cur.category === "Accesorios" ? "liquid" : "powder"} className="h-[360px] w-auto max-w-full lg:h-[500px]" />
-                )}
+        {cur && (
+          <div className="min-w-0 border border-fg bg-surface" data-testid="ficha-pieza" aria-live="polite">
+            <div className="flex items-center justify-between gap-3 border-b border-fg px-4 py-2.5">
+              <span className="label text-fg">Espécimen {pad(i + 1)} / {pad(n)}</span>
+              <span className="label min-w-0 truncate">{cur.category}</span>
+            </div>
+            <div className="grid sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+              <div className="relative grid place-items-center border-b border-line px-6 py-8 sm:border-b-0 sm:border-r sm:px-8">
+                <Ruler />
+                <div key={cur.slug} className="animate-swap flex w-full justify-center">
+                  {cur.imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={cur.imageUrl} alt={cur.name} className="max-h-[380px] w-auto max-w-full object-contain" />
+                  ) : (
+                    <Vial color={cur.color} label={cur.name} lot={cur.lot} format={cur.format} kind={cur.category === "Accesorios" ? "liquid" : "powder"} className="h-[280px] w-auto max-w-full sm:h-[360px]" />
+                  )}
+                </div>
               </div>
-              {/* En escritorio la ficha se monta sobre el borde del vial: una sola pieza, no dos cajas lado a lado */}
-              <div className="relative z-10 min-w-0 flex-[0_1_260px] rounded-card bg-white p-5 text-[#0b0f10] lg:-mr-5 lg:mb-6" data-testid="ficha-pieza" aria-live="polite">
-                <p className="font-mono text-xs tracking-widest text-[#5b676b]">PIEZA {pad(Math.min(sel, n - 1) + 1)} / {pad(n)}</p>
-                <p className="pb-3 pt-1 font-display text-[1.9rem] font-medium leading-[1.05] tracking-tight [overflow-wrap:anywhere]">{cur.name}</p>
+              <div className="flex min-w-0 flex-col p-5 sm:p-6">
+                <p key={`n-${cur.slug}`} className="animate-swap pb-4 font-display text-[1.75rem] font-medium leading-[1.05] tracking-tight [overflow-wrap:anywhere] sm:text-[2rem]">{cur.name}</p>
                 <dl>
                   {cur.lot && <Row label="Lote" value={cur.lot} />}
                   <Row label="Formato" value={cur.form} />
+                  <Row label="Presentaciones" value={cur.formats} />
+                  {cur.cas && <Row label="CAS" value={cur.cas} />}
                   <Row label="Línea" value={cur.category} mono={false} />
                 </dl>
-                <div className="mt-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-t border-[#0b0f10] pt-3.5">
-                  <span className="whitespace-nowrap text-xl font-semibold">{cur.multi ? "Desde " : ""}{formatCLP(cur.from)}</span>
+                <div className="mt-auto flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-t border-fg pt-4">
+                  <span className="whitespace-nowrap font-mono text-xl font-medium">{cur.multi ? "Desde " : ""}{formatCLP(cur.from)}</span>
                   <Link href={`/productos/${cur.slug}`} className="inline-flex min-h-11 items-center whitespace-nowrap text-sm font-medium u-link">Ver pieza →</Link>
                 </div>
               </div>
             </div>
-          )}
-
-          {n > 1 && (
-            <div className="flex flex-col gap-3">
-              <p id="elegir-pieza" className="text-sm font-medium">Elegir pieza</p>
-              <div className="flex flex-wrap gap-2" role="group" aria-labelledby="elegir-pieza">
-                {items.map((it, i) => (
-                  <button
-                    key={it.slug}
-                    onClick={() => setSel(i)}
-                    aria-label={`${pad(i + 1)}: ${it.name}`}
-                    aria-pressed={i === sel}
-                    className={`h-12 w-12 rounded-btn border border-current font-mono text-sm font-medium ${move} ${i === sel ? "" : "hover:bg-current/15"}`}
-                    style={i === sel ? { backgroundColor: fg, color } : undefined}
-                  >
-                    {pad(i + 1)}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
+
+      {n > 1 && (
+        <div className="wrap pb-10 md:pb-14">
+          <p id="elegir-pieza" className="label mb-3 text-fg">Elegir pieza</p>
+          <div className="overflow-x-auto border border-fg">
+            <div className="relative w-full" style={{ minWidth: `${n * 9.5}rem` }}>
+            <ul
+              aria-labelledby="elegir-pieza"
+              className="grid w-full"
+              style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}
+            >
+              {items.map((it, k) => {
+                const on = k === i;
+                return (
+                  <li key={it.slug} className="border-r border-line last:border-r-0">
+                    <button
+                      onClick={() => setSel(k)}
+                      aria-label={`${pad(k + 1)} ${it.name}`}
+                      aria-pressed={on}
+                      className={`flex h-full min-h-[5.25rem] w-full flex-col items-start gap-1 px-4 pb-3 pt-4 text-left transition-colors duration-200 ${on ? "bg-fg text-bg" : "hover:bg-surface-2"}`}
+                    >
+                      <span className={`font-mono text-xs ${on ? "text-bg/75" : "text-muted"}`}>{pad(k + 1)}</span>{" "}
+                      <span className="font-medium leading-tight [overflow-wrap:anywhere]">{it.name}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute left-0 top-0 h-1 bg-signal transition-transform duration-300 ease-out"
+              style={{ width: `${100 / n}%`, transform: `translateX(${i * 100}%)` }}
+            />
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

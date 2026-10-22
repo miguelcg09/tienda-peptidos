@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Funnel_Display, Funnel_Sans, Geist_Mono } from "next/font/google";
+import { Space_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/components/CartProvider";
 import { Header } from "@/components/Header";
@@ -9,25 +9,24 @@ import { ResearchGate } from "@/components/ResearchGate";
 import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { formatCLP } from "@/lib/products";
-import { getPalette, paletteCss } from "@/lib/palettes";
 import { hasBankData, toStoreSettings } from "@/lib/config";
 import { cardProviderName } from "@/lib/payments";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { publicUrl } from "@/lib/site";
 
-const display = Funnel_Display({ subsets: ["latin"], variable: "--font-funnel-display" });
-const sans = Funnel_Sans({ subsets: ["latin"], variable: "--font-funnel-sans" });
-const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
+// Índice: Space Grotesk para títulos y cuerpo, IBM Plex Mono para los datos (lote, formato, precios en tablas).
+const grotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-sg" });
+const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-plex" });
 
 // El catálogo y los ajustes viven en la base de datos, así que todo se renderiza por petición.
 export const dynamic = "force-dynamic";
 
-export async function generateViewport() {
-  const p = getPalette((await getSettings()).palette);
+// Una sola paleta en esta dirección: los colores del navegador salen de los tokens de globals.css.
+export function generateViewport() {
   return {
     themeColor: [
-      { media: "(prefers-color-scheme: light)", color: p.light.bg },
-      { media: "(prefers-color-scheme: dark)", color: p.dark.bg },
+      { media: "(prefers-color-scheme: light)", color: "#f6f6f4" },
+      { media: "(prefers-color-scheme: dark)", color: "#0e0e0d" },
     ],
   };
 }
@@ -51,19 +50,17 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const [catalog, settings] = await Promise.all([getProducts(), getSettings()]);
-  const palette = getPalette(settings.palette);
   const provider = cardProviderName();
   const storeSettings = toStoreSettings(settings, { card: provider !== null, test: provider === "mock", transfer: hasBankData(settings) });
   return (
-    <html lang="es-CL" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+    <html lang="es-CL" className={`${grotesk.variable} ${mono.variable}`}>
       <body className="font-sans antialiased">
-        {/* Paleta elegida en /admin/ajustes */}
-        <style dangerouslySetInnerHTML={{ __html: paletteCss(palette) }} />
         <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-card focus:bg-accent focus:px-4 focus:py-2 focus:text-on-accent">
           Saltar al contenido
         </a>
         {/* Aviso de uso: fijo arriba en todas las páginas, también en la portada. En celular, versión corta de una línea */}
-        <section aria-label="Aviso de uso y envío" className="sticky top-0 z-40 flex h-[var(--bar-h)] items-center justify-center gap-x-8 overflow-hidden whitespace-nowrap bg-fg px-4 text-center text-sm font-medium text-bg">
+        <section aria-label="Aviso de uso y envío" className="sticky top-0 z-40 flex h-[var(--bar-h)] items-center justify-center gap-x-6 overflow-hidden whitespace-nowrap bg-fg px-4 text-center text-sm font-medium text-bg">
+          <span className="mark" aria-hidden="true" />
           <span className="sm:hidden">Solo investigación · +18</span>
           <span className="hidden sm:inline">Solo para uso en investigación · Mayores de 18 años</span>
           <span className="hidden lg:inline">Envío gratis sobre {formatCLP(settings.freeShippingFrom)}</span>

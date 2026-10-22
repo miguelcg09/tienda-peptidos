@@ -36,8 +36,8 @@ export function Vial({
   const cap = liquid ? (field ? "#dfe6e8" : "#a9b4b8") : field ? deep(color) : color;
   const capTop = liquid ? (field ? "#b8c3c6" : "#7d8a8f") : deep(color);
   const [l1, l2] = splitName(label);
-  const display = { fontFamily: "var(--font-funnel-display), system-ui, sans-serif" };
-  const mono = { fontFamily: "var(--font-geist-mono), ui-monospace, monospace" };
+  const display = { fontFamily: "var(--font-sg), system-ui, sans-serif" };
+  const mono = { fontFamily: "var(--font-plex), ui-monospace, monospace" };
   const data = [lot ? `LOTE ${lot}` : "", format ?? ""].filter(Boolean);
   return (
     <svg viewBox="38 38 124 278" className={className} role="img" aria-label={`Vial de ${label}`}>

@@ -99,18 +99,18 @@ export function ProductSearch({ variant = "header", className = "", label = "Bus
               onChange={(e) => { setQ(e.target.value); setOpen(true); setActive(-1); }}
               onFocus={() => setOpen(true)}
               onKeyDown={onKeyDown}
-              className={`w-full rounded-btn border border-line bg-surface pl-10 pr-3 text-fg placeholder:text-muted ${hero ? "min-h-14 text-base" : "min-h-11 text-sm"}`}
+              className={`w-full rounded-btn border border-line-2 bg-surface pl-10 pr-3 text-fg placeholder:text-muted ${hero ? "min-h-14 text-base" : "min-h-11 text-sm"}`}
             />
           </div>
           {hero && (
-            <button type="submit" className="inline-flex min-h-14 shrink-0 items-center rounded-btn border border-current px-6 text-base font-semibold transition-colors hover:bg-current/15">
+            <button type="submit" className="inline-flex min-h-14 shrink-0 items-center rounded-btn border border-fg px-6 text-base font-medium transition-colors hover:bg-fg hover:text-bg">
               Buscar
             </button>
           )}
         </div>
 
         {showPanel && (
-          <div className="absolute inset-x-0 top-full z-40 mt-1.5 overflow-hidden rounded-card border border-line bg-surface text-fg shadow-lg animate-fade" onMouseDown={(e) => e.preventDefault()}>
+          <div className="absolute inset-x-0 top-full z-40 mt-1.5 overflow-hidden border border-fg bg-surface text-fg animate-fade" onMouseDown={(e) => e.preventDefault()}>
             {results.length > 0 ? (
               <ul id={listId} role="listbox" aria-label="Productos encontrados">
                 {results.map((p, i) => (
@@ -127,7 +127,7 @@ export function ProductSearch({ variant = "header", className = "", label = "Bus
                       <span className="block font-medium">{p.name}</span>
                       <span className="block text-sm text-muted">{p.category}</span>
                     </span>
-                    <span className="shrink-0 text-sm">{p.variants.length > 1 ? "Desde " : ""}{formatCLP(Math.min(...p.variants.map((v) => v.price)))}</span>
+                    <span className="shrink-0 font-mono text-sm">{p.variants.length > 1 ? "Desde " : ""}{formatCLP(Math.min(...p.variants.map((v) => v.price)))}</span>
                   </li>
                 ))}
               </ul>

@@ -3,7 +3,7 @@ export function Stars({ value, className = "" }: { value: number; className?: st
   const pct = Math.max(0, Math.min(5, value)) * 20;
   return (
     <span className={`relative inline-block whitespace-nowrap leading-none ${className}`} role="img" aria-label={`${value.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} de 5 estrellas`}>
-      <span className="text-tint/20" aria-hidden>★★★★★</span>
+      <span className="text-tint/25" aria-hidden>★★★★★</span>
       <span className="absolute inset-y-0 left-0 overflow-hidden text-accent-2" style={{ width: `${pct}%` }} aria-hidden>★★★★★</span>
     </span>
   );

@@ -39,15 +39,16 @@ function Paragraphs({ text }: { text: string }) {
   );
 }
 
+// Sección de la hoja: a la izquierda su número y título, a la derecha el contenido. Cada una cierra con un filete.
 function Section({ id, n, title, children }: { id: string; n: number; title: string; children: React.ReactNode }) {
   return (
     <Reveal>
-      <section id={id} className="scroll-mt-32 border-t py-10 first:border-t-0 first:pt-0">
-        <div className="flex items-baseline gap-4">
-          <span className="font-mono text-xs text-accent">{String(n).padStart(2, "0")}</span>
-          <h2 className="t-h2">{title}</h2>
+      <section id={id} className="grid scroll-mt-[calc(var(--bar-h)+var(--head-h)+4rem)] gap-x-10 gap-y-4 border-b border-rule py-10 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:py-12">
+        <div className="self-start">
+          <span className="font-mono text-xs text-muted">{String(n).padStart(2, "0")}</span>
+          <h2 className="t-h2 mt-1">{title}</h2>
         </div>
-        <div className="mt-5 md:pl-10">{children}</div>
+        <div className="min-w-0 max-w-[62rem]">{children}</div>
       </section>
     </Reveal>
   );
@@ -105,34 +106,24 @@ export default async function ProductPage({ params }: Props) {
   };
 
   return (
-    <div className="animate-fade wrap pb-24 pt-8">
+    <div className="animate-fade wrap pb-20 pt-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <nav aria-label="Ruta de navegación" className="mb-5 flex flex-wrap gap-2 text-sm text-muted">
-        <Link href="/" className="inline-block py-1 hover:text-accent">Inicio</Link>
+      <nav aria-label="Ruta de navegación" className="mb-5 flex flex-wrap items-center gap-2 font-mono text-[0.8125rem] text-muted">
+        <Link href="/" className="inline-flex min-h-8 items-center hover:text-fg hover:underline">Inicio</Link>
         <span aria-hidden="true">/</span>
-        <Link href={`/productos?categoria=${encodeURIComponent(product.category)}`} className="inline-block py-1 hover:text-accent">{product.category}</Link>
+        <Link href={`/productos?categoria=${encodeURIComponent(product.category)}`} className="inline-flex min-h-8 items-center hover:text-fg hover:underline">{product.category}</Link>
         <span aria-hidden="true">/</span>
         <span className="min-w-0 text-fg [overflow-wrap:anywhere]" aria-current="page">{product.name}</span>
       </nav>
 
-      <ProductStage product={product} settings={settings} index={index} showCertificates={certs}>
-        {/* Franja de datos técnicos */}
-        <dl className="mb-10 grid grid-cols-2 gap-x-6 gap-y-5 rounded-card border bg-surface p-5 text-sm sm:grid-cols-[repeat(auto-fit,minmax(7.5rem,1fr))]">
-          {specs.map(([k, v], i) => (
-            <div key={k} className={`min-w-0 ${i === 0 ? "col-span-full border-b pb-5" : ""}`}>
-              <dt className="text-[0.8125rem] font-semibold uppercase tracking-widest text-muted">{k}</dt>
-              <dd className={`mt-1 font-medium [overflow-wrap:anywhere] ${k === "CAS" && v.length <= 14 ? "whitespace-nowrap" : ""}`}>{v}</dd>
-            </div>
-          ))}
-        </dl>
-
+      <ProductStage product={product} settings={settings} index={index} specs={specs} showCertificates={certs}>
         <Section id="resumen" n={1} title="Resumen">
           <p className="text-lg leading-relaxed">{product.short}</p>
           <Paragraphs text={product.description} />
           {!hasCert && product.lot && (
             <p className="mt-4 text-sm"><strong>Lote actual:</strong> <span className="font-mono">{product.lot}</span></p>
           )}
-          <p className="mt-6 rounded-card border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-800 dark:text-amber-200">
+          <p className="mt-6 border border-line-2 border-l-4 border-l-signal bg-surface p-4 text-sm">
             <strong>Solo para uso en investigación.</strong> {settings.disclaimer}
           </p>
         </Section>
@@ -228,17 +219,19 @@ export default async function ProductPage({ params }: Props) {
       </ProductStage>
 
       {related.length > 0 && (
-        <section className="mt-20">
-          <div className="flex items-end justify-between">
+        <section className="mt-16">
+          <div className="flex items-end justify-between gap-4">
             <h2 className="t-h2">Seguir explorando</h2>
-            <Link href="/productos" className="inline-block py-1.5 text-sm text-accent hover:underline">Ver todo el catálogo →</Link>
+            <Link href="/productos" className="inline-flex min-h-11 shrink-0 items-center whitespace-nowrap text-sm font-medium u-link">Ver el catálogo →</Link>
           </div>
-          <div className="-mx-4 mt-6 flex snap-x gap-4 overflow-x-auto px-4 pb-4 md:mx-0 md:px-0">
-            {related.map((p) => (
-              <div key={p.slug} className="w-[240px] shrink-0 snap-start">
-                <ProductCard product={p} />
-              </div>
-            ))}
+          <div className="mt-6 overflow-x-auto">
+            <div className="flex w-max min-w-full border-l border-t border-l-rule border-t-fg">
+              {related.map((p, i) => (
+                <div key={p.slug} className="w-[240px] shrink-0 sm:w-[272px]">
+                  <ProductCard product={p} index={i} />
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       )}
