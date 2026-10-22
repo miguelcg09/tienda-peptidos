@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { whatsappLink } from "@/lib/whatsapp";
 import { useCart } from "./CartProvider";
-import { Icon } from "./Icon";
+import { Icon, type IconName } from "./Icon";
 import { ProductSearch } from "./ProductSearch";
 
 const round = "inline-flex h-11 w-11 items-center justify-center rounded-full text-fg transition-colors hover:bg-surface-2";
@@ -20,10 +20,19 @@ export function NavBar({ navLabel = "Principal" }: { compact?: boolean; navLabel
   const finderId = `${uid}-buscador`;
   const [menu, setMenu] = useState(false);
   const [search, setSearch] = useState(false);
+  const [stuck, setStuck] = useState(false);
   const menuBtn = useRef<HTMLButtonElement>(null);
   const searchBtn = useRef<HTMLButtonElement>(null);
   const nav = useRef<HTMLElement>(null);
   const finder = useRef<HTMLDivElement>(null);
+
+  // La isla toma una sombra suave en cuanto la página baja.
+  useEffect(() => {
+    const on = () => setStuck(window.scrollY > 8);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
 
   // Al cambiar de página se cierran los paneles.
   useEffect(() => { setMenu(false); setSearch(false); }, [pathname]);
@@ -44,15 +53,17 @@ export function NavBar({ navLabel = "Principal" }: { compact?: boolean; navLabel
 
   const contact = whatsappLink(settings.whatsapp, "Hola, tengo una consulta.") || `mailto:${settings.email}`;
   const external = contact.startsWith("http");
-  const link = "block rounded-full px-4 py-3 transition-colors hover:bg-surface-2 lg:inline-flex lg:items-center lg:py-2";
+  const link = "group/nav flex items-center gap-3 rounded-full px-4 py-3 transition-colors hover:bg-surface-2 lg:inline-flex lg:gap-0 lg:py-2";
+  // Ícono de cada enlace: solo en el menú del celular
+  const ico = (name: IconName) => <Icon name={name} size={20} className="text-accent-2 transition-transform duration-300 group-hover/nav:scale-110 lg:hidden" />;
   const close = () => setMenu(false);
   const here = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <div className="wrap py-2.5 md:py-3">
-      <div className="relative flex flex-wrap items-center gap-x-2 gap-y-1 rounded-[1.75rem] border border-line bg-surface px-2 py-1.5 pl-4 sm:pl-5 lg:flex-nowrap lg:rounded-full lg:gap-x-3">
+      <div className={`relative flex flex-wrap items-center gap-x-2 gap-y-1 rounded-[1.75rem] border border-line bg-surface px-2 py-1.5 pl-4 transition-shadow duration-300 sm:pl-5 lg:flex-nowrap lg:rounded-full lg:gap-x-3 ${stuck ? "shadow-[0_12px_28px_-20px_rgb(0_0_0/0.35)]" : ""}`}>
         <Link href="/" className="order-1 inline-flex shrink-0 items-center gap-2.5 font-display text-lg font-semibold tracking-tight sm:text-xl md:text-[1.35rem]">
-          <span aria-hidden="true" className="h-3 w-3 rounded-[4px] bg-accent max-[380px]:hidden" />
+          <span aria-hidden="true" className="grid h-6 w-6 place-items-center rounded-lg bg-accent text-on-accent transition-transform duration-500 hover:rotate-12 max-[380px]:hidden"><Icon name="flask" size={15} /></span>
           {settings.name}
         </Link>
 
@@ -62,11 +73,11 @@ export function NavBar({ navLabel = "Principal" }: { compact?: boolean; navLabel
           aria-label={navLabel}
           className={`${menu ? "flex" : "hidden"} order-3 w-full flex-col gap-1 border-t border-line pt-2 text-base font-medium lg:order-2 lg:ml-4 lg:flex lg:w-auto lg:flex-row lg:gap-1 lg:border-t-0 lg:pt-0 lg:text-sm`}
         >
-          <Link href="/#coleccion" onClick={close} className={link}>Colección</Link>
-          <Link href="/#despacho" onClick={close} className={link}>Despacho</Link>
-          <Link href="/guias" onClick={close} className={`${link} ${here("/guias") ? "bg-surface-2" : ""}`} aria-current={here("/guias") ? "page" : undefined}>Guías</Link>
+          <Link href="/#coleccion" onClick={close} className={link}>{ico("grid")}Colección</Link>
+          <Link href="/#despacho" onClick={close} className={link}>{ico("truck")}Despacho</Link>
+          <Link href="/guias" onClick={close} className={`${link} ${here("/guias") ? "bg-surface-2" : ""}`} aria-current={here("/guias") ? "page" : undefined}>{ico("doc")}Guías</Link>
           <a href={contact} onClick={close} className={link} {...(external ? { target: "_blank", rel: "noreferrer" } : {})}>
-            Contacto{external && <span className="sr-only"> (se abre en otra pestaña)</span>}
+            {ico("chat")}Contacto{external && <span className="sr-only"> (se abre en otra pestaña)</span>}
           </a>
         </nav>
 
@@ -95,9 +106,9 @@ export function NavBar({ navLabel = "Principal" }: { compact?: boolean; navLabel
             onClick={() => setOpen(true)}
             className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent px-3.5 text-sm font-semibold text-on-accent transition-colors hover:bg-[var(--btn-hover)] lg:px-5"
           >
-            <Icon name="cart" size={20} />
+            <span key={count} className={`inline-flex ${count > 0 ? "animate-wiggle" : ""}`}><Icon name="cart" size={20} /></span>
             <span className="sr-only lg:not-sr-only">Carrito</span>
-            {count > 0 && <span data-testid="carrito-cantidad" className="-ml-1 lg:ml-0">({count}<span className="sr-only"> {count === 1 ? "producto" : "productos"}</span>)</span>}
+            {count > 0 && <span key={count} data-testid="carrito-cantidad" className="animate-pop -ml-1 lg:ml-0">({count}<span className="sr-only"> {count === 1 ? "producto" : "productos"}</span>)</span>}
           </button>
           <button
             ref={menuBtn}

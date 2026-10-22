@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { categories, type Category, type Product } from "@/lib/products";
+import { Icon, categoryIcon } from "./Icon";
 import { ProductCard } from "./ProductCard";
 import { Reveal } from "./Reveal";
 
@@ -73,8 +74,9 @@ export function CatalogTabs({ products }: { products: Product[] }) {
                   <button
                     onClick={() => setActive(c)}
                     aria-pressed={on}
-                    className={`min-h-11 whitespace-nowrap rounded-full px-5 text-sm font-semibold transition-colors ${on ? "text-on-accent" : "text-muted hover:text-fg"}`}
+                    className={`inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-semibold transition-colors sm:px-5 ${on ? "text-on-accent" : "text-muted hover:text-fg"}`}
                   >
+                    <Icon name={categoryIcon(c)} size={18} />
                     {c}
                   </button>
                 </li>
@@ -95,7 +97,7 @@ export function CatalogTabs({ products }: { products: Product[] }) {
       </p>
       {list.length === 0 && <p className="text-muted">No hay productos en esta línea por ahora. Escríbenos y te avisamos cuando lleguen.</p>}
       <div key={`${active}-${sort}`} className="animate-fade grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3" data-testid="catalogo-portada">
-        {list.map((p, i) => <Reveal key={p.slug} className="h-full" delay={(i % 3) * 60}><ProductCard product={p} index={i} /></Reveal>)}
+        {list.map((p, i) => <Reveal key={p.slug} className="h-full" delay={(i % 3) * 90}><ProductCard product={p} index={i} /></Reveal>)}
       </div>
     </div>
   );

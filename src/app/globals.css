@@ -343,7 +343,7 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
   }
   /* Panel teñido con el color de la pieza: lavanda con un toque de su matiz */
   .panel-hue {
-    background-color: color-mix(in oklab, var(--surface-2) var(--hue-base), var(--hue));
+    background-color: color-mix(in oklab, var(--panel-base, var(--surface-2)) var(--hue-base), var(--hue));
     transition: --hue 0.5s ease;
   }
   /* Nombre gigante y tenue detrás del vial */
@@ -374,6 +374,7 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
 @keyframes marquee { to { transform: translateX(-50%) } }
 @keyframes progress { to { transform: scaleX(1) } }
 @keyframes wiggle { 0%, 100% { transform: rotate(0) } 25% { transform: rotate(-9deg) } 75% { transform: rotate(9deg) } }
+.animate-wiggle { animation: wiggle 0.6s ease-in-out; }
 .animate-float-b { animation: float-b 7.5s ease-in-out infinite; }
 .animate-float-c { animation: float-c 8.5s ease-in-out infinite; }
 .rise { animation: slide-up 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 90ms); }

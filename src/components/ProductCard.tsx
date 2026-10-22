@@ -1,13 +1,14 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { formatCLP, type Product } from "@/lib/products";
+import { Icon } from "./Icon";
 import { ProductImage } from "./ProductImage";
 import { QuickAdd } from "./QuickAdd";
 
 // Acción de la tarjeta: misma forma para "Agregar" y "Ver presentaciones", del ancho de la tarjeta si es angosta
-const cta = "inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-full bg-accent px-3 text-[0.8125rem] font-semibold text-on-accent transition-colors hover:bg-[var(--btn-hover)] @min-[19rem]:w-auto @min-[19rem]:px-5 @min-[19rem]:text-sm";
+const cta = "group/cta inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-full bg-accent px-3 text-[0.8125rem] font-semibold text-on-accent transition-colors hover:bg-[var(--btn-hover)] @min-[19rem]:w-auto @min-[19rem]:px-5 @min-[19rem]:text-sm";
 
-const badge = "absolute left-3 top-3 rounded-full bg-fg px-3 py-1 text-xs font-semibold text-bg";
+const badge = "absolute left-3 top-3 z-10 rounded-full bg-fg px-3 py-1 text-xs font-semibold text-bg";
 
 // Tarjeta de pieza: panel con un toque del color del producto, vial, nombre, un dato técnico (la presentación), precio y acción.
 export function ProductCard({ product, headingLevel = 3 }: { product: Product; index?: number; headingLevel?: 2 | 3 }) {
@@ -19,7 +20,7 @@ export function ProductCard({ product, headingLevel = 3 }: { product: Product; i
   const vars = { "--hue": product.color } as CSSProperties;
   return (
     <article
-      className="group/card flex h-full min-w-0 flex-col rounded-[1.75rem] border border-line bg-surface p-2 transition-colors duration-300 hover:border-control sm:p-2.5"
+      className="group/card lift flex h-full min-w-0 flex-col rounded-[1.75rem] border border-line bg-surface p-2 hover:border-control sm:p-2.5"
       style={vars}
     >
       {/* La imagen también es un enlace para quien usa mouse o toque; el enlace del nombre es el que leen los lectores de pantalla y el teclado */}
@@ -31,8 +32,11 @@ export function ProductCard({ product, headingLevel = 3 }: { product: Product; i
       >
         {soldOut && <span className={badge}>Agotado</span>}
         {!soldOut && lowStock !== null && <span className={badge}>Últimas {lowStock}</span>}
-        <span className="absolute inset-x-0 inset-y-[8%] flex justify-center transition-transform duration-300 ease-out group-hover/card:-translate-y-1.5 group-hover/card:scale-[1.04]">
+        <span className="absolute inset-x-0 inset-y-[8%] flex justify-center transition-transform duration-500 ease-out group-hover/card:-translate-y-2 group-hover/card:rotate-[-3deg] group-hover/card:scale-[1.06]">
           <ProductImage product={product} className="h-full w-auto max-w-[80%]" />
+        </span>
+        <span aria-hidden="true" className="absolute right-3 top-3 grid h-9 w-9 translate-y-1 place-items-center rounded-full bg-surface text-fg opacity-0 transition duration-300 group-hover/card:translate-y-0 group-hover/card:opacity-100">
+          <Icon name="arrow" size={18} className="-rotate-45" />
         </span>
       </Link>
       <div className="flex flex-1 flex-col gap-1 px-2 pb-1.5 pt-3 sm:px-2.5">
@@ -51,7 +55,7 @@ export function ProductCard({ product, headingLevel = 3 }: { product: Product; i
               <QuickAdd variantId={quick.id} name={product.name} className={cta} />
             ) : (
               !soldOut && product.variants.length > 1 && (
-                <Link href={`/productos/${product.slug}`} className={cta}>Ver presentaciones</Link>
+                <Link href={`/productos/${product.slug}`} className={cta}>Ver presentaciones <Icon name="arrow" size={16} className="transition-transform duration-300 group-hover/cta:translate-x-0.5" /></Link>
               )
             )}
           </div>
