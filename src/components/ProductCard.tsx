@@ -1,53 +1,48 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { formatCLP, type Product } from "@/lib/products";
-import { tint, tintHover } from "@/lib/colors";
 import { ProductImage } from "./ProductImage";
 import { QuickAdd } from "./QuickAdd";
-import { Stars } from "./Stars";
 
 // Acción de la tarjeta: misma forma para "Agregar" y "Ver presentaciones", del ancho de la tarjeta si es angosta
-const cta = "inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-btn border border-fg px-4 text-sm font-semibold transition-colors hover:bg-fg hover:text-bg @min-[22rem]:w-auto @min-[22rem]:min-w-[10.5rem]";
+const cta = "inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-full bg-accent px-3 text-[0.8125rem] font-semibold text-on-accent transition-colors hover:bg-[var(--btn-hover)] @min-[19rem]:w-auto @min-[19rem]:px-5 @min-[19rem]:text-sm";
 
-// Tarjeta de pieza: panel con el tono claro del color del producto, nombre, línea, precio y "+".
-export function ProductCard({ product, index, headingLevel = 3 }: { product: Product; index?: number; headingLevel?: 2 | 3 }) {
+const badge = "absolute left-3 top-3 rounded-full bg-fg px-3 py-1 text-xs font-semibold text-bg";
+
+// Tarjeta de pieza: panel con un toque del color del producto, vial, nombre, un dato técnico (la presentación), precio y acción.
+export function ProductCard({ product, headingLevel = 3 }: { product: Product; index?: number; headingLevel?: 2 | 3 }) {
   const Heading = headingLevel === 2 ? "h2" : "h3";
   const from = Math.min(...product.variants.map((v) => v.price));
   const soldOut = product.variants.every((v) => v.stock === 0);
   const quick = product.variants.length === 1 ? product.variants.find((v) => v.stock !== 0) : undefined;
   const lowStock = product.variants.reduce<number | null>((m, v) => (v.stock !== null && v.stock > 0 && v.stock <= 5 && (m === null || v.stock < m) ? v.stock : m), null);
-  const vars = { "--card-bg": tint(product.color), "--card-hover": tintHover(product.color) } as CSSProperties;
+  const vars = { "--hue": product.color } as CSSProperties;
   return (
-    <article className="group/card flex h-full min-w-0 flex-col gap-4" style={vars}>
+    <article
+      className="group/card flex h-full min-w-0 flex-col rounded-[1.75rem] border border-line bg-surface p-2 transition-colors duration-300 hover:border-control sm:p-2.5"
+      style={vars}
+    >
       {/* La imagen también es un enlace para quien usa mouse o toque; el enlace del nombre es el que leen los lectores de pantalla y el teclado */}
       <Link
         href={`/productos/${product.slug}`}
         aria-hidden="true"
         tabIndex={-1}
-        className="relative block aspect-square rounded-card bg-[var(--card-bg)] text-[#0b0f10] outline-2 outline-offset-2 transition-colors duration-300 hover:bg-[var(--card-hover)] group-has-[h2_a:focus-visible,h3_a:focus-visible]/card:outline sm:aspect-[4/5]"
+        className="panel-hue relative block aspect-[5/4] overflow-hidden rounded-[1.3rem] outline-offset-2 group-has-[h2_a:focus-visible,h3_a:focus-visible]/card:outline-2"
       >
-        {index !== undefined && <span className="absolute left-5 top-4 font-mono text-xs tracking-widest">{String(index + 1).padStart(2, "0")}</span>}
-        {soldOut && <span className="absolute right-4 top-4 rounded-btn bg-[#0b0f10] px-2.5 py-1 text-xs font-semibold text-[#f4f6f6]">Agotado</span>}
-        {!soldOut && lowStock !== null && <span className="absolute right-4 top-4 rounded-btn bg-[#0b0f10] px-2.5 py-1 text-xs font-semibold text-[#f4f6f6]">Últimas {lowStock}</span>}
-        <span className="absolute inset-x-0 inset-y-[11%] flex justify-center">
+        {soldOut && <span className={badge}>Agotado</span>}
+        {!soldOut && lowStock !== null && <span className={badge}>Últimas {lowStock}</span>}
+        <span className="absolute inset-x-0 inset-y-[8%] flex justify-center transition-transform duration-300 ease-out group-hover/card:-translate-y-1.5 group-hover/card:scale-[1.04]">
           <ProductImage product={product} className="h-full w-auto max-w-[80%]" />
         </span>
       </Link>
-      <div className="flex flex-1 flex-col gap-1.5">
-        <Heading className="break-words font-display text-2xl font-medium leading-tight tracking-tight">
+      <div className="flex flex-1 flex-col gap-1 px-2 pb-1.5 pt-3 sm:px-2.5">
+        <Heading className="break-words font-display text-[1.2rem] font-semibold leading-tight tracking-tight sm:text-xl">
           <Link href={`/productos/${product.slug}`} className="underline-offset-[5px] hover:underline focus-visible:outline-none focus-visible:underline">{product.name}</Link>
         </Heading>
-        <p className="text-sm text-muted">{product.category}</p>
-        <p className="break-words font-mono text-xs text-muted">{product.variants.map((v) => v.label).join(" / ")} · {product.form}</p>
-        {product.rating && (
-          <p className="flex items-center gap-1.5 text-xs text-muted">
-            <Stars value={product.rating.avg} className="text-sm" />
-            {product.rating.avg.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ({product.rating.count})
-          </p>
-        )}
+        <p className="break-words font-mono text-xs text-muted">{product.variants.map((v) => v.label).join(" / ")}</p>
         {/* Precio y acción siempre abajo y alineados entre tarjetas: en una fila si la tarjeta es ancha, apilados si es angosta */}
-        <div className="@container mt-auto pt-4">
-          <div className="flex flex-col gap-3 @min-[22rem]:flex-row @min-[22rem]:items-center @min-[22rem]:justify-between">
+        <div className="@container mt-auto pt-3">
+          <div className="flex flex-col gap-3 @min-[19rem]:flex-row @min-[19rem]:items-center @min-[19rem]:justify-between">
             <p className="text-lg font-semibold">
               {product.variants.length > 1 && <span className="text-sm font-normal text-muted">Desde </span>}
               {formatCLP(from)}

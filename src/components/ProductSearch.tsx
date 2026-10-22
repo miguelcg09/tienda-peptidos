@@ -81,7 +81,7 @@ export function ProductSearch({ variant = "header", className = "", label = "Bus
         </label>
         <div className={hero ? "flex gap-2" : ""}>
           <div className="relative min-w-0 flex-1">
-            <Icon name="search" size={20} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+            <Icon name="search" size={20} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
             <input
               id={inputId}
               name="q"
@@ -99,18 +99,18 @@ export function ProductSearch({ variant = "header", className = "", label = "Bus
               onChange={(e) => { setQ(e.target.value); setOpen(true); setActive(-1); }}
               onFocus={() => setOpen(true)}
               onKeyDown={onKeyDown}
-              className={`w-full rounded-btn border border-line bg-surface pl-10 pr-3 text-fg placeholder:text-muted ${hero ? "min-h-14 text-base" : "min-h-11 text-sm"}`}
+              className={`w-full rounded-full border pl-11 pr-4 text-fg placeholder:text-muted ${hero ? "min-h-14 border-control bg-surface text-base" : "min-h-11 border-transparent bg-surface-2 text-sm"}`}
             />
           </div>
           {hero && (
-            <button type="submit" className="inline-flex min-h-14 shrink-0 items-center rounded-btn border border-current px-6 text-base font-semibold transition-colors hover:bg-current/15">
+            <button type="submit" className="btn-primary min-h-14 shrink-0 px-7 text-base">
               Buscar
             </button>
           )}
         </div>
 
         {showPanel && (
-          <div className="absolute inset-x-0 top-full z-40 mt-1.5 overflow-hidden rounded-card border border-line bg-surface text-fg shadow-lg animate-fade" onMouseDown={(e) => e.preventDefault()}>
+          <div className="absolute inset-x-0 top-full z-40 mt-2 min-w-[16rem] overflow-hidden rounded-[1.5rem] border border-line bg-surface text-fg shadow-lg animate-fade lg:left-auto lg:right-0 lg:min-w-[22rem]" onMouseDown={(e) => e.preventDefault()}>
             {results.length > 0 ? (
               <ul id={listId} role="listbox" aria-label="Productos encontrados">
                 {results.map((p, i) => (

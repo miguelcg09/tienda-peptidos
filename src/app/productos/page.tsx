@@ -3,12 +3,16 @@ import type { Metadata } from "next";
 import { categories } from "@/lib/products";
 import { getProducts } from "@/lib/catalog";
 import { ProductCard } from "@/components/ProductCard";
+import { Icon } from "@/components/Icon";
+import { Reveal } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Productos",
   description: "Catálogo de péptidos de investigación. Precios en pesos con IVA incluido y despacho con seguimiento a todo Chile.",
   alternates: { canonical: "/productos" },
 };
+
+const pillBase = "inline-flex min-h-11 items-center whitespace-nowrap rounded-full px-5 text-sm font-semibold transition-colors";
 
 export default async function Productos({ searchParams }: { searchParams: Promise<{ categoria?: string; q?: string }> }) {
   const { categoria, q = "" } = await searchParams;
@@ -19,30 +23,44 @@ export default async function Productos({ searchParams }: { searchParams: Promis
     .filter((p) => !term || [p.name, p.short, p.cas ?? "", p.category].some((t) => t.toLowerCase().includes(term)));
 
   return (
-    <div className="wrap py-12 md:py-16">
-      <h1 className="t-page">Productos</h1>
-      <form method="get" role="search" className="mt-6 flex max-w-md gap-2">
-        {categoria && <input type="hidden" name="categoria" value={categoria} />}
-        <input name="q" maxLength={80} defaultValue={q} placeholder="Buscar por nombre o CAS" aria-label="Buscar productos" className="field mt-0 flex-1" />
-        <button className="btn-primary text-sm">Buscar</button>
-      </form>
-      <div className="mt-6 flex flex-wrap gap-2">
-        <Link href="/productos" className={`rounded-btn border px-4 py-1.5 text-sm ${!categoria ? "border-accent bg-accent/10 text-accent" : "hover:border-tint/30"}`}>
-          Todos
-        </Link>
-        {categories.map((c) => (
-          <Link
-            key={c}
-            href={`/productos?categoria=${encodeURIComponent(c)}`}
-            className={`rounded-btn border px-4 py-1.5 text-sm ${categoria === c ? "border-accent bg-accent/10 text-accent" : "hover:border-tint/30"}`}
-          >
-            {c}
-          </Link>
-        ))}
+    <div className="wrap pb-20 pt-8 md:pb-24 md:pt-12">
+      <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
+        <div>
+          <p className="chip">Catálogo</p>
+          <h1 className="t-page mt-4">Productos</h1>
+          <p className="mt-3 max-w-[44ch] text-lg text-muted">Todos los precios incluyen IVA. Si algo se agota, lo marcamos.</p>
+        </div>
+        <form method="get" role="search" className="flex w-full max-w-md gap-2">
+          {categoria && <input type="hidden" name="categoria" value={categoria} />}
+          <div className="relative min-w-0 flex-1">
+            <Icon name="search" size={20} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+            <input name="q" maxLength={80} defaultValue={q} placeholder="Buscar por nombre o CAS" aria-label="Buscar productos" className="field mt-0 min-h-12 rounded-full pl-11" />
+          </div>
+          <button className="btn-primary px-6 text-sm">Buscar</button>
+        </form>
       </div>
-      {list.length === 0 && <p className="mt-10 text-muted">No encontramos productos con ese criterio. <Link href="/productos" className="text-accent underline">Ver todo el catálogo</Link></p>}
-      <div className="mt-10 grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-        {list.map((p) => <ProductCard key={p.slug} product={p} headingLevel={2} />)}
+
+      <div className="mt-8 max-w-full overflow-x-auto rounded-full border border-line bg-surface p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:w-fit">
+        <div className="flex w-max gap-0.5">
+          <Link href="/productos" aria-current={!categoria ? "page" : undefined} className={`${pillBase} ${!categoria ? "bg-accent text-on-accent" : "text-muted hover:text-fg"}`}>
+            Todos
+          </Link>
+          {categories.map((c) => (
+            <Link
+              key={c}
+              href={`/productos?categoria=${encodeURIComponent(c)}`}
+              aria-current={categoria === c ? "page" : undefined}
+              className={`${pillBase} ${categoria === c ? "bg-accent text-on-accent" : "text-muted hover:text-fg"}`}
+            >
+              {c}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {list.length === 0 && <p className="mt-10 text-muted">No encontramos productos con ese criterio. <Link href="/productos" className="font-medium text-accent-2 underline">Ver todo el catálogo</Link></p>}
+      <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
+        {list.map((p, i) => <Reveal key={p.slug} className="h-full" delay={(i % 3) * 60}><ProductCard product={p} headingLevel={2} /></Reveal>)}
       </div>
     </div>
   );

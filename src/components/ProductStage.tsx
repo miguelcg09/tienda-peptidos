@@ -1,17 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { formatCLP, type Product } from "@/lib/products";
 import type { Settings } from "@/lib/config";
 import { useCart } from "./CartProvider";
-import { field, onColor } from "@/lib/colors";
+import { Icon } from "./Icon";
 import { ProductImage } from "./ProductImage";
 import { Newsletter } from "./Newsletter";
 import { Stars } from "./Stars";
+import { Watermark } from "./Watermark";
 
 type IndexItem = { id: string; label: string };
 
-// Zona superior de la ficha: portada con el producto, columna de contenido (children),
+const tag = "inline-flex items-center rounded-full border border-line bg-surface px-3.5 py-1.5 text-xs font-medium";
+
+// Zona superior de la ficha: escenario con el producto, columna de contenido (children),
 // índice lateral y tarjeta de compra fija al hacer scroll. La presentación elegida se comparte entre todo.
 export function ProductStage({
   product,
@@ -64,43 +67,50 @@ export function ProductStage({
 
   return (
     <>
-      {/* Portada: campo plano del color del producto, texto a la izquierda y vial a la derecha */}
-      <section className="relative overflow-hidden rounded-card" style={{ background: field(product.color), color: onColor(field(product.color)) }}>
-        <div className="relative grid gap-6 p-6 md:grid-cols-[minmax(0,1fr)_10rem] md:gap-8 md:px-12 md:py-9 lg:grid-cols-[1.1fr_1fr]">
+      {/* Escenario: panel con un toque del color del producto, su nombre gigante y tenue a la derecha y el vial encima */}
+      <section className="panel-hue relative isolate overflow-hidden rounded-[2rem] [--hue-base:82%] [container-type:inline-size] md:rounded-[2.75rem] dark:[--hue-base:74%]" style={{ "--hue": product.color } as CSSProperties}>
+        <Watermark
+          name={product.name}
+          max={9}
+          className="inset-x-0 bottom-0 h-[52%] [--wm-share:1] md:inset-y-0 md:left-auto md:right-0 md:h-auto md:w-[56%] md:[--wm-share:0.56]"
+        />
+        <div className="relative grid gap-6 p-6 md:grid-cols-[minmax(0,1fr)_15rem] md:gap-8 md:px-12 md:py-12 lg:grid-cols-[1.1fr_1fr]">
           <div className="flex min-w-0 flex-col justify-center">
-            <p className="text-sm font-medium opacity-90">{product.category}</p>
-            <h1 className="mt-3 break-words font-display text-[clamp(2rem,10vw,3rem)] font-medium leading-[0.98] tracking-tight md:text-[clamp(2.5rem,5.4vw,4.5rem)] lg:text-[clamp(3rem,5vw,4.5rem)]">{product.name}</h1>
-            <p className="mt-5 max-w-md text-lg opacity-90">{product.short}</p>
-            <ul className="mt-6 flex flex-wrap gap-2 text-xs font-medium">
-              <li className="rounded-btn bg-[#0b0f10] px-3 py-1.5 text-[#f4f6f6]">{stockLine}</li>
-              {showCertificates && <li className="rounded-btn border border-current px-3 py-1.5">Pureza {product.purity.replace(" (HPLC)", "")}</li>}
-              {showCertificates && <li className="rounded-btn border border-current px-3 py-1.5">COA por lote</li>}
+            <p className="chip w-fit bg-surface">{product.category}</p>
+            <h1 className="mt-4 break-words font-display text-[clamp(2.1rem,9vw,3rem)] font-semibold leading-[0.98] tracking-[-0.04em] md:text-[clamp(2.5rem,5.4vw,4.5rem)]">{product.name}</h1>
+            <p className="mt-4 max-w-md text-lg">{product.short}</p>
+            <ul className="mt-6 flex flex-wrap gap-2">
+              <li className="inline-flex items-center rounded-full bg-fg px-3.5 py-1.5 text-xs font-semibold text-bg">{stockLine}</li>
+              {showCertificates && <li className={tag}>Pureza {product.purity.replace(" (HPLC)", "")}</li>}
+              {showCertificates && <li className={tag}>COA por lote</li>}
               {product.rating && (
                 <li>
-                  <a href="#resenas" className="flex items-center gap-1.5 rounded-btn border border-current px-3 py-1.5 transition-opacity hover:opacity-70">
+                  <a href="#resenas" className={`${tag} gap-1.5 transition-colors hover:border-control`}>
                     <Stars value={product.rating.avg} className="text-sm" />
                     {product.rating.avg.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} · {product.rating.count} {product.rating.count === 1 ? "reseña" : "reseñas"}
                   </a>
                 </li>
               )}
-              {product.cas && <li className="rounded-btn border border-current px-3 py-1.5">CAS {product.cas}</li>}
+              {product.cas && <li className={tag}>CAS {product.cas}</li>}
             </ul>
           </div>
-          <div className="relative grid min-h-[220px] min-w-0 place-items-center md:min-h-0">
-            <ProductImage product={product} tone="field" className="relative h-56 w-auto max-w-full md:h-[16.5rem]" />
+          <div className="relative grid min-h-[240px] min-w-0 place-items-center md:min-h-0">
+            <div className="animate-float">
+              <ProductImage product={product} className="relative h-60 w-auto max-w-full md:h-[19rem]" />
+            </div>
           </div>
         </div>
       </section>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[150px_minmax(0,1fr)_360px]">
+      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[150px_minmax(0,1fr)_360px]">
         <SectionIndex items={index} />
-        <div className="min-w-0">{children}</div>
+        <div className="flex min-w-0 flex-col gap-4">{children}</div>
 
         {/* Tarjeta de compra: fija mientras se lee el contenido */}
         <aside className="order-first lg:order-none">
-          <div ref={cardRef} className="rounded-card border bg-surface p-5 shadow-lg lg:sticky lg:top-32">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">Presentación</p>
-            <div className="mt-2 divide-y rounded-card border">
+          <div ref={cardRef} className="rounded-[1.75rem] border border-line bg-surface p-5 lg:sticky lg:top-[calc(var(--bar-h)+6.5rem)]">
+            <p className="text-sm font-semibold text-muted" id="presentacion">Presentación</p>
+            <div className="mt-2 grid gap-2" role="group" aria-labelledby="presentacion">
               {product.variants.map((v) => {
                 const on = v.id === variant.id;
                 return (
@@ -108,12 +118,12 @@ export function ProductStage({
                     key={v.id}
                     onClick={() => { setVariantId(v.id); setQty(1); }}
                     aria-pressed={on}
-                    className={`flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition first:rounded-t-card last:rounded-b-card ${
-                      on ? "bg-accent/10" : "hover:bg-surface-2"
-                    } ${v.stock === 0 ? "opacity-50" : ""}`}
+                    className={`flex w-full items-center gap-3 rounded-2xl border-2 px-4 py-3 text-left text-sm transition-colors ${
+                      on ? "border-accent bg-surface-2" : "border-line hover:border-control"
+                    } ${v.stock === 0 ? "opacity-60" : ""}`}
                   >
-                    <span className={`grid h-4 w-4 shrink-0 place-items-center rounded-full border ${on ? "border-accent bg-accent text-on-accent" : ""}`}>
-                      {on && <span className="h-1.5 w-1.5 rounded-full bg-on-accent" />}
+                    <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 ${on ? "border-accent bg-accent text-on-accent" : "border-control"}`}>
+                      {on && <Icon name="check" size={12} />}
                     </span>
                     <span className="min-w-0 grow font-medium [overflow-wrap:anywhere]">{v.label}</span>
                     {v.stock === 0 ? (
@@ -129,21 +139,21 @@ export function ProductStage({
               })}
             </div>
 
-            <div className="mt-5 flex items-end justify-between">
+            <div className="mt-5 flex items-end justify-between gap-3">
               <div>
-                <p key={variant.id} className="animate-fade font-display text-4xl font-bold">{formatCLP(variant.price)}</p>
+                <p key={variant.id} className="animate-fade font-display text-4xl font-semibold tracking-tight">{formatCLP(variant.price)}</p>
                 <p className="text-xs text-muted">IVA incluido</p>
               </div>
               {discount > 0 && (
-                <span className="rounded-btn bg-accent-2 px-2.5 py-1 text-xs font-bold text-white">-{pct}% · Ahorras {formatCLP(discount)}</span>
+                <span className="rounded-full bg-accent-2 px-3 py-1 text-xs font-bold text-on-accent">-{pct}% · Ahorras {formatCLP(discount)}</span>
               )}
             </div>
 
             <div className="mt-4 flex gap-2">
-              <div className="flex items-center rounded-btn border">
-                <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-3 py-2 text-muted hover:text-fg" aria-label="Menos">−</button>
-                <span className="w-6 text-center text-sm">{qty}</span>
-                <button onClick={() => setQty(Math.min(max, qty + 1))} className="px-3 py-2 text-muted hover:text-fg" aria-label="Más">+</button>
+              <div className="flex items-center rounded-full border border-control">
+                <button onClick={() => setQty(Math.max(1, qty - 1))} className="h-11 w-11 rounded-full text-lg text-muted hover:text-fg" aria-label="Menos">−</button>
+                <span className="w-7 text-center text-sm font-medium">{qty}</span>
+                <button onClick={() => setQty(Math.min(max, qty + 1))} className="h-11 w-11 rounded-full text-lg text-muted hover:text-fg" aria-label="Más">+</button>
               </div>
               <button disabled={soldOut} onClick={() => add(variant.id, qty)} className="btn-primary flex-1">
                 {soldOut ? "Agotado" : inCart > 0 ? `En carrito · ${inCart}` : "Agregar al carrito"}
@@ -151,17 +161,19 @@ export function ProductStage({
             </div>
 
             {soldOut && (
-              <div className="mt-4 rounded-card border bg-surface-2 p-3 text-sm">
+              <div className="mt-4 rounded-2xl bg-surface-2 p-4 text-sm">
                 <p className="font-medium">¿Te avisamos cuando vuelva?</p>
                 <div className="mt-2"><Newsletter source="stock" product={product.slug} cta="Avísame" done="Listo: te escribimos cuando vuelva a estar disponible." compact /></div>
               </div>
             )}
 
-            <ul className="mt-5 space-y-1.5 border-t pt-4 text-xs text-muted">
-              <li>✓ {settings.shippingNote}</li>
-              <li>✓ Envío gratis sobre {formatCLP(settings.freeShippingFrom)}</li>
-              {showCertificates && <li>✓ Certificado de análisis del lote incluido</li>}
-              <li>✓ {payLine}</li>
+            <ul className="mt-5 space-y-2 border-t border-line pt-4 text-sm text-muted">
+              {[settings.shippingNote, `Envío gratis sobre ${formatCLP(settings.freeShippingFrom)}`, ...(showCertificates ? ["Certificado de análisis del lote incluido"] : []), payLine].map((t) => (
+                <li key={t} className="flex gap-2.5">
+                  <Icon name="check" size={16} className="mt-1 shrink-0 text-accent-2" />
+                  <span>{t}</span>
+                </li>
+              ))}
             </ul>
             {product.coaUrl && (
               <a href={product.coaUrl} target="_blank" rel="noreferrer" className="btn-ghost mt-4 w-full text-sm">Ver certificado del lote</a>
@@ -174,7 +186,7 @@ export function ProductStage({
       {!cardVisible && !soldOut && (
         <button
           onClick={() => add(variant.id, qty)}
-          className="btn-primary animate-fade fixed bottom-5 right-4 z-40 shadow-2xl lg:hidden"
+          className="btn-primary animate-fade fixed bottom-5 right-4 z-40 shadow-xl lg:hidden"
         >
           {inCart > 0 ? `En carrito · ${inCart}` : `Agregar · ${formatCLP(variant.price)}`}
         </button>
@@ -200,12 +212,13 @@ function SectionIndex({ items }: { items: IndexItem[] }) {
   }, [items]);
   return (
     <nav aria-label="Índice de la ficha" className="hidden xl:block">
-      <ol className="sticky top-32 space-y-1 text-sm">
+      <ol className="sticky top-[calc(var(--bar-h)+6.5rem)] space-y-1 text-sm">
         {items.map((it, i) => (
           <li key={it.id}>
             <a
               href={`#${it.id}`}
-              className={`flex items-baseline gap-2 rounded-lg px-2 py-1.5 transition ${active === it.id ? "bg-accent/10 text-accent" : "text-muted hover:text-fg"}`}
+              className={`flex items-baseline gap-2 rounded-full px-3 py-2 transition-colors ${active === it.id ? "bg-surface font-semibold text-fg" : "text-muted hover:text-fg"}`}
+              aria-current={active === it.id ? "location" : undefined}
             >
               <span className="font-mono text-[0.8125rem]">{String(i + 1).padStart(2, "0")}</span>
               {it.label}

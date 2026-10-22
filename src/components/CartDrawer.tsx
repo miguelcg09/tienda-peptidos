@@ -17,10 +17,10 @@ export function CartDrawer() {
   return (
     <div className="fixed inset-0 z-50">
       <div className="animate-fade absolute inset-0 bg-black/70" onClick={() => setOpen(false)} aria-hidden="true" />
-      <div ref={panel} role="dialog" aria-modal="true" aria-labelledby="carrito-titulo" className="animate-drawer absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l bg-surface shadow-2xl">
-        <div className="flex items-center justify-between border-b px-5 py-4">
-          <h2 id="carrito-titulo" className="font-display text-lg font-semibold">Tu carrito</h2>
-          <button onClick={() => setOpen(false)} className="grid h-11 w-11 place-items-center text-2xl leading-none text-muted hover:text-fg" aria-label="Cerrar el carrito"><span aria-hidden="true">×</span></button>
+      <div ref={panel} role="dialog" aria-modal="true" aria-labelledby="carrito-titulo" className="animate-drawer absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-line bg-surface shadow-2xl sm:rounded-l-[2rem]">
+        <div className="flex items-center justify-between border-b border-line px-5 py-4">
+          <h2 id="carrito-titulo" className="font-display text-xl font-semibold">Tu carrito</h2>
+          <button onClick={() => setOpen(false)} className="grid h-11 w-11 place-items-center rounded-full text-2xl leading-none text-muted transition-colors hover:bg-surface-2 hover:text-fg" aria-label="Cerrar el carrito"><span aria-hidden="true">×</span></button>
         </div>
         {lines.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center text-muted">
@@ -34,28 +34,28 @@ export function CartDrawer() {
             {missing > 0 && (
               <div className="px-5 pt-4 text-sm text-muted">
                 <p>Te faltan <strong>{formatCLP(missing)}</strong> para envío gratis.</p>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-tint/5">
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-2">
                   <div className="h-full rounded-full bg-accent transition-all duration-500" style={{ width: `${Math.min(100, (subtotal / settings.freeShippingFrom) * 100)}%` }} />
                 </div>
               </div>
             )}
-            <ul className="flex-1 divide-y overflow-y-auto px-5">
+            <ul className="flex-1 divide-y divide-line overflow-y-auto px-5">
               {lines.map((line) => {
                 const found = find(line.variantId);
                 if (!found) return null;
                 const { product, variant } = found;
                 return (
                   <li key={line.variantId} className="flex gap-4 py-4">
-                    <div className="grid h-20 w-14 shrink-0 place-items-center rounded-btn bg-tint/5 p-1">
+                    <div className="grid h-20 w-14 shrink-0 place-items-center rounded-xl bg-surface-2 p-1">
                       <ProductImage product={product} className="h-full w-full" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="break-words font-medium">{product.name}</p>
                       <p className="break-words text-sm text-muted">{variant.label}</p>
                       <div className="mt-2 flex items-center gap-2">
-                        <button onClick={() => setQty(line.variantId, line.qty - 1)} className="h-9 w-9 rounded-btn border hover:border-accent" aria-label={`Quitar uno de ${product.name}`}>−</button>
+                        <button onClick={() => setQty(line.variantId, line.qty - 1)} className="h-9 w-9 rounded-full border border-control hover:border-accent" aria-label={`Quitar uno de ${product.name}`}>−</button>
                         <span className="w-6 text-center text-sm">{line.qty}<span className="sr-only"> {line.qty === 1 ? "unidad" : "unidades"}</span></span>
-                        <button onClick={() => setQty(line.variantId, line.qty + 1)} className="h-9 w-9 rounded-btn border hover:border-accent" aria-label={`Agregar uno de ${product.name}`}>+</button>
+                        <button onClick={() => setQty(line.variantId, line.qty + 1)} className="h-9 w-9 rounded-full border border-control hover:border-accent" aria-label={`Agregar uno de ${product.name}`}>+</button>
                         <button onClick={() => remove(line.variantId)} aria-label={`Eliminar ${product.name} del carrito`} className="ml-auto min-h-9 px-1 text-xs text-muted underline-offset-4 hover:text-fg hover:underline">Eliminar</button>
                       </div>
                     </div>
@@ -64,7 +64,7 @@ export function CartDrawer() {
                 );
               })}
             </ul>
-            <div className="border-t p-5">
+            <div className="border-t border-line p-5">
               <div className="flex justify-between font-semibold">
                 <span>Subtotal</span>
                 <span>{formatCLP(subtotal)}</span>

@@ -61,7 +61,7 @@ export function Newsletter({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={placeholder}
-            className="field mt-0 min-h-11 min-w-0 flex-1"
+            className="field mt-0 min-h-11 min-w-0 flex-1 rounded-full px-5"
           />
           <button
             disabled={state === "busy"}

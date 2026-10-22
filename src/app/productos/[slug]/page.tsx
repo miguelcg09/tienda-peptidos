@@ -42,12 +42,12 @@ function Paragraphs({ text }: { text: string }) {
 function Section({ id, n, title, children }: { id: string; n: number; title: string; children: React.ReactNode }) {
   return (
     <Reveal>
-      <section id={id} className="scroll-mt-32 border-t py-10 first:border-t-0 first:pt-0">
-        <div className="flex items-baseline gap-4">
-          <span className="font-mono text-xs text-accent">{String(n).padStart(2, "0")}</span>
+      <section id={id} className="scroll-mt-32 rounded-[1.75rem] border border-line bg-surface p-6 md:p-8">
+        <div className="flex items-center gap-3">
+          <span className="grid h-9 min-w-9 place-items-center rounded-full bg-surface-2 px-2 font-mono text-xs text-accent-2">{String(n).padStart(2, "0")}</span>
           <h2 className="t-h2">{title}</h2>
         </div>
-        <div className="mt-5 md:pl-10">{children}</div>
+        <div className="mt-5">{children}</div>
       </section>
     </Reveal>
   );
@@ -105,21 +105,21 @@ export default async function ProductPage({ params }: Props) {
   };
 
   return (
-    <div className="animate-fade wrap pb-24 pt-8">
+    <div className="animate-fade wrap pb-20 pt-6 md:pt-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <nav aria-label="Ruta de navegación" className="mb-5 flex flex-wrap gap-2 text-sm text-muted">
-        <Link href="/" className="inline-block py-1 hover:text-accent">Inicio</Link>
+      <nav aria-label="Ruta de navegación" className="mb-5 flex flex-wrap items-center gap-2 text-sm text-muted">
+        <Link href="/" className="inline-block py-1 hover:text-fg">Inicio</Link>
         <span aria-hidden="true">/</span>
-        <Link href={`/productos?categoria=${encodeURIComponent(product.category)}`} className="inline-block py-1 hover:text-accent">{product.category}</Link>
+        <Link href={`/productos?categoria=${encodeURIComponent(product.category)}`} className="inline-block py-1 hover:text-fg">{product.category}</Link>
         <span aria-hidden="true">/</span>
         <span className="min-w-0 text-fg [overflow-wrap:anywhere]" aria-current="page">{product.name}</span>
       </nav>
 
       <ProductStage product={product} settings={settings} index={index} showCertificates={certs}>
         {/* Franja de datos técnicos */}
-        <dl className="mb-10 grid grid-cols-2 gap-x-6 gap-y-5 rounded-card border bg-surface p-5 text-sm sm:grid-cols-[repeat(auto-fit,minmax(7.5rem,1fr))]">
+        <dl className="grid grid-cols-2 gap-x-6 gap-y-5 rounded-[1.75rem] border border-line bg-surface p-6 text-sm sm:grid-cols-[repeat(auto-fit,minmax(7.5rem,1fr))]">
           {specs.map(([k, v], i) => (
-            <div key={k} className={`min-w-0 ${i === 0 ? "col-span-full border-b pb-5" : ""}`}>
+            <div key={k} className={`min-w-0 ${i === 0 ? "col-span-full border-b border-line pb-5" : ""}`}>
               <dt className="text-[0.8125rem] font-semibold uppercase tracking-widest text-muted">{k}</dt>
               <dd className={`mt-1 font-medium [overflow-wrap:anywhere] ${k === "CAS" && v.length <= 14 ? "whitespace-nowrap" : ""}`}>{v}</dd>
             </div>
@@ -132,7 +132,7 @@ export default async function ProductPage({ params }: Props) {
           {!hasCert && product.lot && (
             <p className="mt-4 text-sm"><strong>Lote actual:</strong> <span className="font-mono">{product.lot}</span></p>
           )}
-          <p className="mt-6 rounded-card border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-800 dark:text-amber-200">
+          <p className="mt-6 rounded-2xl border-l-4 border-accent bg-surface-2 p-4 text-sm">
             <strong>Solo para uso en investigación.</strong> {settings.disclaimer}
           </p>
         </Section>
@@ -146,21 +146,21 @@ export default async function ProductPage({ params }: Props) {
             <p className="mt-4 text-sm">
               <strong>Lote actual:</strong> <span className="font-mono">{product.lot}</span>
               {product.lotDate && <> · analizado el {new Date(`${product.lotDate}T12:00:00`).toLocaleDateString("es-CL", { day: "numeric", month: "long", year: "numeric" })}</>}
-              {" "}· <Link href={`/certificados?q=${encodeURIComponent(product.lot)}`} className="text-accent hover:underline">verificar en Certificados</Link>
+              {" "}· <Link href={`/certificados?q=${encodeURIComponent(product.lot)}`} className="font-medium text-accent-2 underline-offset-4 hover:underline">verificar en Certificados</Link>
             </p>
           )}
           {product.coaUrl ? (
             <a href={product.coaUrl} target="_blank" rel="noreferrer" className="btn-primary mt-5">Ver certificado del lote actual</a>
           ) : (
-            <p className="mt-5 rounded-card border bg-surface p-4 text-sm">
+            <p className="mt-5 rounded-2xl bg-surface-2 p-4 text-sm">
               ¿Quieres verlo antes de comprar? Escríbenos a{" "}
-              <a href={`mailto:${settings.email}?subject=COA ${product.name}`} className="font-medium text-accent">{settings.email}</a>{" "}
+              <a href={`mailto:${settings.email}?subject=COA ${product.name}`} className="font-medium text-accent-2">{settings.email}</a>{" "}
               indicando el producto y te lo enviamos.
             </p>
           )}
           <dl className="mt-6 grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
             {[["Método de pureza", "HPLC"], ["Identidad", "Espectrometría de masas"], ["Pureza declarada", product.purity]].map(([k, v]) => (
-              <div key={k} className="min-w-0 rounded-card border bg-surface p-3"><dt className="text-xs text-muted">{k}</dt><dd className="mt-1 font-medium [overflow-wrap:anywhere]">{v}</dd></div>
+              <div key={k} className="min-w-0 rounded-2xl bg-surface-2 p-3.5"><dt className="text-xs text-muted">{k}</dt><dd className="mt-1 font-medium [overflow-wrap:anywhere]">{v}</dd></div>
             ))}
           </dl>
         </Section>}
@@ -171,7 +171,7 @@ export default async function ProductPage({ params }: Props) {
           ) : (
             <Paragraphs text={product.reconstitution ?? defaultReconstitution} />
           )}
-          {!isAccessory && <p className="mt-4 text-sm"><Link href="/calculadora" className="inline-block py-1 text-accent hover:underline">Calcular la concentración y el volumen →</Link></p>}
+          {!isAccessory && <p className="mt-4 text-sm"><Link href="/calculadora" className="inline-block py-1 font-medium text-accent-2 hover:underline">Calcular la concentración y el volumen →</Link></p>}
           <p className="mt-4 text-xs text-muted">Información técnica de manipulación. No constituye indicación de uso ni de dosis.</p>
         </Section>
 
@@ -184,7 +184,7 @@ export default async function ProductPage({ params }: Props) {
           {product.rating && reviews.length > 0 ? (
             <>
               <p className="flex items-center gap-3">
-                <span className="font-display text-4xl font-bold">{product.rating.avg.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
+                <span className="font-display text-4xl font-semibold tracking-tight">{product.rating.avg.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
                 <span>
                   <Stars value={product.rating.avg} className="text-xl" />
                   <span className="block text-xs text-muted">{product.rating.count} {product.rating.count === 1 ? "reseña verificada" : "reseñas verificadas"}</span>
@@ -192,11 +192,11 @@ export default async function ProductPage({ params }: Props) {
               </p>
               <ul className="mt-5 grid gap-3">
                 {reviews.map((r) => (
-                  <li key={r.id} className="rounded-card border bg-surface p-4 text-sm">
+                  <li key={r.id} className="rounded-2xl bg-surface-2 p-4 text-sm">
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                       <Stars value={r.rating} className="text-base" />
                       <span className="font-semibold">{r.name}</span>
-                      <span className="rounded-btn bg-accent/10 px-2 py-0.5 text-[0.8125rem] font-medium text-accent">Compra verificada</span>
+                      <span className="rounded-full bg-surface px-2.5 py-0.5 text-[0.8125rem] font-medium text-accent-2">Compra verificada</span>
                       <span className="ml-auto text-xs text-muted">{new Date(r.createdAt).toLocaleDateString("es-CL", { timeZone: "America/Santiago", day: "numeric", month: "long", year: "numeric" })}</span>
                     </div>
                     {r.body && <p className="mt-2 whitespace-pre-line text-muted">{r.body}</p>}
@@ -215,10 +215,10 @@ export default async function ProductPage({ params }: Props) {
         <Section id="preguntas" n={6 + off} title="Preguntas frecuentes">
           <div className="grid gap-3">
             {faqs.map((f) => (
-              <details key={f.q} className="group rounded-card border bg-surface p-4">
-                <summary className="flex cursor-pointer list-none items-center justify-between font-semibold">
+              <details key={f.q} className="group rounded-2xl bg-surface-2 px-5 py-3">
+                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 font-semibold">
                   {f.q}
-                  <span className="text-muted transition group-open:rotate-45">+</span>
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-surface font-mono text-lg text-muted transition group-open:rotate-45" aria-hidden>+</span>
                 </summary>
                 <p className="mt-2 text-sm text-muted">{f.a}</p>
               </details>
@@ -229,11 +229,11 @@ export default async function ProductPage({ params }: Props) {
 
       {related.length > 0 && (
         <section className="mt-20">
-          <div className="flex items-end justify-between">
+          <div className="flex items-end justify-between gap-4">
             <h2 className="t-h2">Seguir explorando</h2>
-            <Link href="/productos" className="inline-block py-1.5 text-sm text-accent hover:underline">Ver todo el catálogo →</Link>
+            <Link href="/productos" className="btn-ghost min-h-11 px-5 py-2 text-sm">Ver todo el catálogo</Link>
           </div>
-          <div className="-mx-4 mt-6 flex snap-x gap-4 overflow-x-auto px-4 pb-4 md:mx-0 md:px-0">
+          <div className="-mx-4 mt-6 flex snap-x gap-3 overflow-x-auto px-4 pb-4 [scrollbar-width:thin] md:mx-0 md:px-0">
             {related.map((p) => (
               <div key={p.slug} className="w-[240px] shrink-0 snap-start">
                 <ProductCard product={p} />
