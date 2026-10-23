@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Icon } from "./Icon";
 
 const num = (s: string) => {
   const n = Number(s.replace(",", "."));
@@ -26,7 +27,7 @@ export function Calculadora() {
   const chip = (value: string, set: (v: string) => void, options: string[], unit: string) => (
     <div className="mt-2 flex flex-wrap gap-2">
       {options.map((o) => (
-        <button key={o} type="button" onClick={() => set(o)} aria-pressed={value === o} className={`rounded-btn border px-3 py-1 text-xs transition ${value === o ? "border-accent bg-accent text-on-accent" : "hover:border-accent"}`}>
+        <button key={o} type="button" onClick={() => set(o)} aria-pressed={value === o} className={`inline-flex min-h-9 items-center rounded-full border px-4 text-xs font-medium transition-colors ${value === o ? "border-accent bg-accent text-on-accent" : "border-control hover:border-accent hover:bg-surface-2"}`}>
           {o} {unit}
         </button>
       ))}
@@ -35,7 +36,7 @@ export function Calculadora() {
 
   return (
     <div className="mt-8 grid gap-6 md:grid-cols-[1fr_1fr]">
-      <div className="space-y-5 rounded-card border bg-surface p-5">
+      <div className="space-y-5 rounded-[1.75rem] border bg-surface p-5 md:p-6">
         <label className="block text-sm">Contenido del vial (mg)
           <input value={vial} onChange={(e) => setVial(e.target.value)} inputMode="decimal" className="field" data-testid="vial" />
           {chip(vial, setVial, ["2", "5", "10", "15"], "mg")}
@@ -49,8 +50,8 @@ export function Calculadora() {
         </label>
       </div>
 
-      <div className="space-y-3 rounded-card border bg-surface-2 p-5" aria-live="polite">
-        <p className="text-xs font-semibold uppercase tracking-widest text-muted">Resultado</p>
+      <div className="space-y-3 rounded-[1.75rem] border bg-surface-2 p-5 md:p-6" aria-live="polite">
+        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-muted"><Icon name="flask" size={16} className="text-accent-2" />Resultado</p>
         <div>
           <p className="text-sm text-muted">Concentración</p>
           <p className="font-display text-3xl font-bold" data-testid="concentracion">{fmt(mgPerMl)} <span className="text-base font-medium text-muted">mg/mL</span></p>

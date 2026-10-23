@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { formatCLP } from "@/lib/products";
+import { Icon } from "@/components/Icon";
+import { PageHead } from "@/components/PageHead";
 import { ReviewForm, type Reviewable } from "@/components/ReviewForm";
 
 type Tracking = {
@@ -68,11 +70,11 @@ function Seguimiento() {
 
   return (
     <div className="animate-fade mx-auto max-w-2xl px-4 py-16">
-      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Seguimiento</p>
-      <h1 className="t-page mt-2">Seguir mi pedido</h1>
-      <p className="mt-3 text-muted">
-        Escribe el número de pedido que recibiste por correo. Si agregas el correo con que compraste, verás también el número de seguimiento del envío.
-      </p>
+      <PageHead icon="receipt" label="Seguimiento" title="Seguir mi pedido">
+        <p>
+          Escribe el número de pedido que recibiste por correo. Si agregas el correo con que compraste, verás también el número de seguimiento del envío.
+        </p>
+      </PageHead>
 
       <form onSubmit={buscar} className="mt-8 grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
         <label className="text-sm">Número de pedido
@@ -81,16 +83,16 @@ function Seguimiento() {
         <label className="text-sm">Correo (opcional)
           <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="tu@correo.cl" className="field" />
         </label>
-        <button disabled={loading} className="btn-primary self-end">{loading ? "Buscando…" : "Buscar"}</button>
+        <button disabled={loading} className="btn-primary gap-2 self-end"><Icon name="search" size={18} />{loading ? "Buscando…" : "Buscar"}</button>
       </form>
-      {error && <p role="alert" className="mt-4 rounded-card bg-red-500/10 p-3 text-sm text-red-800 dark:text-red-200">{error}</p>}
+      {error && <p role="alert" className="mt-4 rounded-[1.5rem] bg-red-500/10 p-3 text-sm text-red-800 dark:text-red-200">{error}</p>}
 
       {data && (
-        <div className="mt-10 rounded-card border bg-surface p-6">
+        <div className="animate-slide mt-10 rounded-[1.75rem] border bg-surface p-6">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="t-h2">Pedido {data.id}</h2>
-            <span className={`rounded-btn px-3 py-1 text-xs font-semibold ${
-              data.status === "fallido" ? "bg-red-500/15 text-red-800 dark:text-red-200" : data.status === "pendiente" ? "bg-amber-400/15 text-amber-700 dark:text-amber-200" : "bg-accent/15 text-accent"
+            <span className={`rounded-full px-3.5 py-1 text-xs font-semibold ${
+              data.status === "fallido" ? "bg-red-500/15 text-red-800 dark:text-red-200" : data.status === "pendiente" ? "bg-amber-400/15 text-amber-800 dark:text-amber-200" : "bg-surface-2 text-accent-2"
             }`}>
               {{ pendiente: "Pago pendiente", pagado: "Pagado, preparando envío", despachado: "Despachado", fallido: "Pago no completado" }[data.status]}
             </span>
@@ -100,8 +102,8 @@ function Seguimiento() {
           {data.status !== "fallido" && (
             <ol className="mt-6 grid gap-3 sm:grid-cols-3">
               {steps.map((s, i) => (
-                <li key={s.label} className={`rounded-card border p-4 ${s.done ? "border-accent/40 bg-accent/5" : "opacity-60"}`}>
-                  <span className={`grid h-7 w-7 place-items-center rounded-full text-xs font-bold ${s.done ? "bg-accent text-on-accent" : "border"}`}>{s.done ? "✓" : i + 1}</span>
+                <li key={s.label} className={`rounded-[1.5rem] border p-4 ${s.done ? "border-accent/40 bg-surface-2" : "opacity-60"}`}>
+                  <span className={`grid h-8 w-8 place-items-center rounded-full text-xs font-bold ${s.done ? "bg-accent text-on-accent" : "border"}`}>{s.done ? <Icon name="check" size={16} /> : i + 1}</span>
                   <p className="mt-3 font-semibold">{s.label}</p>
                   {s.when && data.verified && <p className="text-xs text-muted">{s.when}</p>}
                 </li>
@@ -110,8 +112,8 @@ function Seguimiento() {
           )}
 
           {data.status === "despachado" && (
-            <div className="mt-6 rounded-card border bg-surface-2 p-4">
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted">Número de seguimiento</p>
+            <div className="mt-6 rounded-[1.5rem] border bg-surface-2 p-4">
+              <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-muted"><Icon name="truck" size={16} className="text-accent-2" />Número de seguimiento</p>
               {data.verified ? (
                 <p className="mt-1 font-mono text-lg">{data.tracking ?? "—"}</p>
               ) : (
@@ -145,7 +147,7 @@ function Seguimiento() {
       )}
 
       <p className="mt-10 text-sm text-muted">
-        ¿Dudas con tu pedido? <Link href="/#faq" className="text-accent underline underline-offset-4 hover:no-underline">Revisa las preguntas frecuentes</Link> o escríbenos.
+        ¿Dudas con tu pedido? <Link href="/#faq" className="font-medium text-accent-2 underline underline-offset-4 hover:no-underline">Revisa las preguntas frecuentes</Link> o escríbenos.
       </p>
     </div>
   );

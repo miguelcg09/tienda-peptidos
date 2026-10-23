@@ -53,7 +53,7 @@ export function PasswordField({
           spellCheck={false}
           className="field min-w-0 flex-[1_1_100%] sm:flex-[1_1_0%]"
         />
-        <button type="button" onClick={() => setShown((v) => !v)} aria-pressed={shown} className="inline-flex min-h-10 items-center text-accent hover:underline">
+        <button type="button" onClick={() => setShown((v) => !v)} aria-pressed={shown} className="inline-flex min-h-10 items-center text-accent-2 hover:underline">
           {shown ? "Ocultar" : "Mostrar"}
         </button>
         {suggestable && (
@@ -63,7 +63,7 @@ export function PasswordField({
               setValue(suggest());
               setShown(true);
             }}
-            className="inline-flex min-h-10 items-center text-accent hover:underline"
+            className="inline-flex min-h-10 items-center text-accent-2 hover:underline"
           >
             Sugerir una
           </button>

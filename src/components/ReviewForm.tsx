@@ -31,10 +31,10 @@ function One({ orden, email, item }: { orden: string; email: string; item: Revie
   }
 
   return (
-    <form onSubmit={submit} className="rounded-card border bg-surface p-4" data-testid={`resena-${item.slug}`}>
+    <form onSubmit={submit} className="rounded-[1.5rem] border bg-surface p-4" data-testid={`resena-${item.slug}`}>
       <p className="font-semibold">{item.name}</p>
       {state === "ok" ? (
-        <p className="mt-2 text-sm text-accent" role="status">{msg}</p>
+        <p className="mt-2 text-sm text-accent-2" role="status">{msg}</p>
       ) : (
         <>
           <div className="mt-2 flex gap-1" role="radiogroup" aria-label={`Valoración de ${item.name}`}>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Calculadora } from "@/components/Calculadora";
+import { PageHead } from "@/components/PageHead";
 
 export const metadata: Metadata = {
   title: "Calculadora de reconstitución",
@@ -10,11 +11,11 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <div className="animate-fade mx-auto max-w-3xl px-4 py-14">
-      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Herramienta</p>
-      <h1 className="t-page mt-2">Calculadora de reconstitución</h1>
-      <p className="mt-4 text-muted">
-        Indica los miligramos del vial y cuánto diluyente agregas: te decimos la concentración resultante y el volumen que corresponde a la cantidad de muestra que necesitas medir.
-      </p>
+      <PageHead icon="calc" label="Herramienta" title="Calculadora de reconstitución">
+        <p>
+          Indica los miligramos del vial y cuánto diluyente agregas: te decimos la concentración resultante y el volumen que corresponde a la cantidad de muestra que necesitas medir.
+        </p>
+      </PageHead>
       <Calculadora />
     </div>
   );

@@ -181,6 +181,66 @@ const paths = {
       <circle cx="14.5" cy="7.8" r="1" />
     </>
   ),
+  minus: <path d="M5 12h14" />,
+  trash: (
+    <>
+      <path d="M4.5 7h15M10 7V4.5h4V7" />
+      <path d="M6.5 7 7.4 19.2a1.5 1.5 0 0 0 1.5 1.3h6.2a1.5 1.5 0 0 0 1.5-1.3L17.5 7M10 11v6M14 11v6" />
+    </>
+  ),
+  // Calendario: fechas y plazos
+  calendar: (
+    <>
+      <rect x="3.5" y="5" width="17" height="15.5" rx="3" />
+      <path d="M3.5 10h17M8 3.5v3M16 3.5v3" />
+    </>
+  ),
+  // Libro: guías
+  book: (
+    <>
+      <path d="M5 4.5h10.5A3.5 3.5 0 0 1 19 8v12H8.5A3.5 3.5 0 0 1 5 16.5v-12Z" />
+      <path d="M5 16.5A3.5 3.5 0 0 1 8.5 13H19" />
+    </>
+  ),
+  // Calculadora
+  calc: (
+    <>
+      <rect x="5" y="3.5" width="14" height="17" rx="3" />
+      <path d="M8.5 8h7M8.5 12.5h.01M12 12.5h.01M15.5 12.5h.01M8.5 16h.01M12 16h.01M15.5 16h.01" />
+    </>
+  ),
+  // Búsqueda de pedido: lupa sobre caja
+  receipt: (
+    <>
+      <path d="M6 3.5h12v17l-2.4-1.6L13.2 20.5 12 19.6l-1.2.9-2.4-1.6L6 20.5v-17Z" />
+      <path d="M9.5 8h5M9.5 12h5" />
+    </>
+  ),
+  locate: (
+    <>
+      <circle cx="12" cy="12" r="6" />
+      <circle cx="12" cy="12" r="1.6" />
+      <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3" />
+    </>
+  ),
+  instagram: (
+    <>
+      <rect x="4" y="4" width="16" height="16" rx="5" />
+      <circle cx="12" cy="12" r="3.6" />
+      <path d="M16.8 7.2v.01" />
+    </>
+  ),
+  bank: (
+    <>
+      <path d="M3.5 9.5 12 4.5l8.5 5h-17ZM5.5 12.5v4.5M9.5 12.5v4.5M14.5 12.5v4.5M18.5 12.5v4.5M3.5 20h17" />
+    </>
+  ),
+  eye: (
+    <>
+      <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+      <circle cx="12" cy="12" r="2.8" />
+    </>
+  ),
 } as const;
 
 export type IconName = keyof typeof paths;

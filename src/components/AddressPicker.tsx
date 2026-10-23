@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { getRegion, regiones } from "@/lib/comunas";
+import { Icon } from "./Icon";
 
 const MapPicker = dynamic(() => import("./MapPicker").then((m) => m.MapPicker), {
   ssr: false,
@@ -188,11 +189,11 @@ export function AddressPicker() {
         </label>
         {busy === "buscar" && <span className="absolute right-3 top-9 text-xs text-muted">Buscando…</span>}
         {open && places.length > 0 && (
-          <ul className="absolute z-20 mt-1 w-full overflow-hidden rounded-card border bg-surface shadow-xl">
+          <ul className="absolute z-20 mt-1 w-full overflow-hidden rounded-[1.25rem] border bg-surface shadow-xl">
             {places.map((p) => (
               <li key={p.label}>
-                <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => pick(p)} className="flex w-full items-start gap-3 px-4 py-2.5 text-left hover:bg-accent/10">
-                  <span className="mt-0.5 text-accent">📍</span>
+                <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => pick(p)} className="flex w-full items-start gap-3 px-4 py-2.5 text-left hover:bg-surface-2">
+                  <Icon name="pin" size={18} className="mt-0.5 shrink-0 text-accent-2" />
                   <span>
                     <span className="block font-medium">{p.address}</span>
                     <span className="block text-xs text-muted">
@@ -206,11 +207,11 @@ export function AddressPicker() {
           </ul>
         )}
         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
-          <button type="button" onClick={() => void locate(true)} disabled={busy === "ubicar" || !address.trim()} className="rounded-btn border px-3 py-1 text-fg transition hover:border-accent disabled:opacity-50">
-            {busy === "ubicar" ? "Ubicando…" : "🗺️ Ver en el mapa"}
+          <button type="button" onClick={() => void locate(true)} disabled={busy === "ubicar" || !address.trim()} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-control px-4 text-sm text-fg transition-colors hover:border-accent hover:bg-surface-2 disabled:opacity-50">
+            <Icon name="pin" size={16} className="text-accent-2" />{busy === "ubicar" ? "Ubicando…" : "Ver en el mapa"}
           </button>
-          <button type="button" onClick={gps} disabled={busy === "gps"} className="rounded-btn border px-3 py-1 text-fg transition hover:border-accent">
-            {busy === "gps" ? "Ubicando…" : "📡 Usar mi ubicación"}
+          <button type="button" onClick={gps} disabled={busy === "gps"} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-control px-4 text-sm text-fg transition-colors hover:border-accent hover:bg-surface-2">
+            <Icon name="locate" size={16} className="text-accent-2" />{busy === "gps" ? "Ubicando…" : "Usar mi ubicación"}
           </button>
           <span>Escribe tu dirección y elige tu comuna; el mapa se ubica solo y puedes ajustar el marcador.</span>
         </div>
@@ -229,7 +230,7 @@ export function AddressPicker() {
           </div>
           <p className="mt-2 flex flex-wrap justify-between gap-2 text-xs text-muted">
             <span data-testid="mapa-nota">{note}</span>
-            <a href={`https://www.google.com/maps?q=${coords.lat},${coords.lng}`} target="_blank" rel="noreferrer" className="text-accent hover:underline">Abrir en Google Maps</a>
+            <a href={`https://www.google.com/maps?q=${coords.lat},${coords.lng}`} target="_blank" rel="noreferrer" className="text-accent-2 hover:underline">Abrir en Google Maps</a>
           </p>
         </div>
       )}

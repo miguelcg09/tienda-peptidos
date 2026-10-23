@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "./CartProvider";
 import { useDialog } from "@/lib/useDialog";
+import { Icon } from "./Icon";
 
 const KEY = "research-ack-v1";
 
@@ -28,9 +29,10 @@ export function ResearchGate() {
   if (!visible) return null;
 
   return (
-    <div className="animate-fade fixed inset-0 z-[60] grid place-items-center overflow-y-auto bg-black/80 p-4">
-      <div ref={box} role="dialog" aria-modal="true" aria-labelledby="aviso-titulo" aria-describedby="aviso-texto" className="relative max-w-md overflow-hidden rounded-card border bg-surface p-7 shadow-2xl">
-        <p className="relative text-xs font-semibold uppercase tracking-[0.2em] text-accent">Aviso importante</p>
+    <div className="animate-fade fixed inset-0 z-[60] grid place-items-center overflow-y-auto bg-fg/50 p-4">
+      <div ref={box} role="dialog" aria-modal="true" aria-labelledby="aviso-titulo" aria-describedby="aviso-texto" className="animate-pop relative max-w-md overflow-hidden rounded-[2rem] border bg-surface p-7">
+        <span aria-hidden="true" className="relative grid h-14 w-14 place-items-center rounded-full bg-surface-2 text-accent-2"><Icon name="shield" size={28} /></span>
+        <p className="relative mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-accent-2">Aviso importante</p>
         <h2 id="aviso-titulo" className="relative mt-2 font-display text-2xl font-bold">Solo para investigación</h2>
         <p id="aviso-texto" className="relative mt-3 text-sm text-muted">{settings.disclaimer}</p>
         <p className="relative mt-3 text-sm text-muted">

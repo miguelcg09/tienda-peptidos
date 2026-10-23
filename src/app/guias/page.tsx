@@ -1,12 +1,18 @@
 import Link from "next/link";
 import { showCertificates } from "@/lib/features";
 import type { Metadata } from "next";
+import { Icon, type IconName } from "@/components/Icon";
+import { PageHead } from "@/components/PageHead";
 
 export const metadata: Metadata = {
   title: "Guías",
   description: "Cómo comprar y cómo almacenar y manipular viales liofilizados.",
   alternates: { canonical: "/guias" },
 };
+
+const stepIcons: IconName[] = ["grid", "cart", "card", "truck"];
+const coaIcons: IconName[] = ["tag", "flask", "ruler", "calendar"];
+const storageIcons: IconName[] = ["snowflake", "drop", "flask"];
 
 const steps = [
   ["Elige tu producto", "Explora el catálogo por línea de investigación y revisa formato y presentaciones."],
@@ -31,22 +37,24 @@ const storage = [
 export default function Guias() {
   return (
     <div className="animate-fade mx-auto max-w-3xl px-4 py-14">
-      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Guías</p>
-      <h1 className="t-page mt-2">Antes de comprar y al recibir</h1>
-      <p className="mt-4 text-muted">Información práctica de compra, verificación y manipulación de laboratorio. Todos los productos son solo para investigación.</p>
+      <PageHead icon="book" label="Guías" title="Antes de comprar y al recibir">
+        <p>Información práctica de compra, verificación y manipulación de laboratorio. Todos los productos son solo para investigación.</p>
+      </PageHead>
 
       <section id="como-comprar" className="mt-12 scroll-mt-28">
         <h2 className="t-h2">Cómo comprar</h2>
         <ol className="mt-5 space-y-3">
           {steps.map(([t, d], i) => (
-            <li key={t} className="flex gap-4 rounded-card border bg-surface p-4">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-btn bg-accent font-display font-medium text-on-accent">{i + 1}</span>
-              <div><p className="font-semibold">{t}</p><p className="mt-1 text-sm text-muted">{d}</p></div>
+            <li key={t} className="lift flex gap-4 rounded-[1.5rem] border bg-surface p-4 md:p-5">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-surface-2 text-accent-2"><Icon name={stepIcons[i] ?? "check"} size={22} /></span>
+              <div><p className="font-semibold"><span className="mr-2 font-mono text-sm text-muted">{String(i + 1).padStart(2, "0")}</span>{t}</p><p className="mt-1 text-sm text-muted">{d}</p></div>
             </li>
           ))}
         </ol>
         <p className="mt-4 text-sm">
-          <Link href="/productos" className="text-accent hover:underline">Ver productos →</Link> · <Link href="/envios" className="text-accent hover:underline">Envíos y devoluciones →</Link>
+          <Link href="/productos" className="group/a inline-flex items-center gap-1.5 py-1 font-medium text-accent-2 hover:underline">Ver productos <Icon name="arrow" size={16} className="transition-transform group-hover/a:translate-x-1" /></Link>
+          <span aria-hidden="true" className="mx-2 text-muted">·</span>
+          <Link href="/envios" className="group/b inline-flex items-center gap-1.5 py-1 font-medium text-accent-2 hover:underline">Envíos y devoluciones <Icon name="arrow" size={16} className="transition-transform group-hover/b:translate-x-1" /></Link>
         </p>
       </section>
 
@@ -54,26 +62,39 @@ export default function Guias() {
       <section id="leer-un-coa" className="mt-14 scroll-mt-28">
         <h2 className="t-h2">Cómo leer un certificado de análisis</h2>
         <dl className="mt-5 grid gap-3">
-          {coa.map(([t, d]) => (
-            <div key={t} className="rounded-card border bg-surface p-4"><dt className="font-semibold">{t}</dt><dd className="mt-1 text-sm text-muted">{d}</dd></div>
+          {coa.map(([t, d], i) => (
+            <div key={t} className="lift rounded-[1.5rem] border bg-surface p-4 md:p-5">
+              <dt className="flex items-center gap-4 font-semibold">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-surface-2 text-accent-2"><Icon name={coaIcons[i] ?? "doc"} size={22} /></span>
+                {t}
+              </dt>
+              <dd className="mt-2 text-sm text-muted md:pl-[3.75rem]">{d}</dd>
+            </div>
           ))}
         </dl>
-        <p className="mt-4 text-sm"><Link href="/certificados" className="inline-block py-1 text-accent hover:underline">Buscar el certificado de mi lote →</Link></p>
+        <p className="mt-4 text-sm"><Link href="/certificados" className="group/c inline-flex items-center gap-1.5 py-1 font-medium text-accent-2 hover:underline">Buscar el certificado de mi lote <Icon name="arrow" size={16} className="transition-transform group-hover/c:translate-x-1" /></Link></p>
       </section>
       )}
 
       <section id="almacenamiento" className="mt-14 scroll-mt-28">
         <h2 className="t-h2">Almacenamiento y manipulación</h2>
         <dl className="mt-5 grid gap-3">
-          {storage.map(([t, d]) => (
-            <div key={t} className="rounded-card border bg-surface p-4"><dt className="font-semibold">{t}</dt><dd className="mt-1 text-sm text-muted">{d}</dd></div>
+          {storage.map(([t, d], i) => (
+            <div key={t} className="lift rounded-[1.5rem] border bg-surface p-4 md:p-5">
+              <dt className="flex items-center gap-4 font-semibold">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-surface-2 text-accent-2"><Icon name={storageIcons[i] ?? "flask"} size={22} /></span>
+                {t}
+              </dt>
+              <dd className="mt-2 text-sm text-muted md:pl-[3.75rem]">{d}</dd>
+            </div>
           ))}
         </dl>
-        <p className="mt-4 text-sm"><Link href="/calculadora" className="inline-block py-1 text-accent hover:underline">Calculadora de reconstitución →</Link></p>
+        <p className="mt-4 text-sm"><Link href="/calculadora" className="group/d inline-flex items-center gap-1.5 py-1 font-medium text-accent-2 hover:underline"><Icon name="calc" size={18} />Calculadora de reconstitución <Icon name="arrow" size={16} className="transition-transform group-hover/d:translate-x-1" /></Link></p>
       </section>
 
-      <p className="mt-14 rounded-card border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-800 dark:text-amber-200">
-        <strong>Solo para uso en investigación.</strong> Esta información es técnica y de manipulación de laboratorio; no describe usos, dosis ni efectos en personas o animales.
+      <p className="mt-14 flex gap-3 rounded-[1.5rem] border-l-4 border-accent bg-surface-2 p-4 text-sm">
+        <Icon name="shield" size={20} className="mt-0.5 shrink-0 text-accent-2" />
+        <span><strong>Solo para uso en investigación.</strong> Esta información es técnica y de manipulación de laboratorio; no describe usos, dosis ni efectos en personas o animales.</span>
       </p>
     </div>
   );
