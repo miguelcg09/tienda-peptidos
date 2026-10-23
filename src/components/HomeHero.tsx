@@ -89,7 +89,7 @@ export function HomeHero({ items }: { items: HeroItem[] }) {
       {cur && (
         <>
           {/* Escenario: panel redondeado con el color de la pieza, su nombre gigante detrás y el vial al centro */}
-          <div ref={stage} onPointerMove={track} onPointerLeave={rest} style={{ ...hue(cur.color), "--i": 4 } as CSSProperties} className="rise panel-hue relative isolate mt-7 overflow-hidden rounded-[2rem] [--hue-base:88%] [--panel-base:var(--soft)] [container-type:inline-size] md:mt-9 md:rounded-[2.75rem] dark:[--hue-base:76%]">
+          <div ref={stage} onPointerMove={track} onPointerLeave={rest} style={{ ...hue(cur.color), "--i": 4 } as CSSProperties} className="rise panel-hue relative isolate mt-7 overflow-hidden rounded-[2rem] [--hue-base:91%] [--panel-base:var(--soft)] [container-type:inline-size] md:mt-9 md:rounded-[2.75rem] dark:[--hue-base:76%]">
             <div aria-hidden="true" className="pointer-events-none absolute inset-0 transition-transform duration-500 ease-out [transform:translate(calc(var(--tx,0)*-16px),calc(var(--ty,0)*-8px))]">
               <Watermark key={cur.slug} name={cur.name} max={15} className="inset-x-0 top-0 h-[21rem] sm:h-[24rem] lg:h-[28rem] xl:inset-0 xl:h-auto xl:[--wm-share:0.68]" />
             </div>

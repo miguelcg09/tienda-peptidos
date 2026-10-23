@@ -1,14 +1,13 @@
-// Paletas claras de la dirección "Suave". En producción solo existe la primera; en las vistas previas de Vercel (y en
-// local) un selector deja probar las cuatro sin salir de la página. La elegida viaja en la cookie "paleta".
+// Paletas "blanco con contraste" de la dirección "Suave". En producción solo existe la primera; en las vistas previas de Vercel
+// (y en local) un selector deja probar las tres sin salir de la página. La elegida viaja en la cookie "paleta".
 export const PALETTES = [
-  { id: "hielo", label: "Hielo", swatch: "#00789a" },
-  { id: "menta", label: "Menta", swatch: "#0a7d6b" },
-  { id: "durazno", label: "Durazno", swatch: "#c2410c" },
-  { id: "lima", label: "Lima", swatch: "#4d6b00" },
+  { id: "tinta", label: "Tinta", swatch: "#0b0b0f" },
+  { id: "iris", label: "Iris", swatch: "#4f46e5" },
+  { id: "bermellon", label: "Bermellón", swatch: "#d92d0b" },
 ] as const;
 
 export type PaletteId = (typeof PALETTES)[number]["id"];
-export const DEFAULT_PALETTE: PaletteId = "hielo";
+export const DEFAULT_PALETTE: PaletteId = "tinta";
 export const PALETTE_COOKIE = "paleta";
 
 export const isPalette = (v: string | undefined): v is PaletteId => PALETTES.some((p) => p.id === v);

@@ -30,7 +30,7 @@ function Heading({ icon, children }: { icon: IconName; children: React.ReactNode
 export function Footer({ settings }: { settings: StoreSettings }) {
   const wa = whatsappLink(settings.whatsapp);
   return (
-    <footer className="relative mt-6 overflow-hidden rounded-t-[2.25rem] border-t border-line bg-surface md:mt-10 md:rounded-t-[3rem]">
+    <footer className="relative mt-6 overflow-hidden inverse rounded-t-[2.25rem] md:mt-10 md:rounded-t-[3rem]">
       <div className="wrap relative grid gap-10 py-14 md:grid-cols-[1.2fr_1fr_1fr_1.4fr]">
         <div>
           <p className="inline-flex items-center gap-2.5 font-display text-2xl font-semibold tracking-tight"><span aria-hidden="true" className="h-3 w-3 rounded-[4px] bg-accent" />{settings.name}</p>

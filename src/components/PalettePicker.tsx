@@ -64,7 +64,7 @@ export function PalettePicker({ initial = DEFAULT_PALETTE }: { initial?: Palette
         aria-controls={open ? listId : undefined}
         className="inline-flex min-h-12 items-center gap-2 rounded-full border border-line bg-surface px-4 text-sm font-semibold transition-colors hover:bg-surface-2"
       >
-        <span aria-hidden="true" className="h-4 w-4 rounded-full" style={{ background: now.swatch }} />
+        <span aria-hidden="true" className="h-4 w-4 rounded-full" style={{ background: now.swatch, boxShadow: "0 0 0 1px var(--line)" }} />
         Paleta: {now.label}
         <Icon name="palette" size={18} />
       </button>

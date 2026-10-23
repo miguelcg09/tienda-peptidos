@@ -124,7 +124,7 @@ export default async function Home() {
                 <Reveal delay={i * 90} className="h-full">
                   <div
                     className={`group/tile lift flex h-full flex-col gap-4 rounded-[1.75rem] p-6 md:rounded-[2rem] ${
-                      big ? "min-h-[18rem] bg-soft p-7 md:p-10 lg:min-h-[26rem]" : "border border-line bg-surface hover:border-control md:p-7"
+                      big ? "inverse min-h-[18rem] p-7 md:p-10 lg:min-h-[26rem]" : "border border-line bg-surface hover:border-control md:p-7"
                     } ${wide ? "sm:flex-row sm:items-center sm:gap-8" : ""}`}
                   >
                     <div className={`flex flex-col gap-4 ${wide ? "sm:w-44 sm:shrink-0" : ""}`}>
@@ -346,7 +346,7 @@ export default async function Home() {
       {/* Cierre: una acción para quien decidió y una salida suave para quien aún no compra */}
       <section aria-labelledby="titulo-cierre" className="wrap pb-14 pt-4 md:pb-20">
         <Reveal>
-          <div className="overflow-hidden rounded-[2.25rem] bg-soft md:rounded-[3rem]">
+          <div className="inverse overflow-hidden rounded-[2.25rem] md:rounded-[3rem]">
             <div className="grid items-center gap-x-12 gap-y-8 px-6 pb-8 pt-12 md:grid-cols-[1.2fr_0.8fr] md:px-14 md:pt-16">
               <div className="flex min-w-0 flex-col items-start gap-6">
                 <h2 id="titulo-cierre" className="font-display text-[clamp(2.1rem,4.4vw,3.75rem)] font-semibold leading-[1] tracking-[-0.04em]">
@@ -363,8 +363,10 @@ export default async function Home() {
                 </a>
               </div>
               <div className="flex justify-center">
-                <div className="animate-float">
-                  <ProductImage product={closing} className="h-[280px] w-auto max-w-full md:h-[360px]" />
+                <div className="panel-hue grid place-items-center rounded-[2rem] px-10 py-8 [--panel-base:var(--soft)] md:px-14" style={{ "--hue": closing.color } as CSSProperties}>
+                  <div className="animate-float">
+                    <ProductImage product={closing} className="h-[250px] w-auto max-w-full md:h-[320px]" />
+                  </div>
                 </div>
               </div>
             </div>

@@ -27,8 +27,8 @@ export const dynamic = "force-dynamic";
 // El color del navegador sigue al fondo del tema claro u oscuro de la paleta por defecto.
 export const viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f2f9fb" },
-    { media: "(prefers-color-scheme: dark)", color: "#07151b" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0b0f" },
   ],
 };
 
@@ -65,7 +65,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           Saltar al contenido
         </a>
         {/* Aviso de uso: fijo arriba en todas las páginas, también en la portada. En celular, versión corta de una línea */}
-        <section aria-label="Aviso de uso y envío" className="sticky top-0 z-40 flex h-[var(--bar-h)] items-center justify-center gap-x-8 overflow-hidden whitespace-nowrap border-b border-line bg-bar px-4 text-center text-sm font-medium text-on-bar">
+        <section aria-label="Aviso de uso y envío" className="sticky top-0 z-40 flex h-[var(--bar-h)] items-center justify-center gap-x-8 overflow-hidden whitespace-nowrap bg-bar px-4 text-center text-sm font-medium text-on-bar">
           <span className="sm:hidden">Solo investigación · +18</span>
           <span className="hidden sm:inline">Solo para uso en investigación · Mayores de 18 años</span>
           <span className="hidden lg:inline">Envío gratis sobre {formatCLP(settings.freeShippingFrom)}</span>

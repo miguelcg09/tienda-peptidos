@@ -16,8 +16,8 @@
   --color-lime: var(--badge);
   --color-tint: var(--tint);
   --color-on-accent: var(--on-accent);
-  --color-bar: var(--bar-bg);
-  --color-on-bar: var(--bar-fg);
+  --color-bar: var(--i-bg);
+  --color-on-bar: var(--i-fg);
   --font-sans: var(--font-figtree), system-ui, sans-serif;
   --font-display: var(--font-bricolage), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -56,8 +56,8 @@
   initial-value: #00789a;
 }
 
-/* Paletas claras. Cada una define el tema claro y su par oscuro; el sistema del visitante elige cuál de los dos.
-   --soft es el tono de los bloques grandes (tarjeta destacada, cierre); el acento solo va en botones, íconos y detalles.
+/* Paletas "blanco con contraste": fondo blanco puro, tinta casi negra, bordes marcados y bloques oscuros ("inverse")
+   que dan el contraste. Cada una define el tema claro y su par oscuro (en oscuro, los bloques "inverse" pasan a blanco).
    La paleta activa se marca en <html data-palette="..."> (selector solo en las vistas previas, ver PalettePicker). */
 :root {
   color-scheme: light;
@@ -72,185 +72,197 @@
 }
 @media (min-width: 40rem) { :root { --bar-h: 2.375rem; } }
 
-/* Hielo: blanco azulado y acento aguamarina */
-:root, :root[data-palette="hielo"] {
-  --bg: #f2f9fb;
+/* Tinta: blanco y negro puros */
+:root, :root[data-palette="tinta"] {
+  --bg: #ffffff;
   --surface: #ffffff;
-  --surface-2: #e2f2f6;
-  --soft: #cfe9f0;
-  --line: rgb(8 40 54 / 0.12);
-  --control: #6f93a0; /* borde de campos y controles (3:1 sobre blanco) */
-  --fg: #0a2733;
-  --muted: #46646f;
-  --accent: #00789a;
-  --accent-2: #00678a;
-  --badge: #00678a;
-  --tint: #0a2733;
+  --surface-2: #f2f2f4;
+  --soft: #e7e7eb;
+  --line: rgb(12 12 16 / 0.18);
+  --control: #6b6b78; /* borde de campos y controles (3:1 sobre blanco) */
+  --fg: #0b0b0f;
+  --muted: #55555f;
+  --accent: #0b0b0f;
+  --accent-2: #0b0b0f;
+  --badge: #0b0b0f;
+  --tint: #0b0b0f;
   --on-accent: #ffffff;
-  --glow: 0 120 154;
-  --btn-from: #00789a;
-  --btn-to: #00789a;
-  --btn-hover: #00607f;
-  --bar-bg: #e2f2f6;
-  --bar-fg: #0a2733;
+  --glow: 11 11 15;
+  --btn-from: #0b0b0f;
+  --btn-to: #0b0b0f;
+  --btn-hover: #2b2b34;
+  /* bloques oscuros */
+  --i-bg: #0b0b0f;
+  --i-surface: #17171d;
+  --i-surface-2: #24242c;
+  --i-line: rgb(255 255 255 / 0.2);
+  --i-control: #8e8e9b;
+  --i-fg: #ffffff;
+  --i-muted: #bcbcc7;
+  --i-accent: #ffffff;
+  --i-accent-2: #ffffff;
+  --i-on-accent: #0b0b0f;
+  --i-btn-hover: #e4e4ea;
 }
-/* Menta: blanco verdoso y acento verde mar */
-:root[data-palette="menta"] {
-  --bg: #f1faf6;
+/* Iris: blanco, tinta y acento índigo */
+:root[data-palette="iris"] {
+  --bg: #ffffff;
   --surface: #ffffff;
-  --surface-2: #dff3ea;
-  --soft: #c9ebdc;
-  --line: rgb(8 50 38 / 0.12);
-  --control: #6a9a88;
-  --fg: #0b2a21;
-  --muted: #446358;
-  --accent: #0a7d6b;
-  --accent-2: #066653;
-  --badge: #066653;
-  --tint: #0b2a21;
+  --surface-2: #f3f2fb;
+  --soft: #e6e4f8;
+  --line: rgb(14 12 48 / 0.18);
+  --control: #6d6b8e;
+  --fg: #0b0a1c;
+  --muted: #54526f;
+  --accent: #4f46e5;
+  --accent-2: #4338ca;
+  --badge: #4338ca;
+  --tint: #0b0a1c;
   --on-accent: #ffffff;
-  --glow: 10 125 107;
-  --btn-from: #0a7d6b;
-  --btn-to: #0a7d6b;
-  --btn-hover: #08604f;
-  --bar-bg: #dff3ea;
-  --bar-fg: #0b2a21;
+  --glow: 79 70 229;
+  --btn-from: #4f46e5;
+  --btn-to: #4f46e5;
+  --btn-hover: #3d34c4;
+  --i-bg: #0b0a1c;
+  --i-surface: #17162f;
+  --i-surface-2: #232245;
+  --i-line: rgb(255 255 255 / 0.2);
+  --i-control: #8f8dbb;
+  --i-fg: #ffffff;
+  --i-muted: #bdbbe0;
+  --i-accent: #a9a4ff;
+  --i-accent-2: #c4c0ff;
+  --i-on-accent: #0b0a1c;
+  --i-btn-hover: #c4c0ff;
 }
-/* Durazno: crema cálida y acento coral */
-:root[data-palette="durazno"] {
-  --bg: #fff8f4;
+/* Bermellón: blanco, tinta y acento rojo anaranjado */
+:root[data-palette="bermellon"] {
+  --bg: #ffffff;
   --surface: #ffffff;
-  --surface-2: #ffeadf;
-  --soft: #ffd9c4;
-  --line: rgb(80 30 10 / 0.12);
-  --control: #b0836c;
-  --fg: #331a10;
-  --muted: #6b4e42;
-  --accent: #c2410c;
-  --accent-2: #b13a08;
-  --badge: #b13a08;
-  --tint: #331a10;
+  --surface-2: #f6f3f1;
+  --soft: #ebe5e1;
+  --line: rgb(26 12 8 / 0.18);
+  --control: #7b6a63;
+  --fg: #140c09;
+  --muted: #5e4f49;
+  --accent: #d92d0b;
+  --accent-2: #bf2608;
+  --badge: #bf2608;
+  --tint: #140c09;
   --on-accent: #ffffff;
-  --glow: 194 65 12;
-  --btn-from: #c2410c;
-  --btn-to: #c2410c;
-  --btn-hover: #9a3412;
-  --bar-bg: #ffeadf;
-  --bar-fg: #331a10;
-}
-/* Lima: blanco amarillento, botones de tinta oliva y toques de lima */
-:root[data-palette="lima"] {
-  --bg: #f9fbee;
-  --surface: #ffffff;
-  --surface-2: #eef5cf;
-  --soft: #e0ee9f;
-  --line: rgb(40 50 5 / 0.13);
-  --control: #8a9a5a;
-  --fg: #1d2606;
-  --muted: #535d31;
-  --accent: #26330a;
-  --accent-2: #4d6b00;
-  --badge: #4d6b00;
-  --tint: #1d2606;
-  --on-accent: #e4fb6e;
-  --glow: 77 107 0;
-  --btn-from: #26330a;
-  --btn-to: #26330a;
-  --btn-hover: #3a4d0b;
-  --bar-bg: #eef5cf;
-  --bar-fg: #1d2606;
+  --glow: 217 45 11;
+  --btn-from: #d92d0b;
+  --btn-to: #d92d0b;
+  --btn-hover: #b02007;
+  --i-bg: #140c09;
+  --i-surface: #241612;
+  --i-surface-2: #33201a;
+  --i-line: rgb(255 255 255 / 0.2);
+  --i-control: #a38b82;
+  --i-fg: #ffffff;
+  --i-muted: #d3c3bc;
+  --i-accent: #ff6f4d;
+  --i-accent-2: #ff9378;
+  --i-on-accent: #140c09;
+  --i-btn-hover: #ff9378;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root, :root[data-palette="hielo"], :root[data-palette="menta"], :root[data-palette="durazno"], :root[data-palette="lima"] {
+  :root, :root[data-palette="tinta"], :root[data-palette="iris"], :root[data-palette="bermellon"] {
     color-scheme: dark;
     --series: #3987e5;
     --hue-base: 86%;
     --wm: 24%;
   }
-  :root, :root[data-palette="hielo"] {
-    --bg: #07151b;
-    --surface: #0d222b;
-    --surface-2: #143240;
-    --soft: #194152;
-    --line: rgb(220 245 252 / 0.14);
-    --control: #6f9fb0;
-    --fg: #e8f7fb;
-    --muted: #9cc0cc;
-    --accent: #4fd0f0;
-    --accent-2: #7fdcf5;
-    --badge: #7fdcf5;
-    --tint: #e8f7fb;
-    --on-accent: #04141a;
-    --glow: 79 208 240;
-    --btn-from: #4fd0f0;
-    --btn-to: #4fd0f0;
-    --btn-hover: #7fdcf5;
-    --bar-bg: #143240;
-    --bar-fg: #e8f7fb;
+  :root, :root[data-palette="tinta"] {
+    --bg: #0b0b0f;
+    --surface: #14141a;
+    --surface-2: #1e1e26;
+    --soft: #272730;
+    --line: rgb(255 255 255 / 0.18);
+    --control: #8e8e9b;
+    --fg: #ffffff;
+    --muted: #b8b8c4;
+    --accent: #ffffff;
+    --accent-2: #ffffff;
+    --badge: #ffffff;
+    --tint: #ffffff;
+    --on-accent: #0b0b0f;
+    --glow: 255 255 255;
+    --btn-from: #ffffff;
+    --btn-to: #ffffff;
+    --btn-hover: #e4e4ea;
+    --i-bg: #ffffff;
+    --i-surface: #f2f2f4;
+    --i-surface-2: #e4e4e8;
+    --i-line: rgb(12 12 16 / 0.18);
+    --i-control: #6b6b78;
+    --i-fg: #0b0b0f;
+    --i-muted: #55555f;
+    --i-accent: #0b0b0f;
+    --i-accent-2: #0b0b0f;
+    --i-on-accent: #ffffff;
+    --i-btn-hover: #2b2b34;
   }
-  :root[data-palette="menta"] {
-    --bg: #07150f;
-    --surface: #0d2219;
-    --surface-2: #143325;
-    --soft: #1a4132;
-    --line: rgb(220 252 238 / 0.14);
-    --control: #6fb094;
-    --fg: #e8faf2;
-    --muted: #9cc4b3;
-    --accent: #4fe0b0;
-    --accent-2: #7ee9c4;
-    --badge: #7ee9c4;
-    --tint: #e8faf2;
-    --on-accent: #04140d;
-    --glow: 79 224 176;
-    --btn-from: #4fe0b0;
-    --btn-to: #4fe0b0;
-    --btn-hover: #7ee9c4;
-    --bar-bg: #143325;
-    --bar-fg: #e8faf2;
+  :root[data-palette="iris"] {
+    --bg: #0b0a1c;
+    --surface: #15142b;
+    --surface-2: #201f3f;
+    --soft: #2a2950;
+    --line: rgb(255 255 255 / 0.18);
+    --control: #8f8dbb;
+    --fg: #ffffff;
+    --muted: #bab8de;
+    --accent: #a9a4ff;
+    --accent-2: #c4c0ff;
+    --badge: #c4c0ff;
+    --tint: #ffffff;
+    --on-accent: #0b0a1c;
+    --glow: 169 164 255;
+    --btn-from: #a9a4ff;
+    --btn-to: #a9a4ff;
+    --btn-hover: #c4c0ff;
+    --i-bg: #ffffff;
+    --i-surface: #f3f2fb;
+    --i-surface-2: #e6e4f8;
+    --i-line: rgb(14 12 48 / 0.18);
+    --i-control: #6d6b8e;
+    --i-fg: #0b0a1c;
+    --i-muted: #54526f;
+    --i-accent: #4f46e5;
+    --i-accent-2: #4338ca;
+    --i-on-accent: #ffffff;
+    --i-btn-hover: #3d34c4;
   }
-  :root[data-palette="durazno"] {
-    --bg: #170d08;
-    --surface: #261610;
-    --surface-2: #36211a;
-    --soft: #482b21;
-    --line: rgb(255 236 226 / 0.14);
-    --control: #b88a74;
-    --fg: #fff1ea;
-    --muted: #d1aa99;
-    --accent: #ff9a6b;
-    --accent-2: #ffb08a;
-    --badge: #ffb08a;
-    --tint: #fff1ea;
-    --on-accent: #200c04;
-    --glow: 255 154 107;
-    --btn-from: #ff9a6b;
-    --btn-to: #ff9a6b;
-    --btn-hover: #ffb08a;
-    --bar-bg: #36211a;
-    --bar-fg: #fff1ea;
-  }
-  :root[data-palette="lima"] {
-    --bg: #10140a;
-    --surface: #1a2010;
-    --surface-2: #262e17;
-    --soft: #323d1d;
-    --line: rgb(244 250 224 / 0.14);
-    --control: #8fa05a;
-    --fg: #f4f9e0;
-    --muted: #b6c28a;
-    --accent: #d6f25a;
-    --accent-2: #e1f882;
-    --badge: #e1f882;
-    --tint: #f4f9e0;
-    --on-accent: #141a04;
-    --glow: 214 242 90;
-    --btn-from: #d6f25a;
-    --btn-to: #d6f25a;
-    --btn-hover: #e1f882;
-    --bar-bg: #262e17;
-    --bar-fg: #f4f9e0;
+  :root[data-palette="bermellon"] {
+    --bg: #140c09;
+    --surface: #211410;
+    --surface-2: #2f1d17;
+    --soft: #3b261e;
+    --line: rgb(255 255 255 / 0.18);
+    --control: #a38b82;
+    --fg: #ffffff;
+    --muted: #d0c0b8;
+    --accent: #ff6f4d;
+    --accent-2: #ff9378;
+    --badge: #ff9378;
+    --tint: #ffffff;
+    --on-accent: #140c09;
+    --glow: 255 111 77;
+    --btn-from: #ff6f4d;
+    --btn-to: #ff6f4d;
+    --btn-hover: #ff9378;
+    --i-bg: #ffffff;
+    --i-surface: #f6f3f1;
+    --i-surface-2: #ebe5e1;
+    --i-line: rgb(26 12 8 / 0.18);
+    --i-control: #7b6a63;
+    --i-fg: #140c09;
+    --i-muted: #5e4f49;
+    --i-accent: #d92d0b;
+    --i-accent-2: #bf2608;
+    --i-on-accent: #ffffff;
+    --i-btn-hover: #b02007;
   }
 }
 
@@ -348,6 +360,33 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
   }
   /* Nombre gigante y tenue detrás del vial */
   .wm-text { color: color-mix(in oklab, var(--hue) var(--wm), transparent); }
+}
+
+/* Bloque de contraste: fondo oscuro con texto claro (en el tema oscuro, al revés). Reasigna los tokens para que todo lo de adentro
+   (texto, bordes, botones, campos) se adapte solo. */
+.inverse {
+  --color-bg: var(--i-bg);
+  --color-surface: var(--i-surface);
+  --color-surface-2: var(--i-surface-2);
+  --color-soft: var(--i-surface-2);
+  --color-line: var(--i-line);
+  --color-control: var(--i-control);
+  --color-fg: var(--i-fg);
+  --color-muted: var(--i-muted);
+  --color-accent: var(--i-accent);
+  --color-accent-2: var(--i-accent-2);
+  --color-on-accent: var(--i-on-accent);
+  --fg: var(--i-fg);
+  --muted: var(--i-muted);
+  --line: var(--i-line);
+  --accent: var(--i-accent);
+  --on-accent: var(--i-on-accent);
+  --btn-from: var(--i-accent);
+  --btn-hover: var(--i-btn-hover);
+  --glow: var(--i-fg);
+  background-color: var(--i-bg);
+  color: var(--i-fg);
+  border-color: var(--i-line);
 }
 
 /* Bandas de sección: un tono apenas distinto del fondo, separadas por una línea */
