@@ -94,7 +94,7 @@ export function ProductStage({
   return (
     <>
       {/* Escenario: panel con un toque del color del producto, su nombre gigante y tenue a la derecha y el vial encima */}
-      <section onPointerMove={onMove} onPointerLeave={onLeave} className="panel-hue relative isolate overflow-hidden rounded-[2rem] [container-type:inline-size] md:rounded-[2.75rem]" style={{ "--hue": product.color } as CSSProperties}>
+      <section onPointerMove={onMove} onPointerLeave={onLeave} className="panel-hue [--panel-base:var(--soft)] [--hue-base:91%] relative isolate overflow-hidden rounded-[2rem] [container-type:inline-size] md:rounded-[2.75rem]" style={{ "--hue": product.color } as CSSProperties}>
         <Watermark
           name={product.name}
           max={9}
