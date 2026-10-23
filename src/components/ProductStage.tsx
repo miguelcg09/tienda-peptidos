@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import { formatCLP, type Product } from "@/lib/products";
 import type { Settings } from "@/lib/config";
 import { useCart } from "./CartProvider";
-import { Icon } from "./Icon";
+import { Icon, categoryIcon, type IconName } from "./Icon";
 import { ProductImage } from "./ProductImage";
 import { Newsletter } from "./Newsletter";
 import { Stars } from "./Stars";
@@ -12,7 +12,17 @@ import { Watermark } from "./Watermark";
 
 type IndexItem = { id: string; label: string };
 
-const tag = "inline-flex items-center rounded-full border border-line bg-surface px-3.5 py-1.5 text-xs font-medium";
+const tag = "inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 py-1.5 text-xs font-medium";
+
+// Ficha flotante junto al vial: dato real de la pieza con su ícono. Es decoración (los mismos datos están en texto en la página).
+function Floater({ icon, text, className }: { icon: IconName; text: string; className: string }) {
+  return (
+    <span aria-hidden="true" className={`absolute hidden max-w-[11rem] items-center gap-2 rounded-full border border-line bg-surface py-1.5 pl-2 pr-3.5 text-xs font-semibold md:inline-flex ${className}`}>
+      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-surface-2 text-accent-2"><Icon name={icon} size={14} /></span>
+      <span className="truncate">{text}</span>
+    </span>
+  );
+}
 
 // Zona superior de la ficha: escenario con el producto, columna de contenido (children),
 // índice lateral y tarjeta de compra fija al hacer scroll. La presentación elegida se comparte entre todo.
@@ -35,6 +45,22 @@ export function ProductStage({
   const [qty, setQty] = useState(1);
   const [cardVisible, setCardVisible] = useState(true);
   const cardRef = useRef<HTMLDivElement>(null);
+  const tilt = useRef<HTMLDivElement>(null);
+
+  // El vial se inclina apenas hacia el puntero (solo con mouse y sin "reducir movimiento").
+  function onMove(e: React.PointerEvent<HTMLElement>) {
+    const el = tilt.current;
+    if (!el || e.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    el.style.setProperty("--ry", `${(x * 12).toFixed(2)}deg`);
+    el.style.setProperty("--rx", `${(-y * 8).toFixed(2)}deg`);
+  }
+  function onLeave() {
+    tilt.current?.style.setProperty("--ry", "0deg");
+    tilt.current?.style.setProperty("--rx", "0deg");
+  }
 
   // En celular, cuando la tarjeta de compra sale de pantalla aparece un botón flotante.
   useEffect(() => {
@@ -68,7 +94,7 @@ export function ProductStage({
   return (
     <>
       {/* Escenario: panel con un toque del color del producto, su nombre gigante y tenue a la derecha y el vial encima */}
-      <section className="panel-hue relative isolate overflow-hidden rounded-[2rem] [--hue-base:82%] [container-type:inline-size] md:rounded-[2.75rem] dark:[--hue-base:74%]" style={{ "--hue": product.color } as CSSProperties}>
+      <section onPointerMove={onMove} onPointerLeave={onLeave} className="panel-hue relative isolate overflow-hidden rounded-[2rem] [container-type:inline-size] md:rounded-[2.75rem]" style={{ "--hue": product.color } as CSSProperties}>
         <Watermark
           name={product.name}
           max={9}
@@ -76,13 +102,13 @@ export function ProductStage({
         />
         <div className="relative grid gap-6 p-6 md:grid-cols-[minmax(0,1fr)_15rem] md:gap-8 md:px-12 md:py-12 lg:grid-cols-[1.1fr_1fr]">
           <div className="flex min-w-0 flex-col justify-center">
-            <p className="chip w-fit bg-surface">{product.category}</p>
-            <h1 className="mt-4 break-words font-display text-[clamp(2.1rem,9vw,3rem)] font-semibold leading-[0.98] tracking-[-0.04em] md:text-[clamp(2.5rem,5.4vw,4.5rem)]">{product.name}</h1>
-            <p className="mt-4 max-w-md text-lg">{product.short}</p>
-            <ul className="mt-6 flex flex-wrap gap-2">
-              <li className="inline-flex items-center rounded-full bg-fg px-3.5 py-1.5 text-xs font-semibold text-bg">{stockLine}</li>
-              {showCertificates && <li className={tag}>Pureza {product.purity.replace(" (HPLC)", "")}</li>}
-              {showCertificates && <li className={tag}>COA por lote</li>}
+            <p className="chip rise w-fit bg-surface" style={{ "--i": 0 } as CSSProperties}><Icon name={categoryIcon(product.category)} size={16} className="text-accent-2" />{product.category}</p>
+            <h1 className="rise mt-4 break-words font-display text-[clamp(2.1rem,9vw,3rem)] font-semibold leading-[0.98] tracking-[-0.04em] md:text-[clamp(2.5rem,5.4vw,4.5rem)]" style={{ "--i": 1 } as CSSProperties}>{product.name}</h1>
+            <p className="rise mt-4 max-w-md text-lg" style={{ "--i": 2 } as CSSProperties}>{product.short}</p>
+            <ul className="rise mt-6 flex flex-wrap gap-2" style={{ "--i": 3 } as CSSProperties}>
+              <li className="inline-flex items-center gap-1.5 rounded-full bg-fg px-3.5 py-1.5 text-xs font-semibold text-bg"><Icon name={soldOut ? "close" : "check"} size={14} />{stockLine}</li>
+              {showCertificates && <li className={tag}><Icon name="shield" size={14} className="text-accent-2" />Pureza {product.purity.replace(" (HPLC)", "")}</li>}
+              {showCertificates && <li className={tag}><Icon name="doc" size={14} className="text-accent-2" />COA por lote</li>}
               {product.rating && (
                 <li>
                   <a href="#resenas" className={`${tag} gap-1.5 transition-colors hover:border-control`}>
@@ -91,12 +117,17 @@ export function ProductStage({
                   </a>
                 </li>
               )}
-              {product.cas && <li className={tag}>CAS {product.cas}</li>}
+              {product.cas && <li className={tag}><Icon name="tag" size={14} className="text-accent-2" />CAS {product.cas}</li>}
             </ul>
           </div>
           <div className="relative grid min-h-[240px] min-w-0 place-items-center md:min-h-0">
-            <div className="animate-float">
-              <ProductImage product={product} className="relative h-60 w-auto max-w-full md:h-[19rem]" />
+            <Floater icon="flask" text={product.form} className="animate-float-b left-0 top-2 lg:-left-2" />
+            <Floater icon="ruler" text={variant.label} className="animate-float-c bottom-4 left-0 lg:-left-6" />
+            {product.cas && <Floater icon="tag" text={`CAS ${product.cas}`} className="animate-float-b right-0 top-12 [animation-delay:-3s] lg:-right-2" />}
+            <div ref={tilt} className="transition-transform duration-300 ease-out will-change-transform motion-reduce:transition-none" style={{ transform: "perspective(900px) rotateY(var(--ry, 0deg)) rotateX(var(--rx, 0deg))" }}>
+              <div className="animate-float">
+                <ProductImage product={product} className="relative h-60 w-auto max-w-full md:h-[19rem]" />
+              </div>
             </div>
           </div>
         </div>
@@ -107,7 +138,7 @@ export function ProductStage({
         <div className="flex min-w-0 flex-col gap-4">{children}</div>
 
         {/* Tarjeta de compra: fija mientras se lee el contenido */}
-        <aside className="order-first lg:order-none">
+        <aside className="rise order-first lg:order-none" style={{ "--i": 3 } as CSSProperties}>
           <div ref={cardRef} className="rounded-[1.75rem] border border-line bg-surface p-5 lg:sticky lg:top-[calc(var(--bar-h)+6.5rem)]">
             <p className="text-sm font-semibold text-muted" id="presentacion">Presentación</p>
             <div className="mt-2 grid gap-2" role="group" aria-labelledby="presentacion">
@@ -151,11 +182,12 @@ export function ProductStage({
 
             <div className="mt-4 flex gap-2">
               <div className="flex items-center rounded-full border border-control">
-                <button onClick={() => setQty(Math.max(1, qty - 1))} className="h-11 w-11 rounded-full text-lg text-muted hover:text-fg" aria-label="Menos">−</button>
+                <button onClick={() => setQty(Math.max(1, qty - 1))} className="grid h-11 w-11 place-items-center rounded-full text-muted transition-colors hover:bg-surface-2 hover:text-fg" aria-label="Menos"><Icon name="minus" size={18} /></button>
                 <span className="w-7 text-center text-sm font-medium">{qty}</span>
-                <button onClick={() => setQty(Math.min(max, qty + 1))} className="h-11 w-11 rounded-full text-lg text-muted hover:text-fg" aria-label="Más">+</button>
+                <button onClick={() => setQty(Math.min(max, qty + 1))} className="grid h-11 w-11 place-items-center rounded-full text-muted transition-colors hover:bg-surface-2 hover:text-fg" aria-label="Más"><Icon name="plus" size={18} /></button>
               </div>
-              <button disabled={soldOut} onClick={() => add(variant.id, qty)} className="btn-primary flex-1">
+              <button disabled={soldOut} onClick={() => add(variant.id, qty)} className="btn-primary group/add flex-1">
+                {!soldOut && <Icon name="cart" size={18} className="transition-transform group-hover/add:-rotate-12" />}
                 {soldOut ? "Agotado" : inCart > 0 ? `En carrito · ${inCart}` : "Agregar al carrito"}
               </button>
             </div>
@@ -167,11 +199,16 @@ export function ProductStage({
               </div>
             )}
 
-            <ul className="mt-5 space-y-2 border-t border-line pt-4 text-sm text-muted">
-              {[settings.shippingNote, `Envío gratis sobre ${formatCLP(settings.freeShippingFrom)}`, ...(showCertificates ? ["Certificado de análisis del lote incluido"] : []), payLine].map((t) => (
-                <li key={t} className="flex gap-2.5">
-                  <Icon name="check" size={16} className="mt-1 shrink-0 text-accent-2" />
-                  <span>{t}</span>
+            <ul className="mt-5 space-y-2.5 border-t border-line pt-4 text-sm text-muted">
+              {([
+                ["truck", settings.shippingNote],
+                ["tag", `Envío gratis sobre ${formatCLP(settings.freeShippingFrom)}`],
+                ...(showCertificates ? [["doc", "Certificado de análisis del lote incluido"]] : []),
+                [payments.card || payments.transfer ? "card" : "chat", payLine],
+              ] as [IconName, string][]).map(([ic, t]) => (
+                <li key={t} className="flex items-start gap-3">
+                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-surface-2 text-accent-2"><Icon name={ic} size={15} /></span>
+                  <span className="pt-0.5">{t}</span>
                 </li>
               ))}
             </ul>
@@ -188,6 +225,7 @@ export function ProductStage({
           onClick={() => add(variant.id, qty)}
           className="btn-primary animate-fade fixed bottom-5 right-4 z-40 shadow-xl lg:hidden"
         >
+          <Icon name="cart" size={18} />
           {inCart > 0 ? `En carrito · ${inCart}` : `Agregar · ${formatCLP(variant.price)}`}
         </button>
       )}

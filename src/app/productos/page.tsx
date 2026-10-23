@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { categories } from "@/lib/products";
 import { getProducts } from "@/lib/catalog";
 import { ProductCard } from "@/components/ProductCard";
-import { Icon } from "@/components/Icon";
+import { Icon, categoryIcon } from "@/components/Icon";
 import { Reveal } from "@/components/Reveal";
 
 export const metadata: Metadata = {
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/productos" },
 };
 
-const pillBase = "inline-flex min-h-11 items-center whitespace-nowrap rounded-full px-5 text-sm font-semibold transition-colors";
+const pillBase = "inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-full px-5 text-sm font-semibold transition-colors";
 
 export default async function Productos({ searchParams }: { searchParams: Promise<{ categoria?: string; q?: string }> }) {
   const { categoria, q = "" } = await searchParams;
@@ -26,7 +26,7 @@ export default async function Productos({ searchParams }: { searchParams: Promis
     <div className="wrap pb-20 pt-8 md:pb-24 md:pt-12">
       <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
         <div>
-          <p className="chip">Catálogo</p>
+          <p className="chip"><Icon name="grid" size={16} className="text-accent-2" />Catálogo</p>
           <h1 className="t-page mt-4">Productos</h1>
           <p className="mt-3 max-w-[44ch] text-lg text-muted">Todos los precios incluyen IVA. Si algo se agota, lo marcamos.</p>
         </div>
@@ -43,7 +43,7 @@ export default async function Productos({ searchParams }: { searchParams: Promis
       <div className="mt-8 max-w-full overflow-x-auto rounded-full border border-line bg-surface p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:w-fit">
         <div className="flex w-max gap-0.5">
           <Link href="/productos" aria-current={!categoria ? "page" : undefined} className={`${pillBase} ${!categoria ? "bg-accent text-on-accent" : "text-muted hover:text-fg"}`}>
-            Todos
+            <Icon name="grid" size={16} />Todos
           </Link>
           {categories.map((c) => (
             <Link
@@ -52,7 +52,7 @@ export default async function Productos({ searchParams }: { searchParams: Promis
               aria-current={categoria === c ? "page" : undefined}
               className={`${pillBase} ${categoria === c ? "bg-accent text-on-accent" : "text-muted hover:text-fg"}`}
             >
-              {c}
+              <Icon name={categoryIcon(c)} size={16} />{c}
             </Link>
           ))}
         </div>

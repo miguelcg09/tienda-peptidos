@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
+import { Icon } from "@/components/Icon";
+import { PageHead } from "@/components/PageHead";
 
 export const metadata: Metadata = {
   title: "Certificados de análisis por lote",
@@ -22,30 +24,30 @@ export default async function Certificados({ searchParams }: { searchParams: Pro
 
   return (
     <div className="animate-fade mx-auto max-w-5xl px-4 py-14">
-      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">Transparencia</p>
-      <h1 className="t-page mt-2">Certificados por lote</h1>
-      <p className="mt-4 max-w-2xl text-muted">
-        Cada lote se analiza por HPLC (pureza) y espectrometría de masas (identidad). El número de lote va impreso en la etiqueta del vial:
-        búscalo aquí para ver su certificado.
-      </p>
+      <PageHead icon="shield" label="Transparencia" title="Certificados por lote">
+        <p>
+          Cada lote se analiza por HPLC (pureza) y espectrometría de masas (identidad). El número de lote va impreso en la etiqueta del vial:
+          búscalo aquí para ver su certificado.
+        </p>
+      </PageHead>
 
       <form method="get" className="mt-8 flex max-w-xl gap-2" role="search">
-        <input name="q" maxLength={80} defaultValue={q} placeholder="Número de lote, producto o CAS" aria-label="Buscar certificado" className="field mt-0 flex-1" />
-        <button className="btn-primary text-sm">Buscar</button>
+        <input name="q" maxLength={80} defaultValue={q} placeholder="Número de lote, producto o CAS" aria-label="Buscar certificado" className="field mt-0 min-h-12 flex-1 rounded-full px-5" />
+        <button className="btn-primary gap-2 text-sm"><Icon name="search" size={18} />Buscar</button>
         {q && <Link href="/certificados" className="btn-ghost text-sm">Limpiar</Link>}
       </form>
 
       {list.length === 0 ? (
-        <p className="mt-10 rounded-card border bg-surface p-5 text-sm">
-          No encontramos ese lote. Escríbenos a <a href={`mailto:${settings.email}?subject=Consulta de lote ${q}`} className="text-accent">{settings.email}</a> con el número impreso en tu vial y lo revisamos.
+        <p className="mt-10 rounded-[1.5rem] border bg-surface p-5 text-sm">
+          No encontramos ese lote. Escríbenos a <a href={`mailto:${settings.email}?subject=Consulta de lote ${q}`} className="font-medium text-accent-2">{settings.email}</a> con el número impreso en tu vial y lo revisamos.
         </p>
       ) : (
-        <div className="mt-8 overflow-hidden rounded-card border bg-surface">
+        <div className="mt-8 overflow-hidden rounded-[1.75rem] border bg-surface">
           <ul className="divide-y" data-testid="certificados">
             {list.map((p) => (
               <li key={p.slug} className="grid grid-cols-[minmax(0,1fr)] gap-3 p-5 text-sm sm:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-center [&>div]:min-w-0 [&_a]:[overflow-wrap:anywhere] [&_p]:[overflow-wrap:anywhere]">
                 <div>
-                  <Link href={`/productos/${p.slug}`} className="font-display text-lg font-semibold hover:text-accent">{p.name}</Link>
+                  <Link href={`/productos/${p.slug}`} className="font-display text-lg font-semibold hover:text-accent-2">{p.name}</Link>
                   <p className="text-xs text-muted">{p.category} · {p.variants.map((v) => v.label).join(" / ")}</p>
                 </div>
                 <div>

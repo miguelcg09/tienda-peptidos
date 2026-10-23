@@ -14,7 +14,7 @@ export default async function Ajustes({ searchParams }: { searchParams: Promise<
   return (
     <div className="max-w-3xl">
       <h1 className="font-display text-3xl font-bold">Ajustes</h1>
-      {guardado && <p className="mt-4 rounded-lg bg-accent/10 p-3 text-sm text-accent">Cambios guardados.</p>}
+      {guardado && <p className="mt-4 rounded-lg bg-surface-2 p-3 text-sm text-accent-2">Cambios guardados.</p>}
 
       <form action={saveSettingsAction} className="mt-8 space-y-8">
         <fieldset className="grid gap-4 sm:grid-cols-2">

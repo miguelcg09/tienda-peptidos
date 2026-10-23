@@ -19,7 +19,7 @@ export default async function Cupones({ searchParams }: { searchParams: Promise<
         Códigos que el cliente escribe en el checkout. Ideas: BIENVENIDA10 para la primera compra, uno distinto para Instagram
         y otro para laboratorios, así sabes de dónde llega cada venta.
       </p>
-      {guardado && <p className="mt-4 rounded-lg bg-accent/10 p-3 text-sm text-accent">Cupón guardado.</p>}
+      {guardado && <p className="mt-4 rounded-lg bg-surface-2 p-3 text-sm text-accent-2">Cupón guardado.</p>}
 
       <form action={saveCouponAction} className="mt-8 grid gap-4 rounded-2xl border bg-surface p-5 sm:grid-cols-3">
         <label className="text-sm">Código<input name="code" required placeholder="BIENVENIDA10" className="field uppercase" /></label>
@@ -56,14 +56,14 @@ export default async function Cupones({ searchParams }: { searchParams: Promise<
                     <td className="px-4 py-3">{c.uses}{c.maxUses != null && ` / ${c.maxUses}`}</td>
                     <td className="px-4 py-3">{c.expiresAt ?? "—"}</td>
                     <td className="px-4 py-3">
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${!c.active || expired || exhausted ? "bg-tint/10 text-muted" : "bg-accent/15 text-accent"}`}>
+                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${!c.active || expired || exhausted ? "bg-tint/10 text-muted" : "bg-surface-2 text-accent-2"}`}>
                         {!c.active ? "inactivo" : expired ? "vencido" : exhausted ? "agotado" : "activo"}
                       </span>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-1 whitespace-nowrap">
                         <form action={toggleCoupon.bind(null, c.code, !c.active)}>
-                          <button className="inline-flex min-h-10 items-center px-3 text-sm text-accent hover:underline">{c.active ? "Desactivar" : "Activar"}</button>
+                          <button className="inline-flex min-h-10 items-center px-3 text-sm text-accent-2 hover:underline">{c.active ? "Desactivar" : "Activar"}</button>
                         </form>
                         <form action={removeCoupon.bind(null, c.code)}>
                           <ConfirmButton message={`¿Eliminar el cupón ${c.code}? Los pedidos ya hechos con él no cambian.`} className="inline-flex min-h-10 items-center px-3 text-sm text-red-700 hover:underline dark:text-red-300">Eliminar</ConfirmButton>

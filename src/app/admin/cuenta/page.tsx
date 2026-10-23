@@ -31,7 +31,7 @@ export default async function Cuenta({ searchParams }: { searchParams: Promise<R
           ? `Hola, ${actor.name}. La clave con la que entraste es temporal: elige una propia para usar el panel.`
           : `Usuario: ${actor.username}. Todo lo que haces en el panel queda anotado con tu nombre.`}
       </p>
-      {ok && <p role="status" className="mt-4 rounded-lg bg-accent/10 p-3 text-sm text-accent">{ok}</p>}
+      {ok && <p role="status" className="mt-4 rounded-lg bg-surface-2 p-3 text-sm text-accent-2">{ok}</p>}
       {error && <p role="alert" className="mt-4 rounded-lg bg-red-500/10 p-3 text-sm text-red-700 dark:text-red-300">{error}</p>}
 
       <form action={changeOwnPasswordAction} className="mt-8 grid gap-4 rounded-2xl border bg-surface p-5">

@@ -6,6 +6,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useCart } from "@/components/CartProvider";
 import { formatCLP } from "@/lib/products";
 import { whatsappLink } from "@/lib/whatsapp";
+import { Icon } from "@/components/Icon";
 
 type Summary = {
   id: string;
@@ -102,8 +103,8 @@ function Exito() {
 
   return (
     <div className="animate-fade mx-auto max-w-xl px-4 py-20 text-center">
-      <div className={`mx-auto grid h-16 w-16 place-items-center rounded-full text-3xl ${failed ? "bg-red-500/15 text-red-500" : "bg-lime/15 text-lime"}`}>
-        {failed ? "✕" : transfer && !paid ? "🏦" : pending ? "⏳" : "✓"}
+      <div aria-hidden="true" className={`animate-pop mx-auto grid h-20 w-20 place-items-center rounded-full ${failed ? "bg-red-500/15 text-red-700 dark:text-red-300" : "bg-surface-2 text-accent-2"}`}>
+        <Icon name={failed ? "close" : transfer && !paid ? "bank" : pending ? "clock" : "check"} size={36} />
       </div>
       <h1 className="t-page mt-6">{title}</h1>
       {failed && (
@@ -116,8 +117,8 @@ function Exito() {
       </p>
 
       {transfer && !paid && !failed && (
-        <div className="mt-8 rounded-card border border-accent/30 bg-accent/5 p-5 text-left text-sm" data-testid="transferencia">
-          <p className="font-semibold">Transfiere {summary ? <span className="text-accent">{formatCLP(summary.total)}</span> : "el total"} a esta cuenta:</p>
+        <div className="mt-8 rounded-[1.75rem] border border-accent/30 bg-surface-2 p-5 text-left text-sm" data-testid="transferencia">
+          <p className="font-semibold">Transfiere {summary ? <span className="text-accent-2">{formatCLP(summary.total)}</span> : "el total"} a esta cuenta:</p>
           <dl className="mt-3 grid gap-1 sm:grid-cols-[150px_1fr]">
             {bank.map(([k, v]) => (
               <div key={k} className="contents">
@@ -130,15 +131,15 @@ function Exito() {
             Pon el número de pedido en el comentario de la transferencia y envíanos el comprobante. Reservamos tu pedido por 48 horas y lo despachamos apenas confirmemos el abono.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
-            {wa && <a href={wa} target="_blank" rel="noreferrer" className="btn-primary text-sm">Enviar comprobante por WhatsApp</a>}
-            <a href={`mailto:${settings.bankEmail || settings.email}?subject=${encodeURIComponent(`Comprobante pedido ${orderId}`)}`} className="btn-ghost text-sm">Enviar por correo</a>
-            <button type="button" onClick={copy} className="rounded-card border px-4 py-2 text-sm transition hover:border-accent">{copied ? "Copiado ✓" : "Copiar datos"}</button>
+            {wa && <a href={wa} target="_blank" rel="noreferrer" className="btn-primary gap-2 text-sm"><Icon name="chat" size={18} />Enviar comprobante por WhatsApp</a>}
+            <a href={`mailto:${settings.bankEmail || settings.email}?subject=${encodeURIComponent(`Comprobante pedido ${orderId}`)}`} className="btn-ghost gap-2 text-sm"><Icon name="mail" size={18} />Enviar por correo</a>
+            <button type="button" onClick={copy} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-control px-5 text-sm font-medium transition-colors hover:border-accent hover:bg-surface-2"><Icon name={copied ? "check" : "doc"} size={16} />{copied ? "Copiado" : "Copiar datos"}</button>
           </div>
         </div>
       )}
 
       {summary && (
-        <div className="glass mt-8 rounded-card p-5 text-left text-sm">
+        <div className="glass mt-8 rounded-[1.75rem] p-5 text-left text-sm">
           <ul className="space-y-2">
             {summary.items.map((i) => (
               <li key={i.variantId} className="flex justify-between gap-4">
@@ -147,7 +148,7 @@ function Exito() {
               </li>
             ))}
             {summary.discount > 0 && (
-              <li className="flex justify-between border-t pt-2 text-accent"><span>Descuento</span><span>-{formatCLP(summary.discount)}</span></li>
+              <li className="flex justify-between border-t pt-2 text-accent-2"><span>Descuento</span><span>-{formatCLP(summary.discount)}</span></li>
             )}
             <li className={`flex justify-between text-muted ${summary.discount > 0 ? "" : "border-t pt-2"}`}>
               <span>Envío</span><span>{summary.shipping ? formatCLP(summary.shipping) : "Gratis"}</span>
@@ -158,7 +159,7 @@ function Exito() {
       )}
 
       {params.get("modo") === "prueba" && (
-        <p className="mt-4 rounded-lg bg-amber-400/10 p-3 text-sm text-amber-800 dark:text-amber-200">Modo de prueba: no se realizó ningún cobro.</p>
+        <p className="mt-4 rounded-2xl bg-surface-2 p-3 text-sm">Modo de prueba: no se realizó ningún cobro.</p>
       )}
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link href={failed ? "/carrito" : "/productos"} className="btn-primary">{failed ? "Volver al carrito" : "Seguir comprando"}</Link>

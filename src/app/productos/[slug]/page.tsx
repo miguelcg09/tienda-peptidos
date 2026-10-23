@@ -7,6 +7,7 @@ import { faqs } from "@/lib/faqs";
 import { showCertificates } from "@/lib/features";
 import { ProductStage } from "@/components/ProductStage";
 import { ProductCard } from "@/components/ProductCard";
+import { Icon, type IconName } from "@/components/Icon";
 import { Reveal } from "@/components/Reveal";
 import { Stars } from "@/components/Stars";
 import { listPublished } from "@/lib/reviews";
@@ -39,13 +40,17 @@ function Paragraphs({ text }: { text: string }) {
   );
 }
 
-function Section({ id, n, title, children }: { id: string; n: number; title: string; children: React.ReactNode }) {
+// Ícono de cada dato técnico de la franja de arriba
+const specIcon: Record<string, IconName> = { Mecanismo: "spark", Pureza: "shield", Forma: "flask", CAS: "tag", Almacenar: "snowflake" };
+
+function Section({ id, n, icon, title, children }: { id: string; n: number; icon: IconName; title: string; children: React.ReactNode }) {
   return (
     <Reveal>
       <section id={id} className="scroll-mt-32 rounded-[1.75rem] border border-line bg-surface p-6 md:p-8">
         <div className="flex items-center gap-3">
-          <span className="grid h-9 min-w-9 place-items-center rounded-full bg-surface-2 px-2 font-mono text-xs text-accent-2">{String(n).padStart(2, "0")}</span>
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-surface-2 text-accent-2"><Icon name={icon} size={22} /></span>
           <h2 className="t-h2">{title}</h2>
+          <span className="ml-auto font-mono text-sm text-muted">{String(n).padStart(2, "0")}</span>
         </div>
         <div className="mt-5">{children}</div>
       </section>
@@ -120,24 +125,25 @@ export default async function ProductPage({ params }: Props) {
         <dl className="grid grid-cols-2 gap-x-6 gap-y-5 rounded-[1.75rem] border border-line bg-surface p-6 text-sm sm:grid-cols-[repeat(auto-fit,minmax(7.5rem,1fr))]">
           {specs.map(([k, v], i) => (
             <div key={k} className={`min-w-0 ${i === 0 ? "col-span-full border-b border-line pb-5" : ""}`}>
-              <dt className="text-[0.8125rem] font-semibold uppercase tracking-widest text-muted">{k}</dt>
+              <dt className="flex items-center gap-2 text-[0.8125rem] font-semibold uppercase tracking-widest text-muted"><Icon name={specIcon[k] ?? "flask"} size={16} className="text-accent-2" />{k}</dt>
               <dd className={`mt-1 font-medium [overflow-wrap:anywhere] ${k === "CAS" && v.length <= 14 ? "whitespace-nowrap" : ""}`}>{v}</dd>
             </div>
           ))}
         </dl>
 
-        <Section id="resumen" n={1} title="Resumen">
+        <Section id="resumen" n={1} icon="doc" title="Resumen">
           <p className="text-lg leading-relaxed">{product.short}</p>
           <Paragraphs text={product.description} />
           {!hasCert && product.lot && (
             <p className="mt-4 text-sm"><strong>Lote actual:</strong> <span className="font-mono">{product.lot}</span></p>
           )}
-          <p className="mt-6 rounded-2xl border-l-4 border-accent bg-surface-2 p-4 text-sm">
-            <strong>Solo para uso en investigación.</strong> {settings.disclaimer}
+          <p className="mt-6 flex gap-3 rounded-2xl border-l-4 border-accent bg-surface-2 p-4 text-sm">
+            <Icon name="shield" size={20} className="mt-0.5 shrink-0 text-accent-2" />
+            <span><strong>Solo para uso en investigación.</strong> {settings.disclaimer}</span>
           </p>
         </Section>
 
-        {hasCert && <Section id="certificado" n={2} title="Certificado de análisis">
+        {hasCert && <Section id="certificado" n={2} icon="shield" title="Certificado de análisis">
           <p className="leading-relaxed text-muted">
             Cada lote se analiza por HPLC (pureza) y espectrometría de masas (identidad). El número de lote va impreso en la
             etiqueta del vial y el certificado correspondiente viaja con el pedido.
@@ -165,22 +171,22 @@ export default async function ProductPage({ params }: Props) {
           </dl>
         </Section>}
 
-        <Section id="reconstitucion" n={3 + off} title="Reconstitución">
+        <Section id="reconstitucion" n={3 + off} icon="flask" title="Reconstitución">
           {isAccessory && !product.reconstitution ? (
             <p className="text-muted">Este producto se usa tal como viene; no requiere reconstitución.</p>
           ) : (
             <Paragraphs text={product.reconstitution ?? defaultReconstitution} />
           )}
-          {!isAccessory && <p className="mt-4 text-sm"><Link href="/calculadora" className="inline-block py-1 font-medium text-accent-2 hover:underline">Calcular la concentración y el volumen →</Link></p>}
+          {!isAccessory && <p className="mt-4 text-sm"><Link href="/calculadora" className="group/calc inline-flex items-center gap-2 py-1 font-medium text-accent-2 hover:underline"><Icon name="calc" size={18} />Calcular la concentración y el volumen <Icon name="arrow" size={16} className="transition-transform group-hover/calc:translate-x-1" /></Link></p>}
           <p className="mt-4 text-xs text-muted">Información técnica de manipulación. No constituye indicación de uso ni de dosis.</p>
         </Section>
 
-        <Section id="investigacion" n={4 + off} title="Líneas de investigación">
+        <Section id="investigacion" n={4 + off} icon="bulb" title="Líneas de investigación">
           <Paragraphs text={product.research ?? "Consulta la literatura científica publicada sobre este compuesto. Con gusto te orientamos sobre referencias."} />
           <p className="mt-4 text-xs text-muted">Resumen informativo de la literatura preclínica. No describe efectos en seres humanos.</p>
         </Section>
 
-        <Section id="resenas" n={5 + off} title="Reseñas de compradores">
+        <Section id="resenas" n={5 + off} icon="quote" title="Reseñas de compradores">
           {product.rating && reviews.length > 0 ? (
             <>
               <p className="flex items-center gap-3">
@@ -192,11 +198,11 @@ export default async function ProductPage({ params }: Props) {
               </p>
               <ul className="mt-5 grid gap-3">
                 {reviews.map((r) => (
-                  <li key={r.id} className="rounded-2xl bg-surface-2 p-4 text-sm">
+                  <li key={r.id} className="lift rounded-2xl bg-surface-2 p-4 text-sm">
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                       <Stars value={r.rating} className="text-base" />
                       <span className="font-semibold">{r.name}</span>
-                      <span className="rounded-full bg-surface px-2.5 py-0.5 text-[0.8125rem] font-medium text-accent-2">Compra verificada</span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-surface px-2.5 py-0.5 text-[0.8125rem] font-medium text-accent-2"><Icon name="check" size={13} />Compra verificada</span>
                       <span className="ml-auto text-xs text-muted">{new Date(r.createdAt).toLocaleDateString("es-CL", { timeZone: "America/Santiago", day: "numeric", month: "long", year: "numeric" })}</span>
                     </div>
                     {r.body && <p className="mt-2 whitespace-pre-line text-muted">{r.body}</p>}
@@ -212,13 +218,13 @@ export default async function ProductPage({ params }: Props) {
           </p>
         </Section>
 
-        <Section id="preguntas" n={6 + off} title="Preguntas frecuentes">
+        <Section id="preguntas" n={6 + off} icon="help" title="Preguntas frecuentes">
           <div className="grid gap-3">
             {faqs.map((f) => (
               <details key={f.q} className="group rounded-2xl bg-surface-2 px-5 py-3">
                 <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 font-semibold">
                   {f.q}
-                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-surface font-mono text-lg text-muted transition group-open:rotate-45" aria-hidden>+</span>
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-surface text-muted transition group-open:rotate-45 group-open:bg-accent group-open:text-on-accent" aria-hidden><Icon name="plus" size={16} /></span>
                 </summary>
                 <p className="mt-2 text-sm text-muted">{f.a}</p>
               </details>
@@ -231,7 +237,7 @@ export default async function ProductPage({ params }: Props) {
         <section className="mt-20">
           <div className="flex items-end justify-between gap-4">
             <h2 className="t-h2">Seguir explorando</h2>
-            <Link href="/productos" className="btn-ghost min-h-11 px-5 py-2 text-sm">Ver todo el catálogo</Link>
+            <Link href="/productos" className="btn-ghost group/all min-h-11 gap-2 px-5 py-2 text-sm">Ver todo el catálogo <Icon name="arrow" size={16} className="transition-transform group-hover/all:translate-x-1" /></Link>
           </div>
           <div className="-mx-4 mt-6 flex snap-x gap-3 overflow-x-auto px-4 pb-4 [scrollbar-width:thin] md:mx-0 md:px-0">
             {related.map((p) => (

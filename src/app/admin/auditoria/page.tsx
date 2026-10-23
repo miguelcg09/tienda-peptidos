@@ -16,7 +16,7 @@ function Details({ value }: { value: unknown }) {
   const list = Array.isArray(value) && value.every((v) => typeof v === "string");
   return (
     <details className="mt-1 text-xs">
-      <summary className="inline-flex min-h-8 cursor-pointer list-none items-center text-accent hover:underline">Ver detalle</summary>
+      <summary className="inline-flex min-h-8 cursor-pointer list-none items-center text-accent-2 hover:underline">Ver detalle</summary>
       {list ? (
         <ul className="mt-1 list-disc space-y-0.5 pl-5 text-muted">{(value as string[]).map((c, i) => <li key={i} className="break-words">{c}</li>)}</ul>
       ) : (
@@ -65,7 +65,7 @@ export default async function Auditoria({ searchParams }: { searchParams: Promis
         <label className="text-sm">Hasta<input type="date" name="hasta" defaultValue={query.hasta ?? ""} max={today} className="field" /></label>
         <div className="flex items-end gap-2">
           <button className="btn-primary text-sm">Filtrar</button>
-          {filtered && <Link href="/admin/auditoria" className="inline-flex min-h-10 items-center px-3 text-sm text-accent hover:underline">Quitar filtros</Link>}
+          {filtered && <Link href="/admin/auditoria" className="inline-flex min-h-10 items-center px-3 text-sm text-accent-2 hover:underline">Quitar filtros</Link>}
         </div>
       </form>
 

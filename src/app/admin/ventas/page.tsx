@@ -28,7 +28,7 @@ export default async function Ventas({ searchParams }: { searchParams: Promise<R
         <p className="mt-1 text-sm text-muted">{period.label}, comparado con {period.prevLabel}.</p>
       </div>
       {one(sp.bienvenida) && (
-        <p role="status" className="rounded-lg bg-accent/10 p-3 text-sm text-accent">
+        <p role="status" className="rounded-lg bg-surface-2 p-3 text-sm text-accent-2">
           Tu cuenta quedó creada y ya estás dentro. Crea las cuentas del resto del equipo en <Link href="/admin/usuarios" className="underline">Equipo</Link>.
         </p>
       )}
@@ -64,7 +64,7 @@ export default async function Ventas({ searchParams }: { searchParams: Promise<R
       </div>
       <Notes r={r} />
       <p className="text-sm">
-        <Link href={`/admin/reportes?${q}`} className="text-accent hover:underline">Ver reportes completos y descargarlos (CSV para Excel)</Link>
+        <Link href={`/admin/reportes?${q}`} className="text-accent-2 hover:underline">Ver reportes completos y descargarlos (CSV para Excel)</Link>
       </p>
     </div>
   );

@@ -45,7 +45,7 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
           ? "Esta será la primera cuenta del panel. Después podrás crear las del resto del equipo. Entraste con la clave de instalación; desde que exista una cuenta, esa clave deja de servir para entrar."
           : "Cada persona entra con su propio usuario y su propia clave, y todo lo que hace queda anotado en Auditoría. Todas las cuentas tienen acceso completo."}
       </p>
-      {ok && <p role="status" className="mt-4 rounded-lg bg-accent/10 p-3 text-sm text-accent">{ok}{one(sp.u) && <> Usuario: <strong className="font-mono">{one(sp.u)}</strong>.</>}</p>}
+      {ok && <p role="status" className="mt-4 rounded-lg bg-surface-2 p-3 text-sm text-accent-2">{ok}{one(sp.u) && <> Usuario: <strong className="font-mono">{one(sp.u)}</strong>.</>}</p>}
       {error && <p role="alert" className="mt-4 rounded-lg bg-red-500/10 p-3 text-sm text-red-700 dark:text-red-300">{error}</p>}
 
       {!actor.bootstrap && (
@@ -57,7 +57,7 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                   <span className="font-semibold">{u.name}</span>
                   <span className="font-mono text-sm text-muted">@{u.username}</span>
-                  {me && <span className="rounded-full bg-accent/15 px-2 py-0.5 text-xs font-medium text-accent">tú</span>}
+                  {me && <span className="rounded-full bg-surface-2 px-2 py-0.5 text-xs font-medium text-accent-2">tú</span>}
                   {!u.active && <span className="rounded-full bg-tint/10 px-2 py-0.5 text-xs font-medium text-muted">desactivada</span>}
                   {u.active && u.mustChange && <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">aún no cambia su clave</span>}
                 </div>
@@ -69,14 +69,14 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
                     {u.active && (
                       <>
                         <details open={fila === u.id} className="w-full sm:w-auto">
-                          <summary className="inline-flex min-h-10 cursor-pointer list-none items-center px-3 text-accent hover:underline">Cambiar nombre</summary>
+                          <summary className="inline-flex min-h-10 cursor-pointer list-none items-center px-3 text-accent-2 hover:underline">Cambiar nombre</summary>
                           <form action={renameUserAction.bind(null, u.id)} className="mt-2 flex flex-wrap items-end gap-2">
                             <label className="text-sm">Nombre<input name="nombre" defaultValue={u.name} required minLength={2} maxLength={60} className="field" /></label>
                             <button className="btn-ghost text-sm">Guardar</button>
                           </form>
                         </details>
                         <details open={fila === u.id && one(sp.error).startsWith("clave")} className="w-full sm:w-auto">
-                          <summary className="inline-flex min-h-10 cursor-pointer list-none items-center px-3 text-accent hover:underline">Poner clave temporal</summary>
+                          <summary className="inline-flex min-h-10 cursor-pointer list-none items-center px-3 text-accent-2 hover:underline">Poner clave temporal</summary>
                           <form action={resetPasswordAction.bind(null, u.id)} className="mt-2 grid max-w-sm gap-2">
                             <PasswordField label={`Clave temporal para ${u.name}`} suggestable />
                             <p className="text-xs text-muted">Se cerrarán sus sesiones abiertas y tendrá que elegir una clave propia al entrar.</p>
@@ -91,7 +91,7 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
                           Desactivar
                         </ConfirmButton>
                       ) : (
-                        <button className="inline-flex min-h-10 items-center px-3 text-accent hover:underline">Reactivar</button>
+                        <button className="inline-flex min-h-10 items-center px-3 text-accent-2 hover:underline">Reactivar</button>
                       )}
                     </form>
                   </div>

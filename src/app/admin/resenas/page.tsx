@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 const tone: Record<string, string> = {
   pendiente: "bg-amber-400/15 text-amber-700 dark:text-amber-300",
-  publicada: "bg-accent/15 text-accent",
+  publicada: "bg-surface-2 text-accent-2",
   oculta: "bg-tint/10 text-muted",
 };
 
@@ -45,7 +45,7 @@ export default async function Resenas() {
               <p className="mt-2 whitespace-pre-line">{r.body || <span className="text-muted">Sin comentario</span>}</p>
               <div className="mt-2 flex flex-wrap gap-1">
                 {r.status !== "publicada" && (
-                  <form action={setReviewStatusAction.bind(null, r.id, "publicada")}><button className="inline-flex min-h-10 items-center px-3 text-sm font-medium text-accent hover:underline">Publicar</button></form>
+                  <form action={setReviewStatusAction.bind(null, r.id, "publicada")}><button className="inline-flex min-h-10 items-center px-3 text-sm font-medium text-accent-2 hover:underline">Publicar</button></form>
                 )}
                 {r.status !== "oculta" && (
                   <form action={setReviewStatusAction.bind(null, r.id, "oculta")}><button className="inline-flex min-h-10 items-center px-3 text-sm text-muted hover:underline">Ocultar</button></form>

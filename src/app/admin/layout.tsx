@@ -37,7 +37,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     return (
       <div className="mx-auto max-w-3xl px-4 py-10">
         <div className="mb-8 flex flex-wrap items-center gap-2 border-b pb-4">
-          <span className="mr-2 text-xs font-semibold uppercase tracking-[0.25em] text-accent">Administración</span>
+          <span className="mr-2 text-xs font-semibold uppercase tracking-[0.25em] text-accent-2">Administración</span>
           <div className="ml-auto">{logout}</div>
         </div>
         {children}
@@ -49,10 +49,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
       <div className="mb-8 flex flex-wrap items-center gap-2 border-b pb-4">
-        <span className="mr-2 text-xs font-semibold uppercase tracking-[0.25em] text-accent">Administración</span>
+        <span className="mr-2 text-xs font-semibold uppercase tracking-[0.25em] text-accent-2">Administración</span>
         {nav.map((n) => (
           <Link key={n.href} href={n.href} className="inline-flex min-h-9 items-center rounded-full border px-4 text-sm hover:border-accent">
-            {n.label}{n.href === "/admin/resenas" && pendingReviews > 0 && <span className="ml-1.5 rounded-full bg-accent-2 px-1.5 text-xs font-bold text-white">{pendingReviews}</span>}
+            {n.label}{n.href === "/admin/resenas" && pendingReviews > 0 && <span className="ml-1.5 rounded-full bg-accent-2 px-1.5 text-xs font-bold text-on-accent">{pendingReviews}</span>}
           </Link>
         ))}
         <div className="ml-auto flex items-center gap-1">

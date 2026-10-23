@@ -3,11 +3,12 @@ import { formatCLP } from "@/lib/products";
 import { confirmTransfer, removeOrder, saveOrderNote, shipOrder } from "../actions";
 import { ConfirmButton } from "../ConfirmButton";
 import { requirePage } from "@/lib/admin";
+import { Icon } from "@/components/Icon";
 
 export const dynamic = "force-dynamic";
 
 const tone: Record<string, string> = {
-  pagado: "bg-accent/15 text-accent",
+  pagado: "bg-surface-2 text-accent-2",
   despachado: "bg-sky-500/15 text-sky-700 dark:text-sky-300",
   pendiente: "bg-amber-400/15 text-amber-700 dark:text-amber-300",
   fallido: "bg-red-500/15 text-red-600 dark:text-red-300",
@@ -52,9 +53,9 @@ export default async function Pedidos() {
                         href={`https://www.google.com/maps?q=${o.customer.lat},${o.customer.lng}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="mt-1 inline-block text-xs text-accent hover:underline"
+                        className="mt-1 inline-flex items-center gap-1.5 text-xs text-accent-2 hover:underline"
                       >
-                        📍 Ver punto de entrega en el mapa
+                        <Icon name="pin" size={14} />Ver punto de entrega en el mapa
                       </a>
                     )}
                     {o.paymentRef && <p className="mt-2 text-xs text-muted">Ref. pago: {o.paymentRef}</p>}
