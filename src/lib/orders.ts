@@ -1,4 +1,5 @@
 import "server-only";
+import { randomInt } from "node:crypto";
 import { query } from "./db";
 
 export type OrderStatus = "pendiente" | "pagado" | "despachado" | "fallido";
@@ -89,9 +90,11 @@ function toOrder(r: OrderRow): Order {
   };
 }
 
+// El número de pedido es lo único que protege la consulta pública de un pedido (junto con el correo), así que la
+// parte al azar sale de un generador seguro y no de Math.random, y es lo bastante larga para no poder adivinarse.
 export function newOrderId() {
   const stamp = Date.now().toString(36).toUpperCase();
-  const rand = Math.random().toString(36).slice(2, 5).toUpperCase();
+  const rand = randomInt(36 ** 5).toString(36).toUpperCase().padStart(5, "0");
   return `HX-${stamp}${rand}`;
 }
 
