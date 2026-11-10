@@ -2,10 +2,15 @@ import { NextResponse } from "next/server";
 import { getOrder } from "@/lib/orders";
 import { getProduct, productSlugsForVariants } from "@/lib/catalog";
 import { reviewedSlugs } from "@/lib/reviews";
+import { tooManyRequests } from "@/lib/rate-limit";
 
 // Resumen público de un pedido (sin datos personales). Si además llega el correo
 // del comprador y coincide, se devuelve el seguimiento completo.
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  // Frena que alguien pruebe números de pedido o correos a ritmo de máquina (la página de éxito consulta cada 3 s mientras se confirma el pago: ~20 por minuto por comprador).
+  if (tooManyRequests(req, "pedido", 90, 60_000)) {
+    return NextResponse.json({ error: "Demasiados intentos. Espera un minuto e inténtalo de nuevo." }, { status: 429, headers: { "Cache-Control": "no-store" } });
+  }
   const { id } = await params;
   // Un número de pedido real es corto y sin caracteres de control.
   const clean = id.trim().toUpperCase();

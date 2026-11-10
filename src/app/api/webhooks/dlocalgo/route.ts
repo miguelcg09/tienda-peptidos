@@ -3,6 +3,7 @@ import { getOrder, markFailed, markPaid } from "@/lib/orders";
 import { sendOrderEmails } from "@/lib/email";
 import { getSettings } from "@/lib/settings";
 import { decrementStock } from "@/lib/catalog";
+import { tooManyRequests } from "@/lib/rate-limit";
 
 // Notificación de dLocal Go cuando cambia el estado de un pago.
 // No se confía en lo recibido: se consulta el pago en la API de dLocal Go y se
@@ -42,6 +43,8 @@ async function readPaymentId(req: Request) {
 }
 
 async function handle(req: Request) {
+  // Cada aviso hace una consulta a dLocal Go: sin límite, alguien podría agotar su cupo de consultas con avisos falsos.
+  if (tooManyRequests(req, "webhook-dlocalgo", 120, 60_000)) return NextResponse.json({ error: "Demasiadas solicitudes" }, { status: 429 });
   const paymentId = await readPaymentId(req);
   if (!paymentId) return NextResponse.json({ error: "Falta payment_id" }, { status: 400 });
 
