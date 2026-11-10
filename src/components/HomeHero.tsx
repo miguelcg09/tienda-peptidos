@@ -70,50 +70,51 @@ export function HomeHero({ items }: { items: HeroItem[] }) {
   }
 
   return (
-    <section id="portada" aria-labelledby="titulo-portada" className="wrap pb-6 pt-5 md:pt-8" data-testid="portada">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 text-center md:gap-5">
-        <p className="chip rise" style={{ "--i": 0 } as CSSProperties}><Icon name="flask" size={16} />Para quienes investigan por su cuenta</p>
-        <h1 id="titulo-portada" style={{ "--i": 1 } as CSSProperties} className="rise font-display text-[clamp(2.6rem,6.2vw,4.9rem)] font-semibold leading-[0.96] tracking-[-0.045em]">
-          Péptidos de investigación.
-          <span className="mt-4 block text-[clamp(1.3rem,2.6vw,1.95rem)] font-medium leading-[1.15] tracking-[-0.02em] text-muted">
-            Pagas en pesos y sigues tu pedido.
-          </span>
-        </h1>
-        <p style={{ "--i": 2 } as CSSProperties} className="rise max-w-[48rem] text-lg">Despachamos con seguimiento a todo Chile. No necesitas crear una cuenta.</p>
-        <div style={{ "--i": 3 } as CSSProperties} className="rise flex flex-wrap items-center justify-center gap-3">
-          <a href="#coleccion" className="btn-primary group/btn min-h-14 px-6 text-base sm:px-8">Ver catálogo <Icon name="arrow" size={18} className="transition-transform duration-300 group-hover/btn:translate-x-1" /></a>
-          <a href="#despacho" className="btn-ghost min-h-14 px-6 text-base sm:px-8">Cómo se despacha</a>
-        </div>
-      </div>
+    <section id="portada" aria-labelledby="titulo-portada" className="inverse" data-testid="portada">
+      <div className="wrap pb-8 pt-10 md:pb-12 md:pt-14">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12">
+          <div className="flex flex-col items-start gap-6">
+            <p className="eyebrow rise" style={{ "--i": 0 } as CSSProperties}>Precios en pesos · IVA incluido</p>
+            <h1 id="titulo-portada" style={{ "--i": 1 } as CSSProperties} className="rise font-serif text-[clamp(3.2rem,7.6vw,6.2rem)] font-normal leading-[0.93] tracking-[-0.02em]">
+              Péptidos de investigación.
+            </h1>
+            <p style={{ "--i": 2 } as CSSProperties} className="rise text-balance font-serif text-[clamp(1.75rem,3.1vw,2.6rem)] leading-[1.12]">
+              Pagas en pesos y sigues tu <span className="mark">pedido</span>.
+            </p>
+            <p style={{ "--i": 3 } as CSSProperties} className="rise max-w-[42ch] text-lg text-muted">Despachamos con seguimiento a todo Chile. No necesitas crear una cuenta.</p>
+            <div style={{ "--i": 4 } as CSSProperties} className="rise flex flex-wrap items-center gap-3">
+              <a href="#coleccion" className="btn-primary group/btn min-h-14 px-6 text-base sm:px-8">Ver catálogo <Icon name="arrow" size={18} className="transition-transform duration-300 group-hover/btn:translate-x-1" /></a>
+              <a href="#despacho" className="btn-ghost min-h-14 px-6 text-base sm:px-8">Cómo se despacha</a>
+            </div>
+          </div>
 
-      {cur && (
-        <>
-          {/* Escenario: panel redondeado con el color de la pieza, su nombre gigante detrás y el vial al centro */}
-          <div ref={stage} onPointerMove={track} onPointerLeave={rest} style={{ ...hue(cur.color), "--i": 4 } as CSSProperties} className="rise panel-hue relative isolate mt-7 overflow-hidden rounded-[2rem] [--hue-base:91%] [--panel-base:var(--soft)] [container-type:inline-size] md:mt-9 md:rounded-[2.75rem] dark:[--hue-base:76%]">
+          {/* Escenario: panel oscuro con un toque del color de la pieza, su nombre gigante detrás y el vial al centro */}
+          {cur && (
+          <div ref={stage} onPointerMove={track} onPointerLeave={rest} style={{ ...hue(cur.color), "--i": 3 } as CSSProperties} className="rise panel-hue relative isolate overflow-hidden rounded-[2rem] [--hue-base:78%] [--panel-base:var(--i-surface)] [--wm:34%] [container-type:inline-size] md:rounded-[2.5rem]">
             <div aria-hidden="true" className="pointer-events-none absolute inset-0 transition-transform duration-500 ease-out [transform:translate(calc(var(--tx,0)*-16px),calc(var(--ty,0)*-8px))]">
               <Watermark key={cur.slug} name={cur.name} max={15} className="inset-x-0 top-0 h-[21rem] sm:h-[24rem] lg:h-[28rem] xl:inset-0 xl:h-auto xl:[--wm-share:0.68]" />
             </div>
             {/* Fichas flotantes con los datos de la pieza: decoración, la información real está en la ficha de abajo */}
             <ul key={`chips-${cur.slug}`} aria-hidden="true" className="pointer-events-none absolute inset-0 hidden md:block">
-              <li className="animate-pop absolute left-[8%] top-[20%] lg:left-[14%]"><span className="animate-float-b inline-flex items-center gap-2 rounded-full bg-surface px-4 py-2 text-sm font-semibold"><Icon name="flask" size={18} className="text-accent-2" />{cur.form}</span></li>
-              {cur.format && <li className="animate-pop absolute bottom-[34%] left-[9%] lg:left-[18%]" style={{ animationDelay: "90ms" }}><span className="animate-float-c inline-flex items-center gap-2 rounded-full bg-surface px-4 py-2 text-sm font-semibold"><Icon name="ruler" size={18} className="text-accent-2" />{cur.format}</span></li>}
-              <li className="animate-pop absolute right-[8%] top-[14%] lg:right-[24%]" style={{ animationDelay: "180ms" }}><span className="animate-float-b inline-flex items-center gap-2 rounded-full bg-surface px-4 py-2 text-sm font-semibold"><Icon name={categoryIcon(cur.category)} size={18} className="text-accent-2" />{cur.category}</span></li>
+              <li className="animate-pop absolute left-[8%] top-[20%] lg:left-[14%] xl:hidden"><span className="animate-float-b inline-flex items-center gap-2 rounded-full bg-surface px-4 py-2 text-sm font-semibold"><Icon name="flask" size={18} className="text-accent-2" />{cur.form}</span></li>
+              {cur.format && <li className="animate-pop absolute bottom-[34%] left-[9%] lg:left-[18%] xl:hidden" style={{ animationDelay: "90ms" }}><span className="animate-float-c inline-flex items-center gap-2 rounded-full bg-surface px-4 py-2 text-sm font-semibold"><Icon name="ruler" size={18} className="text-accent-2" />{cur.format}</span></li>}
+              <li className="animate-pop absolute right-[8%] top-[14%] lg:right-[24%] xl:right-[6%] xl:top-[5%]" style={{ animationDelay: "180ms" }}><span className="animate-float-b inline-flex items-center gap-2 rounded-full bg-surface px-4 py-2 text-sm font-semibold"><Icon name={categoryIcon(cur.category)} size={18} className="text-accent-2" />{cur.category}</span></li>
             </ul>
-            <div className="relative flex min-h-[26rem] flex-col items-center justify-center gap-6 px-4 pb-4 pt-8 md:min-h-[31rem] md:pb-6">
-              <div key={cur.slug} className="animate-pop">
+            <div className="relative flex min-h-[26rem] flex-col items-center justify-center gap-6 px-4 pb-4 pt-8 md:min-h-[31rem] md:pb-6 xl:grid xl:min-h-[35rem] xl:grid-cols-[minmax(0,1fr)_15.5rem] xl:gap-4 xl:px-8 xl:py-8">
+              <div key={cur.slug} className="animate-pop xl:justify-self-center">
                 <div className="animate-float">
                   <div className="transition-transform duration-300 ease-out [transform:perspective(1100px)_rotateY(calc(var(--tx,0)*9deg))_rotateX(calc(var(--ty,0)*-6deg))]">
                     {cur.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={cur.imageUrl} alt={cur.name} className="h-[17rem] w-auto max-w-full object-contain sm:h-[20rem] lg:h-[24rem]" />
+                      <img src={cur.imageUrl} alt={cur.name} className="h-[17rem] w-auto max-w-full object-contain sm:h-[20rem] lg:h-[24rem] xl:h-[27rem]" />
                     ) : (
-                      <Vial color={cur.color} label={cur.name} lot={cur.lot} format={cur.format} kind={cur.category === "Accesorios" ? "liquid" : "powder"} className="h-[17rem] w-auto sm:h-[20rem] lg:h-[24rem]" />
+                      <Vial color={cur.color} label={cur.name} lot={cur.lot} format={cur.format} kind={cur.category === "Accesorios" ? "liquid" : "powder"} className="h-[17rem] w-auto sm:h-[20rem] lg:h-[24rem] xl:h-[27rem]" />
                     )}
                   </div>
                 </div>
               </div>
               {/* La ficha de la pieza: debajo del vial en celular y tablet, abajo a la derecha del escenario en pantallas anchas */}
-              <div className="relative z-10 w-full max-w-sm rounded-[1.75rem] bg-surface p-5 text-fg xl:absolute xl:bottom-7 xl:right-7 xl:w-[17.5rem]" data-testid="ficha-pieza" aria-live="polite">
+              <div className="relative z-10 w-full max-w-sm rounded-[1.75rem] bg-surface p-5 text-fg xl:max-w-none" data-testid="ficha-pieza" aria-live="polite">
                 <p className="font-mono text-xs tracking-widest text-muted">PIEZA {pad(at + 1)} / {pad(n)}</p>
                 <p className="pb-3 pt-1 font-display text-[1.65rem] font-semibold leading-[1.05] tracking-tight [overflow-wrap:anywhere]">{cur.name}</p>
                 <dl>
@@ -130,8 +131,11 @@ export function HomeHero({ items }: { items: HeroItem[] }) {
               </div>
             </div>
           </div>
+          )}
+        </div>
 
-          {n > 1 && (
+        {cur && n > 1 && (
+
             <div className="mt-4">
               <p id="elegir-pieza" className="px-1 text-sm font-medium text-muted">Elegir pieza</p>
               <ul
@@ -180,13 +184,13 @@ export function HomeHero({ items }: { items: HeroItem[] }) {
                 </div>
               </div>
             </div>
-          )}
-        </>
-      )}
+          
+        )}
 
-      <p className="mx-auto mt-6 max-w-[60ch] text-balance text-center text-sm text-muted">
-        Solo para uso en investigación. Mayores de 18 años. No aptos para consumo humano ni animal.
-      </p>
+        <p className="mt-6 max-w-[60ch] text-sm text-muted">
+          Solo para uso en investigación. Mayores de 18 años. No aptos para consumo humano ni animal.
+        </p>
+      </div>
     </section>
   );
 }

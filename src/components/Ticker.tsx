@@ -7,7 +7,7 @@ export function Ticker({ names }: { names: string[] }) {
   // Cada mitad debe ser más ancha que la pantalla para que el recorrido no deje huecos.
   const half = Array.from({ length: Math.max(2, Math.ceil(12 / names.length)) }, () => names).flat();
   return (
-    <div aria-hidden="true" className="marquee-wrap inverse overflow-hidden py-4">
+    <div aria-hidden="true" className="marquee-wrap inverse overflow-hidden border-t py-4">
       <div className="marquee flex w-max">
         {[0, 1].map((copy) => (
           <ul key={copy} className="flex shrink-0 items-center">

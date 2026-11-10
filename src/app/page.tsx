@@ -22,7 +22,7 @@ const HERO_MAX = 6;
 
 const words = ["Cero", "Un", "Dos", "Tres", "Cuatro", "Cinco", "Seis", "Siete", "Ocho", "Nueve", "Diez"];
 
-const h2 = "mt-4 font-display text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.035em]";
+const h2 = "mt-4 font-serif text-[clamp(2.4rem,4.8vw,3.9rem)] font-normal leading-[1] tracking-[-0.02em]";
 
 const faqIcons: IconName[] = ["shield", "clock", "card", "pin", "snowflake", "box"];
 
@@ -169,7 +169,7 @@ export default async function Home() {
         <div className="wrap flex flex-col gap-10 py-14 md:gap-12 md:py-20">
           <Reveal className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
             <div>
-              <p className="chip"><Icon name="grid" size={16} />Catálogo</p>
+              <p className="eyebrow">Catálogo</p>
               <h2 id="titulo-coleccion" className={`${h2} max-w-[22ch]`}>
                 {n === 1 ? "Un compuesto de investigación" : `${countWord} compuestos de investigación`}, con su precio a la vista.
               </h2>
@@ -192,7 +192,7 @@ export default async function Home() {
         <section id="opiniones" aria-labelledby="titulo-opiniones" className="wrap pb-14 md:pb-20">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="chip"><Icon name="user" size={16} />Opiniones</p>
+              <p className="eyebrow">Opiniones</p>
               <h2 id="titulo-opiniones" className={h2}>Compradores verificados</h2>
               <p className="mt-4 text-lg text-muted">Solo opinan quienes recibieron su pedido.</p>
             </div>
@@ -222,7 +222,7 @@ export default async function Home() {
       <section id="despacho" aria-labelledby="titulo-despacho" className="wrap scroll-mt-4 py-6 md:py-10">
         <div className="rounded-[2.25rem] bg-surface-2 p-5 sm:p-8 md:rounded-[3rem] md:p-14">
           <div className="max-w-2xl">
-            <p className="chip bg-surface"><Icon name="box" size={16} />Después de comprar</p>
+            <p className="eyebrow">Después de comprar</p>
             <h2 id="titulo-despacho" className={h2}>Qué pasa después de pagar</h2>
             <p className="mt-4 text-lg text-muted">Tres pasos. Sin cuenta. Con seguimiento.</p>
           </div>
@@ -320,7 +320,7 @@ export default async function Home() {
       {/* Preguntas frecuentes: la primera abierta */}
       <section id="faq" aria-labelledby="titulo-faq" className="wrap grid scroll-mt-4 gap-x-16 gap-y-10 py-14 md:py-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <Reveal>
-          <p className="chip"><Icon name="help" size={16} />Preguntas frecuentes</p>
+          <p className="eyebrow">Preguntas frecuentes</p>
           <h2 id="titulo-faq" className={h2}>Lo que más preguntan antes de comprar</h2>
           <p className="mt-4 text-lg text-muted">Respuestas cortas. Si falta la tuya, escríbenos.</p>
           <p className="mt-6">
@@ -349,7 +349,7 @@ export default async function Home() {
           <div className="inverse overflow-hidden rounded-[2.25rem] md:rounded-[3rem]">
             <div className="grid items-center gap-x-12 gap-y-8 px-6 pb-8 pt-12 md:grid-cols-[1.2fr_0.8fr] md:px-14 md:pt-16">
               <div className="flex min-w-0 flex-col items-start gap-6">
-                <h2 id="titulo-cierre" className="font-display text-[clamp(2.1rem,4.4vw,3.75rem)] font-semibold leading-[1] tracking-[-0.04em]">
+                <h2 id="titulo-cierre" className="font-serif text-[clamp(2.4rem,4.8vw,4.1rem)] font-normal leading-[1] tracking-[-0.02em]">
                   Péptidos de investigación, en pesos y con seguimiento a todo Chile.
                 </h2>
                 <p className="max-w-[44ch] text-lg md:text-xl">Elige tu compuesto, paga en pesos y sigue tu pedido con su número de seguimiento.</p>

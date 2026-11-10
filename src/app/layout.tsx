@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import { Bricolage_Grotesque, Figtree, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Figtree, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/components/CartProvider";
 import { Header } from "@/components/Header";
@@ -20,6 +20,7 @@ import { DEFAULT_PALETTE, PALETTE_COOKIE, isPalette, paletteSwitchEnabled } from
 const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-bricolage", axes: ["opsz"] });
 const sans = Figtree({ subsets: ["latin"], variable: "--font-figtree" });
 const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
+const serif = Instrument_Serif({ subsets: ["latin"], weight: "400", style: ["normal", "italic"], variable: "--font-instrument" });
 
 // El catálogo y los ajustes viven en la base de datos, así que todo se renderiza por petición.
 export const dynamic = "force-dynamic";
@@ -58,7 +59,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const saved = picker ? (await cookies()).get(PALETTE_COOKIE)?.value : undefined;
   const palette = isPalette(saved) ? saved : DEFAULT_PALETTE;
   return (
-    <html lang="es-CL" data-palette={palette} className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+    <html lang="es-CL" data-palette={palette} className={`${display.variable} ${sans.variable} ${mono.variable} ${serif.variable}`}>
       <body className="font-sans antialiased">
         <div aria-hidden="true" className="scroll-progress" />
         <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-full focus:bg-accent focus:px-5 focus:py-2.5 focus:text-on-accent">

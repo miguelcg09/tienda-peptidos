@@ -103,7 +103,7 @@ export function ProductStage({
         <div className="relative grid gap-6 p-6 md:grid-cols-[minmax(0,1fr)_15rem] md:gap-8 md:px-12 md:py-12 lg:grid-cols-[1.1fr_1fr]">
           <div className="flex min-w-0 flex-col justify-center">
             <p className="chip rise w-fit bg-surface" style={{ "--i": 0 } as CSSProperties}><Icon name={categoryIcon(product.category)} size={16} className="text-accent-2" />{product.category}</p>
-            <h1 className="rise mt-4 break-words font-display text-[clamp(2.1rem,9vw,3rem)] font-semibold leading-[0.98] tracking-[-0.04em] md:text-[clamp(2.5rem,5.4vw,4.5rem)]" style={{ "--i": 1 } as CSSProperties}>{product.name}</h1>
+            <h1 className="rise mt-4 break-words font-serif text-[clamp(2.6rem,10.5vw,3.7rem)] font-normal leading-[0.95] tracking-[-0.02em] md:text-[clamp(3rem,6.4vw,5.4rem)]" style={{ "--i": 1 } as CSSProperties}>{product.name}</h1>
             <p className="rise mt-4 max-w-md text-lg" style={{ "--i": 2 } as CSSProperties}>{product.short}</p>
             <ul className="rise mt-6 flex flex-wrap gap-2" style={{ "--i": 3 } as CSSProperties}>
               <li className="inline-flex items-center gap-1.5 rounded-full bg-fg px-3.5 py-1.5 text-xs font-semibold text-bg"><Icon name={soldOut ? "close" : "check"} size={14} />{stockLine}</li>
