@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-/* Dirección "Suave" en versión clara: superficies redondeadas, bloques tipo bento, íconos y más movimiento.
-   Los tokens cambian solos según el tema claro/oscuro del sistema del visitante. */
+/* Dirección "Suave" con paleta Cian y grafito, titulares en Familjen Grotesk y texto en DM Sans.
+   Superficies redondeadas, bloques tipo bento, íconos y movimiento suave. Los tokens cambian solos según el tema claro/oscuro del sistema. */
 @theme {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
@@ -18,8 +18,8 @@
   --color-on-accent: var(--on-accent);
   --color-bar: var(--i-bg);
   --color-on-bar: var(--i-fg);
-  --font-sans: var(--font-figtree), system-ui, sans-serif;
-  --font-display: var(--font-bricolage), system-ui, sans-serif;
+  --font-sans: var(--font-dmsans), system-ui, sans-serif;
+  --font-display: var(--font-familjen), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
   --radius-card: var(--r-card);
   --radius-btn: var(--r-btn);
@@ -56,9 +56,8 @@
   initial-value: #00789a;
 }
 
-/* Paletas "blanco con contraste": fondo blanco puro, tinta casi negra, bordes marcados y bloques oscuros ("inverse")
-   que dan el contraste. Cada una define el tema claro y su par oscuro (en oscuro, los bloques "inverse" pasan a blanco).
-   La paleta activa se marca en <html data-palette="..."> (selector solo en las vistas previas, ver PalettePicker). */
+/* Paleta Cian y grafito: fondo casi blanco con un toque frío, tinta grafito, acento cian y bloques oscuros ("inverse") que dan el contraste.
+   Todo plano: sin degradados. Define el tema claro y su par oscuro (en oscuro, los bloques "inverse" pasan a claro). */
 :root {
   color-scheme: light;
   --series: #2a78d6; /* barras de los gráficos del panel (azul validado para claro y oscuro) */
@@ -69,200 +68,73 @@
   --wm: 15%; /* fuerza del nombre gigante que va detrás del vial */
   /* Alto de la barra fija con el aviso de uso: lo usan el encabezado fijo y los anclajes */
   --bar-h: 2.125rem;
+
+  --bg: #f5fafb;
+  --surface: #ffffff;
+  --surface-2: #e8f3f5;
+  --soft: #d9ecf0;
+  --line: rgb(13 28 33 / 0.16);
+  --control: #587781; /* borde de campos y controles (3:1 sobre el fondo) */
+  --fg: #0d1c21;
+  --muted: #3f5963;
+  --accent: #0a7f96;
+  --accent-2: #07687b; /* acento para texto e íconos sobre fondo claro */
+  --badge: #07687b;
+  --tint: #0d1c21;
+  --on-accent: #ffffff;
+  --glow: 10 127 150;
+  --btn-from: #0a7f96;
+  --btn-to: #0a7f96;
+  --btn-hover: #07687b;
+  /* bloques oscuros */
+  --i-bg: #0b1f26;
+  --i-surface: #12303a;
+  --i-surface-2: #1a4250;
+  --i-line: rgb(255 255 255 / 0.2);
+  --i-control: #86adb9;
+  --i-fg: #ffffff;
+  --i-muted: #bcd6dd;
+  --i-accent: #4fd6ee;
+  --i-accent-2: #86e6f6;
+  --i-on-accent: #0b1f26;
+  --i-btn-hover: #8fe6f6;
 }
 @media (min-width: 40rem) { :root { --bar-h: 2.375rem; } }
 
-/* Tinta: blanco y negro puros */
-:root, :root[data-palette="tinta"] {
-  --bg: #ffffff;
-  --surface: #ffffff;
-  --surface-2: #f2f2f4;
-  --soft: #e7e7eb;
-  --line: rgb(12 12 16 / 0.18);
-  --control: #6b6b78; /* borde de campos y controles (3:1 sobre blanco) */
-  --fg: #0b0b0f;
-  --muted: #55555f;
-  --accent: #0b0b0f;
-  --accent-2: #0b0b0f;
-  --badge: #0b0b0f;
-  --tint: #0b0b0f;
-  --on-accent: #ffffff;
-  --glow: 11 11 15;
-  --btn-from: #0b0b0f;
-  --btn-to: #0b0b0f;
-  --btn-hover: #2b2b34;
-  /* bloques oscuros */
-  --i-bg: #0b0b0f;
-  --i-surface: #17171d;
-  --i-surface-2: #24242c;
-  --i-line: rgb(255 255 255 / 0.2);
-  --i-control: #8e8e9b;
-  --i-fg: #ffffff;
-  --i-muted: #bcbcc7;
-  --i-accent: #ffffff;
-  --i-accent-2: #ffffff;
-  --i-on-accent: #0b0b0f;
-  --i-btn-hover: #e4e4ea;
-}
-/* Iris: blanco, tinta y acento índigo */
-:root[data-palette="iris"] {
-  --bg: #ffffff;
-  --surface: #ffffff;
-  --surface-2: #f3f2fb;
-  --soft: #e6e4f8;
-  --line: rgb(14 12 48 / 0.18);
-  --control: #6d6b8e;
-  --fg: #0b0a1c;
-  --muted: #54526f;
-  --accent: #4f46e5;
-  --accent-2: #4338ca;
-  --badge: #4338ca;
-  --tint: #0b0a1c;
-  --on-accent: #ffffff;
-  --glow: 79 70 229;
-  --btn-from: #4f46e5;
-  --btn-to: #4f46e5;
-  --btn-hover: #3d34c4;
-  --i-bg: #0b0a1c;
-  --i-surface: #17162f;
-  --i-surface-2: #232245;
-  --i-line: rgb(255 255 255 / 0.2);
-  --i-control: #8f8dbb;
-  --i-fg: #ffffff;
-  --i-muted: #bdbbe0;
-  --i-accent: #a9a4ff;
-  --i-accent-2: #c4c0ff;
-  --i-on-accent: #0b0a1c;
-  --i-btn-hover: #c4c0ff;
-}
-/* Bermellón: blanco, tinta y acento rojo anaranjado */
-:root[data-palette="bermellon"] {
-  --bg: #ffffff;
-  --surface: #ffffff;
-  --surface-2: #f6f3f1;
-  --soft: #ebe5e1;
-  --line: rgb(26 12 8 / 0.18);
-  --control: #7b6a63;
-  --fg: #140c09;
-  --muted: #5e4f49;
-  --accent: #d92d0b;
-  --accent-2: #bf2608;
-  --badge: #bf2608;
-  --tint: #140c09;
-  --on-accent: #ffffff;
-  --glow: 217 45 11;
-  --btn-from: #d92d0b;
-  --btn-to: #d92d0b;
-  --btn-hover: #b02007;
-  --i-bg: #140c09;
-  --i-surface: #241612;
-  --i-surface-2: #33201a;
-  --i-line: rgb(255 255 255 / 0.2);
-  --i-control: #a38b82;
-  --i-fg: #ffffff;
-  --i-muted: #d3c3bc;
-  --i-accent: #ff6f4d;
-  --i-accent-2: #ff9378;
-  --i-on-accent: #140c09;
-  --i-btn-hover: #ff9378;
-}
-
 @media (prefers-color-scheme: dark) {
-  :root, :root[data-palette="tinta"], :root[data-palette="iris"], :root[data-palette="bermellon"] {
+  :root {
     color-scheme: dark;
     --series: #3987e5;
     --hue-base: 86%;
     --wm: 24%;
-  }
-  :root, :root[data-palette="tinta"] {
-    --bg: #0b0b0f;
-    --surface: #14141a;
-    --surface-2: #1e1e26;
-    --soft: #272730;
+    --bg: #0b1a1f;
+    --surface: #112329;
+    --surface-2: #18303a;
+    --soft: #20404c;
     --line: rgb(255 255 255 / 0.18);
-    --control: #8e8e9b;
+    --control: #86adb9;
     --fg: #ffffff;
-    --muted: #b8b8c4;
-    --accent: #ffffff;
-    --accent-2: #ffffff;
-    --badge: #ffffff;
+    --muted: #b7d0d7;
+    --accent: #4fd6ee;
+    --accent-2: #86e6f6;
+    --badge: #86e6f6;
     --tint: #ffffff;
-    --on-accent: #0b0b0f;
-    --glow: 255 255 255;
-    --btn-from: #ffffff;
-    --btn-to: #ffffff;
-    --btn-hover: #e4e4ea;
+    --on-accent: #0b1f26;
+    --glow: 79 214 238;
+    --btn-from: #4fd6ee;
+    --btn-to: #4fd6ee;
+    --btn-hover: #8fe6f6;
     --i-bg: #ffffff;
-    --i-surface: #f2f2f4;
-    --i-surface-2: #e4e4e8;
-    --i-line: rgb(12 12 16 / 0.18);
-    --i-control: #6b6b78;
-    --i-fg: #0b0b0f;
-    --i-muted: #55555f;
-    --i-accent: #0b0b0f;
-    --i-accent-2: #0b0b0f;
+    --i-surface: #f0f8fa;
+    --i-surface-2: #e1f0f3;
+    --i-line: rgb(13 28 33 / 0.18);
+    --i-control: #587781;
+    --i-fg: #0d1c21;
+    --i-muted: #3f5963;
+    --i-accent: #0a7f96;
+    --i-accent-2: #07687b;
     --i-on-accent: #ffffff;
-    --i-btn-hover: #2b2b34;
-  }
-  :root[data-palette="iris"] {
-    --bg: #0b0a1c;
-    --surface: #15142b;
-    --surface-2: #201f3f;
-    --soft: #2a2950;
-    --line: rgb(255 255 255 / 0.18);
-    --control: #8f8dbb;
-    --fg: #ffffff;
-    --muted: #bab8de;
-    --accent: #a9a4ff;
-    --accent-2: #c4c0ff;
-    --badge: #c4c0ff;
-    --tint: #ffffff;
-    --on-accent: #0b0a1c;
-    --glow: 169 164 255;
-    --btn-from: #a9a4ff;
-    --btn-to: #a9a4ff;
-    --btn-hover: #c4c0ff;
-    --i-bg: #ffffff;
-    --i-surface: #f3f2fb;
-    --i-surface-2: #e6e4f8;
-    --i-line: rgb(14 12 48 / 0.18);
-    --i-control: #6d6b8e;
-    --i-fg: #0b0a1c;
-    --i-muted: #54526f;
-    --i-accent: #4f46e5;
-    --i-accent-2: #4338ca;
-    --i-on-accent: #ffffff;
-    --i-btn-hover: #3d34c4;
-  }
-  :root[data-palette="bermellon"] {
-    --bg: #140c09;
-    --surface: #211410;
-    --surface-2: #2f1d17;
-    --soft: #3b261e;
-    --line: rgb(255 255 255 / 0.18);
-    --control: #a38b82;
-    --fg: #ffffff;
-    --muted: #d0c0b8;
-    --accent: #ff6f4d;
-    --accent-2: #ff9378;
-    --badge: #ff9378;
-    --tint: #ffffff;
-    --on-accent: #140c09;
-    --glow: 255 111 77;
-    --btn-from: #ff6f4d;
-    --btn-to: #ff6f4d;
-    --btn-hover: #ff9378;
-    --i-bg: #ffffff;
-    --i-surface: #f6f3f1;
-    --i-surface-2: #ebe5e1;
-    --i-line: rgb(26 12 8 / 0.18);
-    --i-control: #7b6a63;
-    --i-fg: #140c09;
-    --i-muted: #5e4f49;
-    --i-accent: #d92d0b;
-    --i-accent-2: #bf2608;
-    --i-on-accent: #ffffff;
-    --i-btn-hover: #b02007;
+    --i-btn-hover: #07687b;
   }
 }
 
@@ -387,6 +259,21 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
   background-color: var(--i-bg);
   color: var(--i-fg);
   border-color: var(--i-line);
+}
+
+/* Bloque siempre oscuro (la portada): se usa junto a "inverse" y fija los colores oscuros también en el tema oscuro del sistema. */
+.night {
+  --i-bg: #0b1f26;
+  --i-surface: #12303a;
+  --i-surface-2: #1a4250;
+  --i-line: rgb(255 255 255 / 0.2);
+  --i-control: #86adb9;
+  --i-fg: #ffffff;
+  --i-muted: #bcd6dd;
+  --i-accent: #4fd6ee;
+  --i-accent-2: #86e6f6;
+  --i-on-accent: #0b1f26;
+  --i-btn-hover: #8fe6f6;
 }
 
 /* Bandas de sección: un tono apenas distinto del fondo, separadas por una línea */

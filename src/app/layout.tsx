@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
-import { Bricolage_Grotesque, Figtree, Geist_Mono } from "next/font/google";
+import { DM_Sans, Familjen_Grotesk, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/components/CartProvider";
 import { Header } from "@/components/Header";
@@ -14,11 +13,10 @@ import { hasBankData, toStoreSettings } from "@/lib/config";
 import { cardProviderName } from "@/lib/payments";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { publicUrl } from "@/lib/site";
-import { PalettePicker } from "@/components/PalettePicker";
-import { DEFAULT_PALETTE, PALETTE_COOKIE, isPalette, paletteSwitchEnabled } from "@/lib/preview-palette";
 
-const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-bricolage", axes: ["opsz"] });
-const sans = Figtree({ subsets: ["latin"], variable: "--font-figtree" });
+// Titulares en Familjen Grotesk (grotesca de laboratorio) y texto en DM Sans; Geist Mono solo para datos (lote, mg, número de pieza).
+const display = Familjen_Grotesk({ subsets: ["latin"], variable: "--font-familjen" });
+const sans = DM_Sans({ subsets: ["latin"], variable: "--font-dmsans" });
 const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 
 // El catálogo y los ajustes viven en la base de datos, así que todo se renderiza por petición.
@@ -27,8 +25,8 @@ export const dynamic = "force-dynamic";
 // El color del navegador sigue al fondo del tema claro u oscuro de la paleta por defecto.
 export const viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b0b0f" },
+    { media: "(prefers-color-scheme: light)", color: "#f5fafb" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b1a1f" },
   ],
 };
 
@@ -53,12 +51,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const [catalog, settings] = await Promise.all([getProducts(), getSettings()]);
   const provider = cardProviderName();
   const storeSettings = toStoreSettings(settings, { card: provider !== null, test: provider === "mock", transfer: hasBankData(settings) });
-  // Fuera de producción se puede probar cada paleta con el selector; en producción manda la de siempre.
-  const picker = paletteSwitchEnabled();
-  const saved = picker ? (await cookies()).get(PALETTE_COOKIE)?.value : undefined;
-  const palette = isPalette(saved) ? saved : DEFAULT_PALETTE;
   return (
-    <html lang="es-CL" data-palette={palette} className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+    <html lang="es-CL" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       <body className="font-sans antialiased">
         <div aria-hidden="true" className="scroll-progress" />
         <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-full focus:bg-accent focus:px-5 focus:py-2.5 focus:text-on-accent">
@@ -77,7 +71,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <CartDrawer />
           <ResearchGate />
           <WhatsAppButton />
-          {picker && <PalettePicker initial={palette} />}
         </StoreProvider>
       </body>
     </html>
