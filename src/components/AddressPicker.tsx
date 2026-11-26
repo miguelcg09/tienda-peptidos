@@ -192,7 +192,7 @@ export function AddressPicker() {
             {places.map((p) => (
               <li key={p.label}>
                 <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => pick(p)} className="flex w-full items-start gap-3 px-4 py-2.5 text-left hover:bg-accent/10">
-                  <span className="mt-0.5 text-accent">📍</span>
+                  <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
                   <span>
                     <span className="block font-medium">{p.address}</span>
                     <span className="block text-xs text-muted">
@@ -207,10 +207,10 @@ export function AddressPicker() {
         )}
         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
           <button type="button" onClick={() => void locate(true)} disabled={busy === "ubicar" || !address.trim()} className="rounded-btn border px-3 py-1 text-fg transition hover:border-accent disabled:opacity-50">
-            {busy === "ubicar" ? "Ubicando…" : "🗺️ Ver en el mapa"}
+            {busy === "ubicar" ? "Ubicando…" : "Ver en el mapa"}
           </button>
           <button type="button" onClick={gps} disabled={busy === "gps"} className="rounded-btn border px-3 py-1 text-fg transition hover:border-accent">
-            {busy === "gps" ? "Ubicando…" : "📡 Usar mi ubicación"}
+            {busy === "gps" ? "Ubicando…" : "Usar mi ubicación"}
           </button>
           <span>Escribe tu dirección y elige tu comuna; el mapa se ubica solo y puedes ajustar el marcador.</span>
         </div>

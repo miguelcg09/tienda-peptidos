@@ -25,20 +25,21 @@ export type Palette = { id: string; name: string; blurb: string; light: Tokens; 
 
 export const palettes: Palette[] = [
   {
+    // Conserva el id "vitrina" para que la tienda que ya la tenía guardada en Ajustes pase sola al diseño nuevo.
     id: "vitrina",
-    name: "Vitrina",
-    blurb: "Hielo y tinta, con el color de cada producto como único acento. Moderna y silenciosa.",
+    name: "Verde botella",
+    blurb: "Hueso, tinta verdosa y verde botella, con lima para lo disponible y bermellón para avisos chicos.",
     light: {
-      bg: "#f4f6f6", surface: "#ffffff", surface2: "#e9eeee", line: "rgb(11 15 16 / 0.12)",
-      fg: "#0b0f10", muted: "#5b676b", accent: "#0b0f10", accent2: "#2e5aac", badge: "#2e5aac",
-      tint: "#0b0f10", onAccent: "#f4f6f6", glow: "11 15 16", grain: "0",
-      btnFrom: "#0b0f10", btnTo: "#0b0f10", rCard: "0.375rem", rBtn: "0.25rem",
+      bg: "#f4f2ec", surface: "#ffffff", surface2: "#ebe8df", line: "rgb(20 32 27 / 0.13)",
+      fg: "#14201b", muted: "#58625c", accent: "#183f33", accent2: "#c0391b", badge: "#183f33",
+      tint: "#14201b", onAccent: "#f4f2ec", glow: "24 63 51", grain: "0",
+      btnFrom: "#183f33", btnTo: "#183f33", rCard: "0.875rem", rBtn: "0.625rem",
     },
     dark: {
-      bg: "#0b0f10", surface: "#151b1d", surface2: "#1c2326", line: "rgb(244 246 246 / 0.14)",
-      fg: "#f4f6f6", muted: "#9aa7ab", accent: "#f4f6f6", accent2: "#7fa4e8", badge: "#7fa4e8",
-      tint: "#f4f6f6", onAccent: "#0b0f10", glow: "244 246 246", grain: "0",
-      btnFrom: "#f4f6f6", btnTo: "#f4f6f6", rCard: "0.375rem", rBtn: "0.25rem",
+      bg: "#0c1311", surface: "#141d1a", surface2: "#1b2622", line: "rgb(236 241 232 / 0.13)",
+      fg: "#eef1e8", muted: "#a0aca5", accent: "#dbe97a", accent2: "#f08a6c", badge: "#dbe97a",
+      tint: "#eef1e8", onAccent: "#12302a", glow: "219 233 122", grain: "0",
+      btnFrom: "#dbe97a", btnTo: "#dbe97a", rCard: "0.875rem", rBtn: "0.625rem",
     },
   },
   {

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Funnel_Display, Funnel_Sans, Geist_Mono } from "next/font/google";
+import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/components/CartProvider";
 import { Header } from "@/components/Header";
@@ -15,9 +15,10 @@ import { cardProviderName } from "@/lib/payments";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { publicUrl } from "@/lib/site";
 
-const display = Funnel_Display({ subsets: ["latin"], variable: "--font-funnel-display" });
-const sans = Funnel_Sans({ subsets: ["latin"], variable: "--font-funnel-sans" });
-const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
+// Una sola familia con eje de ancho: Archivo normal para leer y Archivo ensanchada para títulos y nombres de
+// producto (como el rótulo de un frasco). IBM Plex Mono solo para datos: lote, mg, número de pedido.
+const sans = Archivo({ subsets: ["latin", "latin-ext"], axes: ["wdth"], variable: "--font-archivo" });
+const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-plex-mono" });
 
 // El catálogo y los ajustes viven en la base de datos, así que todo se renderiza por petición.
 export const dynamic = "force-dynamic";
@@ -55,7 +56,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const provider = cardProviderName();
   const storeSettings = toStoreSettings(settings, { card: provider !== null, test: provider === "mock", transfer: hasBankData(settings) });
   return (
-    <html lang="es-CL" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+    <html lang="es-CL" className={`${sans.variable} ${mono.variable}`}>
       <body className="font-sans antialiased">
         {/* Paleta elegida en /admin/ajustes */}
         <style dangerouslySetInnerHTML={{ __html: paletteCss(palette) }} />
@@ -63,7 +64,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           Saltar al contenido
         </a>
         {/* Aviso de uso: fijo arriba en todas las páginas, también en la portada. En celular, versión corta de una línea */}
-        <section aria-label="Aviso de uso y envío" className="sticky top-0 z-40 flex h-[var(--bar-h)] items-center justify-center gap-x-8 overflow-hidden whitespace-nowrap bg-fg px-4 text-center text-sm font-medium text-bg">
+        <section aria-label="Aviso de uso y envío" className="sticky top-0 z-40 flex h-[var(--bar-h)] items-center justify-center gap-x-8 overflow-hidden whitespace-nowrap border-b border-ink-line bg-ink px-4 text-center text-sm font-medium text-ink-fg">
           <span className="sm:hidden">Solo investigación · +18</span>
           <span className="hidden sm:inline">Solo para uso en investigación · Mayores de 18 años</span>
           <span className="hidden lg:inline">Envío gratis sobre {formatCLP(settings.freeShippingFrom)}</span>
