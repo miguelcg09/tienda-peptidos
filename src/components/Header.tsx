@@ -50,8 +50,8 @@ export function NavBar({ compact = false, navLabel = "Principal" }: { compact?: 
 
   return (
     <div className={`relative mx-auto flex w-full max-w-[1280px] flex-wrap items-center gap-x-3 gap-y-2 px-4 sm:gap-x-6 md:px-12 lg:flex-nowrap ${compact ? "py-3" : "py-5"}`}>
-      <Link href="/" className="order-1 inline-flex shrink-0 items-center gap-2 font-display text-[1.05rem] font-bold tracking-[-0.03em] [font-stretch:105%] transition-opacity hover:opacity-80 sm:text-xl md:text-[1.4rem] md:[font-stretch:115%]">
-        <span aria-hidden="true" className="grid h-5 w-5 shrink-0 place-items-center rounded-[5px] sm:h-6 sm:w-6 sm:rounded-[6px] bg-current"><span className="h-1.5 w-1.5 rounded-full bg-[var(--logo-dot,var(--bg))] sm:h-2 sm:w-2" /></span>
+      <Link href="/" className="order-1 inline-flex shrink-0 items-center gap-2 font-display text-[1.05rem] font-semibold tracking-[-0.04em] transition-opacity hover:opacity-80 sm:text-xl md:text-[1.3rem]">
+        <span aria-hidden="true" className="grid h-5 w-5 shrink-0 place-items-center rounded-[3px] sm:h-6 sm:w-6 bg-accent"><span className="h-1.5 w-1.5 rounded-[1px] bg-[var(--logo-dot,var(--bg))] sm:h-2 sm:w-2" /></span>
         {settings.name}
       </Link>
 

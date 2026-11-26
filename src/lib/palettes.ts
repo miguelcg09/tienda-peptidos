@@ -26,20 +26,21 @@ export type Palette = { id: string; name: string; blurb: string; light: Tokens; 
 export const palettes: Palette[] = [
   {
     // Conserva el id "vitrina" para que la tienda que ya la tenía guardada en Ajustes pase sola al diseño nuevo.
+    // Solo oscuro: el mismo tono para quien usa modo claro o modo oscuro.
     id: "vitrina",
-    name: "Verde botella",
-    blurb: "Hueso, tinta verdosa y verde botella, con lima para lo disponible y bermellón para avisos chicos.",
+    name: "Señal",
+    blurb: "Casi negro, líneas finas y un solo color de señal naranja. Técnica y moderna.",
     light: {
-      bg: "#f4f2ec", surface: "#ffffff", surface2: "#ebe8df", line: "rgb(20 32 27 / 0.13)",
-      fg: "#14201b", muted: "#58625c", accent: "#183f33", accent2: "#c0391b", badge: "#183f33",
-      tint: "#14201b", onAccent: "#f4f2ec", glow: "24 63 51", grain: "0",
-      btnFrom: "#183f33", btnTo: "#183f33", rCard: "0.875rem", rBtn: "0.625rem",
+      bg: "#0a0b0d", surface: "#111317", surface2: "#171a1f", line: "rgb(255 255 255 / 0.10)",
+      fg: "#ecedef", muted: "#8f969e", accent: "#ff5b1f", accent2: "#ff5b1f", badge: "#ff7a45",
+      tint: "#ecedef", onAccent: "#0a0b0d", glow: "255 91 31", grain: "0",
+      btnFrom: "#ff5b1f", btnTo: "#ff5b1f", rCard: "0.25rem", rBtn: "0.1875rem",
     },
     dark: {
-      bg: "#0c1311", surface: "#141d1a", surface2: "#1b2622", line: "rgb(236 241 232 / 0.13)",
-      fg: "#eef1e8", muted: "#a0aca5", accent: "#dbe97a", accent2: "#f08a6c", badge: "#dbe97a",
-      tint: "#eef1e8", onAccent: "#12302a", glow: "219 233 122", grain: "0",
-      btnFrom: "#dbe97a", btnTo: "#dbe97a", rCard: "0.875rem", rBtn: "0.625rem",
+      bg: "#0a0b0d", surface: "#111317", surface2: "#171a1f", line: "rgb(255 255 255 / 0.10)",
+      fg: "#ecedef", muted: "#8f969e", accent: "#ff5b1f", accent2: "#ff5b1f", badge: "#ff7a45",
+      tint: "#ecedef", onAccent: "#0a0b0d", glow: "255 91 31", grain: "0",
+      btnFrom: "#ff5b1f", btnTo: "#ff5b1f", rCard: "0.25rem", rBtn: "0.1875rem",
     },
   },
   {

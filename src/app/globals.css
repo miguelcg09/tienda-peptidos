@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* El diseño Señal es solo oscuro: las variantes dark: se aplican siempre, también con el sistema en modo claro */
+@custom-variant dark (&:where(*));
+
 /* Paleta: los tokens cambian solos según el tema claro/oscuro del sistema del visitante */
 @theme {
   --color-bg: var(--bg);
@@ -13,9 +16,10 @@
   --color-lime: var(--badge);
   --color-tint: var(--tint);
   --color-on-accent: var(--on-accent);
-  --font-sans: var(--font-archivo), system-ui, sans-serif;
-  --font-display: var(--font-archivo), system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-sans: var(--font-geist), system-ui, sans-serif;
+  --font-display: var(--font-geist), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --color-ok: var(--ok);
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
   --color-ink-line: var(--ink-line);
@@ -55,62 +59,40 @@
 }
 
 :root {
-  color-scheme: light;
-  /* Verde botella: hueso de fondo, tinta verdosa, verde botella para actuar y bermellón solo para avisos chicos */
-  --bg: #f4f2ec;
-  --surface: #ffffff;
-  --surface-2: #ebe8df;
-  --line: rgb(20 32 27 / 0.13);
-  --fg: #14201b;
-  --muted: #58625c;
-  --accent: #183f33;
-  --accent-2: #c0391b;
-  --badge: #183f33;
-  --tint: #14201b;
-  --on-accent: #f4f2ec;
-  --glow: 24 63 51;
-  /* Color de las barras de los gráficos del panel (validado para claro y oscuro) */
-  --series: #2f7a5f;
+  /* Señal: casi negro, líneas finas y un solo color de señal. Solo oscuro, también para quien usa modo claro. */
+  color-scheme: dark;
+  --bg: #0a0b0d;
+  --surface: #111317;
+  --surface-2: #171a1f;
+  --line: rgb(255 255 255 / 0.10);
+  --fg: #ecedef;
+  --muted: #8f969e;
+  --accent: #ff5b1f;
+  --accent-2: #ff5b1f;
+  --badge: #ff7a45;
+  --tint: #ecedef;
+  --on-accent: #0a0b0d;
+  --glow: 255 91 31;
+  /* Color de las barras de los gráficos del panel */
+  --series: #ff7a45;
   --grain: 0;
-  --btn-from: #183f33;
-  --btn-to: #183f33;
-  --r-card: 0.875rem;
-  --r-btn: 0.625rem;
-  /* Campo verde botella (portada, despacho, barra del aviso) y marcador lima para lo que está disponible */
-  --ink: #12302a;
-  --ink-2: #1a3d35;
-  --ink-line: rgb(236 241 232 / 0.16);
-  --ink-fg: #eef1e8;
-  --ink-muted: #a9bbb1;
-  --mark: #dbe97a;
-  --mark-fg: #12302a;
+  --btn-from: #ff5b1f;
+  --btn-to: #ff5b1f;
+  --r-card: 0.25rem;
+  --r-btn: 0.1875rem;
+  /* Portada y bandas: el mismo negro con su línea; señal naranja y verde de "en stock" */
+  --ink: #0a0b0d;
+  --ink-2: #171a1f;
+  --ink-line: rgb(255 255 255 / 0.10);
+  --ink-fg: #ecedef;
+  --ink-muted: #8f969e;
+  --mark: #ff5b1f;
+  --mark-fg: #0a0b0d;
+  --ok: #3ddc84;
   /* Alto de la barra fija con el aviso de uso: lo usan el encabezado fijo y los anclajes */
   --bar-h: 2.125rem;
 }
 @media (min-width: 40rem) { :root { --bar-h: 2.375rem; } }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --bg: #0c1311;
-    --surface: #141d1a;
-    --surface-2: #1b2622;
-    --line: rgb(236 241 232 / 0.13);
-    --fg: #eef1e8;
-    --muted: #a0aca5;
-    --accent: #dbe97a;
-    --accent-2: #f08a6c;
-    --badge: #dbe97a;
-    --tint: #eef1e8;
-    --on-accent: #12302a;
-    --glow: 219 233 122;
-    --series: #5fb38f;
-    --btn-from: #dbe97a;
-    --btn-to: #dbe97a;
-    --ink: #0f2621;
-    --ink-2: #163430;
-  }
-}
 
 /* Barras de los gráficos del panel */
 .viz-bar { background: var(--series); }
@@ -123,7 +105,7 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
 @layer base {
   *, ::before, ::after { border-color: var(--color-line); }
   /* Los títulos respiran: reparto parejo de líneas y espacio justo entre letras */
-  h1, h2, h3 { font-family: var(--font-display); font-stretch: 112%; text-wrap: balance; letter-spacing: -0.025em; }
+  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; letter-spacing: -0.035em; }
   p, li { text-wrap: pretty; }
   :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
   /* Sobre fondos de color (portada, despacho, cierre) el anillo de foco toma el color del texto: blanco o tinta, el de más contraste */
@@ -141,15 +123,15 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
   /* Un solo sistema para toda la tienda: el mismo ancho de contenido que el encabezado y la misma escala de títulos */
   .wrap { margin-inline: auto; width: 100%; max-width: 1280px; padding-inline: 1rem; }
   @media (min-width: 48rem) { .wrap { padding-inline: 3rem; } }
-  .t-page { font-family: var(--font-display); font-stretch: 112%; font-weight: 600; font-size: clamp(2.125rem, 4.4vw, 3.375rem); line-height: 1.02; letter-spacing: -0.035em; }
-  .t-h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 600; font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1.1; letter-spacing: -0.025em; }
-  /* Rótulo: nombre de producto en mayúsculas, ensanchado y espaciado, como la etiqueta de un frasco */
-  .t-label { font-family: var(--font-display); font-stretch: 125%; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.1; }
+  .t-page { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.125rem, 4.4vw, 3.375rem); line-height: 1.02; letter-spacing: -0.035em; }
+  .t-h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1.1; letter-spacing: -0.025em; }
+  /* Nombre de producto: Geist apretada, como el nombre de un modelo en una ficha técnica */
+  .t-label { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
   /* Antetítulo de sección: mono chico en mayúsculas con un punto verde delante */
   .eyebrow { display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-muted); }
-  .eyebrow::before { content: ""; width: 0.5rem; height: 0.5rem; border-radius: 2px; background: currentColor; opacity: 0.9; }
+  .eyebrow::before { content: ""; width: 0.375rem; height: 0.375rem; border-radius: 1px; background: var(--accent); }
   /* Ficha chica de datos (categoría, stock, presentaciones) */
-  .chip { display: inline-flex; align-items: center; gap: 0.35rem; border-radius: 0.375rem; padding: 0.2rem 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.4; }
+  .chip { display: inline-flex; align-items: center; gap: 0.4rem; border-radius: 0.1875rem; padding: 0.2rem 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.4; }
   .glass {
     background: var(--color-surface);
     border: 1px solid var(--color-line);
@@ -168,7 +150,7 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
     background: var(--btn-from);
     transition: background-color 0.2s, transform 0.15s;
   }
-  .btn-primary:hover { background: color-mix(in oklab, var(--btn-from) 86%, var(--fg)); }
+  .btn-primary:hover { background: color-mix(in oklab, var(--btn-from) 82%, #fff); }
   .btn-primary:active { transform: translateY(1px); }
   .btn-primary:disabled { opacity: 0.6; }
   .btn-ghost {
@@ -195,6 +177,12 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
   .field:focus { border-color: var(--color-accent); }
   .field:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 }
+
+/* Marco técnico: cuatro esquinas marcadas alrededor de una pieza (portada, ficha) */
+.frame-ticks { position: relative; }
+.frame-ticks::before, .frame-ticks::after { content: ""; position: absolute; width: 14px; height: 14px; border-color: var(--accent); pointer-events: none; }
+.frame-ticks::before { left: -1px; top: -1px; border-left: 2px solid; border-top: 2px solid; }
+.frame-ticks::after { right: -1px; bottom: -1px; border-right: 2px solid; border-bottom: 2px solid; }
 
 /* Bandas de sección: un tono apenas distinto del fondo, separadas por una línea */
 .band { background: var(--color-surface-2); border-top: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); }

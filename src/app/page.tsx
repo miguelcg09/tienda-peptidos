@@ -135,7 +135,7 @@ export default async function Home() {
           {products.length > SHOW_ALL_UP_TO ? (
             <CatalogTabs products={products} />
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5" data-testid="catalogo-portada">
+            <div className="grid gap-px overflow-hidden rounded-card border bg-line sm:grid-cols-2 lg:grid-cols-3" data-testid="catalogo-portada">
               {products.map((p, i) => <ProductCard key={p.slug} product={p} index={i} />)}
             </div>
           )}
@@ -172,7 +172,7 @@ export default async function Home() {
       )}
 
       {/* Después de comprar: qué pasa tras el pago */}
-      <section id="despacho" data-field aria-labelledby="titulo-despacho" className="scroll-mt-4 bg-ink text-ink-fg dark:border-y dark:border-ink-line">
+      <section id="despacho" data-field aria-labelledby="titulo-despacho" className="scroll-mt-4 border-y bg-surface text-ink-fg">
         <div className="mx-auto flex max-w-[1280px] flex-col gap-16 px-4 py-24 md:px-12 md:py-28">
           <div className="flex flex-col gap-6">
             <p className="eyebrow !text-ink-muted">Después de comprar</p>
@@ -257,7 +257,7 @@ export default async function Home() {
                     placeholder="Ej.: HX-10482"
                     className="min-h-14 min-w-0 flex-1 basis-48 rounded-btn border border-ink-line bg-ink-2 px-4 text-base text-ink-fg placeholder:text-ink-muted"
                   />
-                  <button className="inline-flex min-h-14 items-center rounded-btn bg-mark px-8 text-base font-semibold text-mark-fg transition-colors hover:bg-[#e8f29b]">Seguir mi pedido</button>
+                  <button className="btn-primary !min-h-14 !px-8">Seguir mi pedido</button>
                 </div>
                 <p className="text-sm text-ink-fg/80">Con tu correo ves también el número de seguimiento del courier.</p>
               </form>
@@ -290,7 +290,7 @@ export default async function Home() {
       </section>
 
       {/* Cierre: una acción para quien decidió y una salida suave para quien aún no compra */}
-      <section aria-labelledby="titulo-cierre" className="border-t bg-surface-2">
+      <section aria-labelledby="titulo-cierre" className="border-t">
         <div className="mx-auto grid max-w-[1280px] items-center gap-x-16 gap-y-10 px-4 pb-14 pt-24 md:grid-cols-[1.2fr_0.8fr] md:px-12 md:pt-28">
           <div className="flex min-w-0 flex-col items-start gap-7">
             <h2 id="titulo-cierre" className="font-display text-[clamp(2rem,3.6vw,3rem)] font-semibold leading-[1.04] tracking-[-0.035em]">
@@ -301,7 +301,7 @@ export default async function Home() {
               Ver catálogo <span aria-hidden="true">→</span>
             </a>
           </div>
-          <div className="flex justify-center rounded-card bg-ink py-10">
+          <div className="frame-ticks flex justify-center rounded-card border bg-bg py-10">
             <ProductImage product={closing} tone="field" className="h-[280px] w-auto max-w-full md:h-[360px]" />
           </div>
         </div>

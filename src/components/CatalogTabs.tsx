@@ -69,7 +69,7 @@ export function CatalogTabs({ products }: { products: Product[] }) {
         {active !== "Todos" && <> en {active}. {lineDesc[active]}</>}
       </p>
       {list.length === 0 && <p className="text-muted">No hay productos en esta línea por ahora. Escríbenos y te avisamos cuando lleguen.</p>}
-      <div key={`${active}-${sort}`} className="animate-fade grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5" data-testid="catalogo-portada">
+      <div key={`${active}-${sort}`} className="animate-fade grid gap-px overflow-hidden rounded-card border bg-line sm:grid-cols-2 lg:grid-cols-3" data-testid="catalogo-portada">
         {list.map((p, i) => <ProductCard key={p.slug} product={p} index={i} />)}
       </div>
     </div>

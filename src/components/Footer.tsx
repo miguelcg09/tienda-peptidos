@@ -8,10 +8,10 @@ const instagramUrl = (v: string) => (v.startsWith("http") ? v : `https://instagr
 export function Footer({ settings }: { settings: StoreSettings }) {
   const wa = whatsappLink(settings.whatsapp);
   return (
-    <footer className="relative overflow-hidden border-t bg-surface">
+    <footer className="relative overflow-hidden border-t bg-bg">
       <div className="wrap relative grid gap-10 py-14 md:grid-cols-[1.2fr_1fr_1fr_1.4fr]">
         <div>
-          <p className="font-display text-2xl font-bold tracking-[-0.03em] [font-stretch:115%]">{settings.name}</p>
+          <p className="font-display text-2xl font-semibold tracking-[-0.04em]">{settings.name}</p>
           <p className="mt-2 text-sm text-muted">{settings.tagline}</p>
           <div className="mt-4 flex gap-2">
             {settings.instagram && (

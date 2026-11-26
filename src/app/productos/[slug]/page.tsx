@@ -235,7 +235,7 @@ export default async function ProductPage({ params }: Props) {
           </div>
           <div className="-mx-4 mt-6 flex snap-x gap-4 overflow-x-auto px-4 pb-4 md:mx-0 md:px-0">
             {related.map((p) => (
-              <div key={p.slug} className="w-[240px] shrink-0 snap-start">
+              <div key={p.slug} className="w-[260px] shrink-0 snap-start overflow-hidden rounded-card border">
                 <ProductCard product={p} />
               </div>
             ))}

@@ -4,7 +4,6 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { formatCLP, type Product } from "@/lib/products";
 import type { Settings } from "@/lib/config";
 import { useCart } from "./CartProvider";
-import { tint } from "@/lib/colors";
 import { ProductImage } from "./ProductImage";
 import { Newsletter } from "./Newsletter";
 import { Stars } from "./Stars";
@@ -65,29 +64,29 @@ export function ProductStage({
   return (
     <>
       {/* Portada: marco blanco con el tono claro del color del producto, texto a la izquierda y vial a la derecha */}
-      <section className="relative overflow-hidden rounded-card border bg-surface p-2.5">
-        <div className="rounded-[calc(var(--r-card)-0.25rem)] text-[#14201b]" style={{ background: tint(product.color) }}>
+      <section className="relative overflow-hidden rounded-card border bg-surface">
+        <div>
         <div className="relative grid gap-6 p-6 md:grid-cols-[minmax(0,1fr)_10rem] md:gap-8 md:px-12 md:py-9 lg:grid-cols-[1.1fr_1fr]">
           <div className="flex min-w-0 flex-col justify-center">
-            <p className="chip self-start bg-[#fbfaf6]/85">{product.category}</p>
-            <h1 className="t-label mt-4 break-words text-[clamp(1.9rem,9vw,2.75rem)] leading-[1] md:text-[clamp(2.25rem,4.6vw,3.75rem)]">{product.name}</h1>
-            <p className="mt-5 max-w-md text-lg text-[#3d4741]">{product.short}</p>
+            <p className="eyebrow">{product.category}</p>
+            <h1 className="t-label mt-4 break-words text-[clamp(2.2rem,10vw,3rem)] tracking-[-0.05em] md:text-[clamp(2.75rem,5.4vw,4.75rem)]">{product.name}</h1>
+            <p className="mt-5 max-w-md text-lg text-muted">{product.short}</p>
             <ul className="mt-6 flex flex-wrap gap-2 text-xs font-medium">
-              <li className={`chip !py-1.5 ${soldOut ? "bg-[#14201b] text-[#f4f2ec]" : "bg-[#dbe97a] text-[#12302a]"}`}>{stockLine}</li>
-              {showCertificates && <li className="chip !py-1.5 border border-[#14201b]/30">Pureza {product.purity.replace(" (HPLC)", "")}</li>}
-              {showCertificates && <li className="chip !py-1.5 border border-[#14201b]/30">COA por lote</li>}
+              <li className={`chip !py-1.5 border ${soldOut ? "text-muted" : ""}`}><span aria-hidden="true" className={`h-1.5 w-1.5 rounded-full ${soldOut ? "bg-muted" : "bg-ok"}`} />{stockLine}</li>
+              {showCertificates && <li className="chip !py-1.5 border">Pureza {product.purity.replace(" (HPLC)", "")}</li>}
+              {showCertificates && <li className="chip !py-1.5 border">COA por lote</li>}
               {product.rating && (
                 <li>
-                  <a href="#resenas" className="flex items-center gap-1.5 chip !py-1.5 border border-[#14201b]/30 transition-opacity hover:opacity-70">
+                  <a href="#resenas" className="flex items-center gap-1.5 chip !py-1.5 border transition-opacity hover:opacity-70">
                     <Stars value={product.rating.avg} className="text-sm" />
                     {product.rating.avg.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} · {product.rating.count} {product.rating.count === 1 ? "reseña" : "reseñas"}
                   </a>
                 </li>
               )}
-              {product.cas && <li className="chip !py-1.5 border border-[#14201b]/30">CAS {product.cas}</li>}
+              {product.cas && <li className="chip !py-1.5 border">CAS {product.cas}</li>}
             </ul>
           </div>
-          <div className="relative grid min-h-[220px] min-w-0 place-items-center md:min-h-0">
+          <div className="frame-ticks relative grid min-h-[240px] min-w-0 place-items-center rounded-card border bg-bg py-6 md:min-h-0">
             <ProductImage product={product} className="relative h-56 w-auto max-w-full md:h-[16.5rem]" />
           </div>
         </div>
