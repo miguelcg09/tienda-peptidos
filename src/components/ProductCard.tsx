@@ -71,7 +71,7 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
         )}
         {/* Precio y acción siempre abajo y alineados entre tarjetas */}
         <div className="mt-auto flex flex-col gap-3 pt-2">
-          <p className="flex flex-wrap items-baseline gap-x-2 self-start rounded-[0.1875rem] border border-accent bg-[#e6f2ee] px-3 py-2 tabular-nums text-accent">
+          <p className="flex flex-wrap items-baseline gap-x-2 self-start rounded-[0.1875rem] border border-accent bg-[#e6f5fb] px-3 py-2 tabular-nums text-accent">
             {product.variants.length > 1 && <span className="font-mono text-xs uppercase tracking-[0.1em]"><T k="ficha.desde" /></span>}
             <span className="text-2xl font-bold leading-none tracking-[-0.03em]">{formatCLP(from)}</span>
             {compare && compare > from && <s className="text-sm text-muted">{formatCLP(compare)}</s>}
