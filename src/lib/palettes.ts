@@ -29,18 +29,18 @@ export const palettes: Palette[] = [
     // Solo claro: el mismo tono para quien usa modo claro o modo oscuro.
     id: "vitrina",
     name: "Señal",
-    blurb: "Blanco cálido, líneas finas negras y un solo color de acción. Técnica y moderna.",
+    blurb: "Blanco cálido, líneas finas negras y verde esmeralda para las acciones. Técnica y moderna.",
     light: {
       bg: "#f4f4f1", surface: "#ffffff", surface2: "#ecece8", line: "rgb(14 15 12 / 0.12)",
-      fg: "#0e0f0c", muted: "#5d625a", accent: "#1e3fd8", accent2: "#1e3fd8", badge: "#1e3fd8",
-      tint: "#0e0f0c", onAccent: "#ffffff", glow: "30 63 216", grain: "0",
-      btnFrom: "#1e3fd8", btnTo: "#1e3fd8", rCard: "0.25rem", rBtn: "0.1875rem",
+      fg: "#0e0f0c", muted: "#5d625a", accent: "#046c4e", accent2: "#046c4e", badge: "#046c4e",
+      tint: "#0e0f0c", onAccent: "#ffffff", glow: "4 108 78", grain: "0",
+      btnFrom: "#046c4e", btnTo: "#046c4e", rCard: "0.25rem", rBtn: "0.1875rem",
     },
     dark: {
       bg: "#f4f4f1", surface: "#ffffff", surface2: "#ecece8", line: "rgb(14 15 12 / 0.12)",
-      fg: "#0e0f0c", muted: "#5d625a", accent: "#1e3fd8", accent2: "#1e3fd8", badge: "#1e3fd8",
-      tint: "#0e0f0c", onAccent: "#ffffff", glow: "30 63 216", grain: "0",
-      btnFrom: "#1e3fd8", btnTo: "#1e3fd8", rCard: "0.25rem", rBtn: "0.1875rem",
+      fg: "#0e0f0c", muted: "#5d625a", accent: "#046c4e", accent2: "#046c4e", badge: "#046c4e",
+      tint: "#0e0f0c", onAccent: "#ffffff", glow: "4 108 78", grain: "0",
+      btnFrom: "#046c4e", btnTo: "#046c4e", rCard: "0.25rem", rBtn: "0.1875rem",
     },
   },
   {
@@ -100,7 +100,7 @@ export const palettes: Palette[] = [
     blurb: "Verdes con esmeralda y dorado. La paleta anterior.",
     light: {
       bg: "#cfdccf", surface: "#ffffff", surface2: "#e3ebe1", line: "rgb(20 50 32 / 0.18)",
-      fg: "#132019", muted: "#4c5f54", accent: "#059669", accent2: "#c28a12", badge: "#047857",
+      fg: "#132019", muted: "#4c5f54", accent: "#059669", accent2: "#c28a12", badge: "#046c4e",
       tint: "#132019", onAccent: "#ffffff", glow: "5 150 105", grain: "0.05",
       btnFrom: "var(--accent)", btnTo: "var(--accent-2)", rCard: "1.5rem", rBtn: "9999px",
     },

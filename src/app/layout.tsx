@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { Fragment_Mono, Schibsted_Grotesk } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/components/CartProvider";
 import { Header } from "@/components/Header";
@@ -15,9 +15,9 @@ import { cardProviderName } from "@/lib/payments";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { publicUrl } from "@/lib/site";
 
-// IBM Plex Sans para leer y titular, IBM Plex Mono para todo dato técnico: lote, mg, número de pieza, etiquetas.
-const sans = IBM_Plex_Sans({ subsets: ["latin", "latin-ext"], weight: ["400", "500", "600", "700"], variable: "--font-plex-sans" });
-const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-plex-mono" });
+// Schibsted Grotesk (grotesca editorial) para leer y titular; Fragment Mono para todo dato técnico: lote, mg, número de pieza, etiquetas.
+const sans = Schibsted_Grotesk({ subsets: ["latin", "latin-ext"], variable: "--font-schibsted" });
+const mono = Fragment_Mono({ subsets: ["latin"], weight: "400", variable: "--font-fragment-mono" });
 
 // El catálogo y los ajustes viven en la base de datos, así que todo se renderiza por petición.
 export const dynamic = "force-dynamic";

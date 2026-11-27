@@ -16,9 +16,9 @@
   --color-lime: var(--badge);
   --color-tint: var(--tint);
   --color-on-accent: var(--on-accent);
-  --font-sans: var(--font-plex-sans), system-ui, sans-serif;
-  --font-display: var(--font-plex-sans), system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-sans: var(--font-schibsted), system-ui, sans-serif;
+  --font-display: var(--font-schibsted), system-ui, sans-serif;
+  --font-mono: var(--font-fragment-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
   --color-ok: var(--ok);
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
@@ -67,17 +67,17 @@
   --line: rgb(14 15 12 / 0.12);
   --fg: #0e0f0c;
   --muted: #5d625a;
-  --accent: #1e3fd8;
-  --accent-2: #1e3fd8;
-  --badge: #1e3fd8;
+  --accent: #046c4e;
+  --accent-2: #046c4e;
+  --badge: #046c4e;
   --tint: #0e0f0c;
   --on-accent: #ffffff;
-  --glow: 30 63 216;
+  --glow: 4 108 78;
   /* Color de las barras de los gráficos del panel */
-  --series: #1e3fd8;
+  --series: #046c4e;
   --grain: 0;
-  --btn-from: #1e3fd8;
-  --btn-to: #1e3fd8;
+  --btn-from: #046c4e;
+  --btn-to: #046c4e;
   --r-card: 0.25rem;
   --r-btn: 0.1875rem;
   /* Portada y bandas: el mismo fondo claro con su línea */
@@ -86,7 +86,7 @@
   --ink-line: rgb(14 15 12 / 0.12);
   --ink-fg: #0e0f0c;
   --ink-muted: #5d625a;
-  --mark: #1e3fd8;
+  --mark: #046c4e;
   --mark-fg: #ffffff;
   /* Punto de estado "en stock" */
   --ok: #16a34a;
