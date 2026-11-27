@@ -2,7 +2,7 @@ import { deep } from "@/lib/colors";
 
 // Ilustración del vial hasta tener la fotografía del producto: vidrio transparente, tapa del color
 // del producto y etiqueta con el nombre y el lote. Todo plano, sin degradados.
-// tone "light": sobre fondos claros. tone "field": sobre fondos oscuros (todo el sitio en el diseño Señal).
+// tone "light": sobre fondos claros (todo el sitio en el diseño Señal). tone "field": sobre fondos oscuros.
 
 function splitName(label: string): [string, string] {
   const up = label.toUpperCase();
@@ -36,8 +36,8 @@ export function Vial({
   const cap = liquid ? (field ? "#dfe6e8" : "#a9b4b8") : color;
   const capTop = liquid ? (field ? "#b8c3c6" : "#7d8a8f") : deep(color);
   const [l1, l2] = splitName(label);
-  const display = { fontFamily: "var(--font-geist), system-ui, sans-serif" };
-  const mono = { fontFamily: "var(--font-geist-mono), ui-monospace, monospace" };
+  const display = { fontFamily: "var(--font-plex-sans), system-ui, sans-serif" };
+  const mono = { fontFamily: "var(--font-plex-mono), ui-monospace, monospace" };
   const data = [lot ? `LOTE ${lot}` : "", format ?? ""].filter(Boolean);
   return (
     <svg viewBox="38 38 124 278" className={className} role="img" aria-label={`Vial de ${label}`}>

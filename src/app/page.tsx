@@ -302,7 +302,7 @@ export default async function Home() {
             </a>
           </div>
           <div className="frame-ticks flex justify-center rounded-card border bg-bg py-10">
-            <ProductImage product={closing} tone="field" className="h-[280px] w-auto max-w-full md:h-[360px]" />
+            <ProductImage product={closing} className="h-[280px] w-auto max-w-full md:h-[360px]" />
           </div>
         </div>
         <div className="wrap">

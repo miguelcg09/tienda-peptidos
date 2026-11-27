@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-/* El diseño Señal es solo oscuro: las variantes dark: se aplican siempre, también con el sistema en modo claro */
-@custom-variant dark (&:where(*));
+/* El diseño Señal es solo claro: las variantes dark: no se aplican nunca, aunque el sistema esté en modo oscuro */
+@custom-variant dark (&:where(.solo-oscuro-nunca, .solo-oscuro-nunca *));
 
 /* Paleta: los tokens cambian solos según el tema claro/oscuro del sistema del visitante */
 @theme {
@@ -16,9 +16,9 @@
   --color-lime: var(--badge);
   --color-tint: var(--tint);
   --color-on-accent: var(--on-accent);
-  --font-sans: var(--font-geist), system-ui, sans-serif;
-  --font-display: var(--font-geist), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-sans: var(--font-plex-sans), system-ui, sans-serif;
+  --font-display: var(--font-plex-sans), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
   --color-ok: var(--ok);
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
@@ -59,36 +59,37 @@
 }
 
 :root {
-  /* Señal: casi negro, líneas finas y un solo color de señal. Solo oscuro, también para quien usa modo claro. */
-  color-scheme: dark;
-  --bg: #0b0c0a;
-  --surface: #121411;
-  --surface-2: #181b17;
-  --line: rgb(255 255 255 / 0.10);
-  --fg: #eceee8;
-  --muted: #8e9489;
-  --accent: #c8f031;
-  --accent-2: #c8f031;
-  --badge: #c8f031;
-  --tint: #eceee8;
-  --on-accent: #0b0c0a;
-  --glow: 200 240 49;
+  /* Señal claro: blanco cálido, líneas finas negras y un color de acción. Solo claro, también con el sistema en oscuro. */
+  color-scheme: light;
+  --bg: #f4f4f1;
+  --surface: #ffffff;
+  --surface-2: #ecece8;
+  --line: rgb(14 15 12 / 0.12);
+  --fg: #0e0f0c;
+  --muted: #5d625a;
+  --accent: #1e3fd8;
+  --accent-2: #1e3fd8;
+  --badge: #1e3fd8;
+  --tint: #0e0f0c;
+  --on-accent: #ffffff;
+  --glow: 30 63 216;
   /* Color de las barras de los gráficos del panel */
-  --series: #c8f031;
+  --series: #1e3fd8;
   --grain: 0;
-  --btn-from: #c8f031;
-  --btn-to: #c8f031;
+  --btn-from: #1e3fd8;
+  --btn-to: #1e3fd8;
   --r-card: 0.25rem;
   --r-btn: 0.1875rem;
-  /* Portada y bandas: el mismo negro con su línea; señal lima para acciones y "en stock" */
-  --ink: #0b0c0a;
-  --ink-2: #181b17;
-  --ink-line: rgb(255 255 255 / 0.10);
-  --ink-fg: #eceee8;
-  --ink-muted: #8e9489;
-  --mark: #c8f031;
-  --mark-fg: #0b0c0a;
-  --ok: #c8f031;
+  /* Portada y bandas: el mismo fondo claro con su línea */
+  --ink: #f4f4f1;
+  --ink-2: #ffffff;
+  --ink-line: rgb(14 15 12 / 0.12);
+  --ink-fg: #0e0f0c;
+  --ink-muted: #5d625a;
+  --mark: #1e3fd8;
+  --mark-fg: #ffffff;
+  /* Punto de estado "en stock" */
+  --ok: #16a34a;
   /* Alto de la barra fija con el aviso de uso: lo usan el encabezado fijo y los anclajes */
   --bar-h: 2.125rem;
 }

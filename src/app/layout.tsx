@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/components/CartProvider";
 import { Header } from "@/components/Header";
@@ -15,9 +15,9 @@ import { cardProviderName } from "@/lib/payments";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { publicUrl } from "@/lib/site";
 
-// Geist para leer y titular, Geist Mono para todo dato técnico: lote, mg, número de pieza, etiquetas.
-const sans = Geist({ subsets: ["latin", "latin-ext"], variable: "--font-geist" });
-const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
+// IBM Plex Sans para leer y titular, IBM Plex Mono para todo dato técnico: lote, mg, número de pieza, etiquetas.
+const sans = IBM_Plex_Sans({ subsets: ["latin", "latin-ext"], weight: ["400", "500", "600", "700"], variable: "--font-plex-sans" });
+const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-plex-mono" });
 
 // El catálogo y los ajustes viven en la base de datos, así que todo se renderiza por petición.
 export const dynamic = "force-dynamic";
@@ -63,7 +63,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           Saltar al contenido
         </a>
         {/* Aviso de uso: fijo arriba en todas las páginas, también en la portada. En celular, versión corta de una línea */}
-        <section aria-label="Aviso de uso y envío" className="sticky top-0 z-40 flex h-[var(--bar-h)] items-center justify-center gap-x-8 overflow-hidden whitespace-nowrap border-b border-ink-line bg-ink px-4 text-center font-mono text-xs uppercase tracking-[0.1em] text-ink-muted">
+        <section aria-label="Aviso de uso y envío" className="sticky top-0 z-40 flex h-[var(--bar-h)] items-center justify-center gap-x-8 overflow-hidden whitespace-nowrap bg-fg px-4 text-center font-mono text-xs uppercase tracking-[0.1em] text-bg/80">
           <span className="sm:hidden">Solo investigación · +18</span>
           <span className="hidden sm:inline">Solo para uso en investigación · Mayores de 18 años</span>
           <span className="hidden lg:inline">Envío gratis sobre {formatCLP(settings.freeShippingFrom)}</span>

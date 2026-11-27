@@ -26,21 +26,21 @@ export type Palette = { id: string; name: string; blurb: string; light: Tokens; 
 export const palettes: Palette[] = [
   {
     // Conserva el id "vitrina" para que la tienda que ya la tenía guardada en Ajustes pase sola al diseño nuevo.
-    // Solo oscuro: el mismo tono para quien usa modo claro o modo oscuro.
+    // Solo claro: el mismo tono para quien usa modo claro o modo oscuro.
     id: "vitrina",
     name: "Señal",
-    blurb: "Casi negro, líneas finas y un solo color de señal lima. Técnica y moderna.",
+    blurb: "Blanco cálido, líneas finas negras y un solo color de acción. Técnica y moderna.",
     light: {
-      bg: "#0b0c0a", surface: "#121411", surface2: "#181b17", line: "rgb(255 255 255 / 0.10)",
-      fg: "#eceee8", muted: "#8e9489", accent: "#c8f031", accent2: "#c8f031", badge: "#c8f031",
-      tint: "#eceee8", onAccent: "#0b0c0a", glow: "200 240 49", grain: "0",
-      btnFrom: "#c8f031", btnTo: "#c8f031", rCard: "0.25rem", rBtn: "0.1875rem",
+      bg: "#f4f4f1", surface: "#ffffff", surface2: "#ecece8", line: "rgb(14 15 12 / 0.12)",
+      fg: "#0e0f0c", muted: "#5d625a", accent: "#1e3fd8", accent2: "#1e3fd8", badge: "#1e3fd8",
+      tint: "#0e0f0c", onAccent: "#ffffff", glow: "30 63 216", grain: "0",
+      btnFrom: "#1e3fd8", btnTo: "#1e3fd8", rCard: "0.25rem", rBtn: "0.1875rem",
     },
     dark: {
-      bg: "#0b0c0a", surface: "#121411", surface2: "#181b17", line: "rgb(255 255 255 / 0.10)",
-      fg: "#eceee8", muted: "#8e9489", accent: "#c8f031", accent2: "#c8f031", badge: "#c8f031",
-      tint: "#eceee8", onAccent: "#0b0c0a", glow: "200 240 49", grain: "0",
-      btnFrom: "#c8f031", btnTo: "#c8f031", rCard: "0.25rem", rBtn: "0.1875rem",
+      bg: "#f4f4f1", surface: "#ffffff", surface2: "#ecece8", line: "rgb(14 15 12 / 0.12)",
+      fg: "#0e0f0c", muted: "#5d625a", accent: "#1e3fd8", accent2: "#1e3fd8", badge: "#1e3fd8",
+      tint: "#0e0f0c", onAccent: "#ffffff", glow: "30 63 216", grain: "0",
+      btnFrom: "#1e3fd8", btnTo: "#1e3fd8", rCard: "0.25rem", rBtn: "0.1875rem",
     },
   },
   {
