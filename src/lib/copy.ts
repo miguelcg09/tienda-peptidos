@@ -2,6 +2,10 @@
 // Cada texto tiene un valor por defecto; en la base solo se guardan los que alguien cambió (ajuste "textos").
 // Las marcas {n}, {monto}, etc. se reemplazan al mostrar el texto.
 import { faqs as faqsDefault } from "./faqs";
+import { categories } from "./products";
+
+// Nombre visible de cada categoría (el valor interno no cambia: lo usan la base y los enlaces).
+export const CATEGORY_LABELS = ["Regeneración", "Metabólico", "Eje GH", "Enfoque", "Insumos"];
 
 type Entry = { label: string; def: string; long?: boolean; hint?: string };
 type Group = { id: string; title: string; note?: string; items: Record<string, Entry> };
@@ -28,6 +32,12 @@ export const COPY_GROUPS: Group[] = [
       "portada.aviso": { label: "Aviso legal", def: "Solo para uso en investigación · Mayores de 18 años · No aptos para consumo humano ni animal", long: true },
       "portada.verFicha": { label: "Enlace a la ficha", def: "Ver ficha técnica" },
     },
+  },
+  {
+    id: "categorias",
+    title: "Categorías",
+    note: "Nombre que se ve en las etiquetas de las fichas y en los filtros del catálogo.",
+    items: Object.fromEntries(categories.map((c, i) => [`cat.${i + 1}`, { label: `Categoría ${i + 1} (${c})`, def: CATEGORY_LABELS[i] ?? c }])),
   },
   {
     id: "fichas",
@@ -120,4 +130,10 @@ export function cleanTextos(input: Record<string, string>): Textos {
     if (t && t !== e.def) out[k] = t;
   }
   return out;
+}
+
+// Nombre visible de una categoría.
+export function catLabel(textos: Textos | undefined, category: string) {
+  const i = (categories as readonly string[]).indexOf(category);
+  return i < 0 ? category : tx(textos, `cat.${i + 1}`);
 }
