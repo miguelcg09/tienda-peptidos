@@ -1,5 +1,7 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { formatCLP, type Product } from "@/lib/products";
+import { tint } from "@/lib/colors";
 import { ProductImage } from "./ProductImage";
 import { QuickAdd } from "./QuickAdd";
 import { Stars } from "./Stars";
@@ -18,7 +20,7 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
   const lowStock = product.variants.reduce<number | null>((m, v) => (v.stock !== null && v.stock > 0 && v.stock <= 5 && (m === null || v.stock < m) ? v.stock : m), null);
   const status = soldOut ? { dot: "bg-muted", text: "Agotado" } : lowStock !== null ? { dot: "bg-accent", text: `Últimas ${lowStock}` } : { dot: "bg-ok", text: "En stock" };
   return (
-    <article className="group/card flex h-full min-w-0 flex-col bg-surface transition-colors duration-200 hover:bg-surface-2">
+    <article data-reveal={index ?? 0} className="reveal-inner group/card flex h-full min-w-0 flex-col bg-surface" style={{ "--card-tint": tint(product.color) } as CSSProperties}>
       <p className="flex items-center justify-between gap-3 border-b px-4 py-2.5 font-mono text-xs uppercase tracking-[0.08em] text-muted">
         <span className="min-w-0 truncate">{index !== undefined && <span className="mr-2 text-fg">{String(index + 1).padStart(2, "0")}</span>}{product.category}</span>
         <span className="flex shrink-0 items-center gap-1.5"><span aria-hidden="true" className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />{status.text}</span>
@@ -28,10 +30,12 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
         href={`/productos/${product.slug}`}
         aria-hidden="true"
         tabIndex={-1}
-        className="relative block aspect-[5/4] outline-offset-[-2px] group-has-[h2_a:focus-visible,h3_a:focus-visible]/card:outline-2 group-has-[h2_a:focus-visible,h3_a:focus-visible]/card:outline-solid"
+        className="relative block aspect-[5/4] overflow-hidden outline-offset-[-2px] group-has-[h2_a:focus-visible,h3_a:focus-visible]/card:outline-2 group-has-[h2_a:focus-visible,h3_a:focus-visible]/card:outline-solid"
       >
+        {/* Al pasar el mouse el fondo toma el tono del producto desde abajo y el vial se levanta y se inclina */}
+        <span aria-hidden="true" className="absolute inset-0 origin-bottom scale-y-0 bg-[var(--card-tint)] transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover/card:scale-y-100" />
         <span className="absolute inset-x-0 bottom-[6%] top-[8%] flex justify-center">
-          <ProductImage product={product} className="h-full w-auto max-w-[70%] transition-transform duration-300 group-hover/card:-translate-y-1 motion-reduce:transform-none" />
+          <ProductImage product={product} className="h-full w-auto max-w-[70%] transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover/card:-translate-y-2 group-hover/card:-rotate-6 group-hover/card:scale-105" />
         </span>
       </Link>
       <div className="flex flex-1 flex-col gap-3 border-t px-4 pb-4 pt-4">
@@ -63,7 +67,7 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
             <Link href={`/productos/${product.slug}`} className="btn-ghost !min-h-11 w-full !px-4 !text-sm">Avísame cuando vuelva</Link>
           ) : (
             product.variants.length > 1 && (
-              <Link href={`/productos/${product.slug}`} className={cta}>Elegir presentación <span aria-hidden="true" className="font-mono">→</span></Link>
+              <Link href={`/productos/${product.slug}`} className={cta}>Elegir presentación <span aria-hidden="true" className="font-mono transition-transform duration-200 group-hover/card:translate-x-1">→</span></Link>
             )
           )}
         </div>

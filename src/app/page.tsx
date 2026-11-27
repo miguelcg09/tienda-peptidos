@@ -3,6 +3,7 @@ import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { CatalogTabs } from "@/components/CatalogTabs";
 import { HomeHero, type HeroItem } from "@/components/HomeHero";
+import { Ticker } from "@/components/Ticker";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductImage } from "@/components/ProductImage";
 import { Stars } from "@/components/Stars";
@@ -104,13 +105,14 @@ export default async function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }} />
 
       <HomeHero items={items} />
+      <Ticker products={products} />
 
       {/* Cuatro hechos de compra, cada uno con su enlace */}
       <section aria-labelledby="titulo-datos" className="border-b bg-surface">
         <h2 id="titulo-datos" className="sr-only">Cómo compras</h2>
         <ul className="mx-auto grid max-w-[1280px] px-4 sm:grid-cols-2 md:px-12 lg:grid-cols-4">
           {proofs.map((x, i) => (
-            <li key={x.title} className={`flex flex-col items-start gap-3 py-10 lg:py-12 ${i > 0 ? "lg:border-l lg:pl-8" : ""} ${i < 3 ? "lg:pr-8" : ""} ${i % 2 === 1 ? "sm:pl-8 lg:pl-8" : "sm:pr-8"}`}>
+            <li key={x.title} data-reveal={i} className={`flex flex-col items-start gap-3 py-10 lg:py-12 ${i > 0 ? "lg:border-l lg:pl-8" : ""} ${i < 3 ? "lg:pr-8" : ""} ${i % 2 === 1 ? "sm:pl-8 lg:pl-8" : "sm:pr-8"}`}>
               <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted"><span className="mr-2">{String(i + 1).padStart(2, "0")}</span>{x.label}</p>
               <h3 className="font-display text-2xl font-semibold tracking-tight">{x.title}</h3>
               <p className="text-muted">{x.text}</p>
@@ -123,7 +125,7 @@ export default async function Home() {
       {/* La colección: todas las piezas juntas */}
       <section id="coleccion" aria-labelledby="titulo-coleccion" className="scroll-mt-4">
         <div className="mx-auto flex max-w-[1280px] flex-col gap-14 px-4 py-24 md:px-12 md:py-28">
-          <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
+          <div data-reveal className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
             <div>
               <p className={eyebrow}>Catálogo</p>
               <h2 id="titulo-coleccion" className={`${h2} max-w-[22ch]`}>
@@ -184,7 +186,7 @@ export default async function Home() {
 
           <ol className="grid gap-10 md:grid-cols-3 md:gap-8" data-testid="pasos-compra">
             {steps.map((st, i) => (
-              <li key={st.title} className="relative flex flex-col gap-4 border-t border-ink-line pt-7">
+              <li key={st.title} data-reveal={i} className="relative flex flex-col gap-4 border-t border-ink-line pt-7">
                 <span aria-hidden="true" className="absolute -top-px left-0 h-0.5 w-14 bg-mark" />
                 <p className="font-mono text-sm font-medium tracking-[0.12em] text-mark"><span className="sr-only">Paso </span>{String(i + 1).padStart(2, "0")}</p>
                 <h3 className="text-2xl font-semibold leading-snug tracking-tight">{st.title}</h3>
@@ -276,7 +278,7 @@ export default async function Home() {
             <a href={contactHref} className="inline-block py-1.5 font-medium text-fg u-link">¿Otra duda? Escríbenos</a>
           </p>
         </div>
-        <div className="divide-y self-start rounded-card border bg-surface" data-testid="faq-portada">
+        <div data-reveal className="divide-y self-start rounded-card border bg-surface" data-testid="faq-portada">
           {faqs.map((f, i) => (
             <details key={f.q} open={i === 0} className="group px-6 py-5 transition-colors hover:bg-surface-2">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-medium">
@@ -301,8 +303,8 @@ export default async function Home() {
               Ver catálogo <span aria-hidden="true">→</span>
             </a>
           </div>
-          <div className="frame-ticks flex justify-center rounded-card border bg-bg py-10">
-            <ProductImage product={closing} className="h-[280px] w-auto max-w-full md:h-[360px]" />
+          <div data-reveal className="frame-ticks flex justify-center rounded-card border bg-bg py-10">
+            <ProductImage product={closing} className="animate-float h-[280px] w-auto max-w-full md:h-[360px]" />
           </div>
         </div>
         <div className="wrap">

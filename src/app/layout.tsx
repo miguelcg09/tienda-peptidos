@@ -13,6 +13,7 @@ import { getPalette, paletteCss } from "@/lib/palettes";
 import { hasBankData, toStoreSettings } from "@/lib/config";
 import { cardProviderName } from "@/lib/payments";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { RevealAll } from "@/components/RevealAll";
 import { publicUrl } from "@/lib/site";
 
 // Schibsted Grotesk (grotesca editorial) para leer y titular; Fragment Mono para todo dato técnico: lote, mg, número de pieza, etiquetas.
@@ -75,6 +76,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <CartDrawer />
           <ResearchGate />
           <WhatsAppButton />
+          <RevealAll />
         </StoreProvider>
       </body>
     </html>

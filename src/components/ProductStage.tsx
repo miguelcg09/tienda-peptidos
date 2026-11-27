@@ -87,7 +87,7 @@ export function ProductStage({
             </ul>
           </div>
           <div className="frame-ticks relative grid min-h-[240px] min-w-0 place-items-center rounded-card border bg-bg py-6 md:min-h-0">
-            <ProductImage product={product} className="relative h-56 w-auto max-w-full md:h-[16.5rem]" />
+            <ProductImage product={product} className="animate-float relative h-56 w-auto max-w-full md:h-[16.5rem]" />
           </div>
         </div>
         </div>
