@@ -2,7 +2,7 @@ import { deep } from "@/lib/colors";
 
 // Ilustración del vial hasta tener la fotografía del producto: vidrio transparente, tapa del color
 // del producto y etiqueta con el nombre y el lote. Todo plano, sin degradados.
-// tone "light": sobre fondos claros. tone "field": sobre el fondo de color de la portada.
+// tone "light": sobre fondos claros (todo el sitio en el diseño Señal). tone "field": sobre fondos oscuros.
 
 function splitName(label: string): [string, string] {
   const up = label.toUpperCase();
@@ -33,26 +33,26 @@ export function Vial({
   const field = tone === "field";
   const liquid = kind === "liquid";
   // Los líquidos (agua bacteriostática) llevan sello metálico y líquido en lugar de polvo, para no ser el mismo frasco de todos.
-  const cap = liquid ? (field ? "#dfe6e8" : "#a9b4b8") : field ? deep(color) : color;
+  const cap = liquid ? (field ? "#dfe6e8" : "#a9b4b8") : color;
   const capTop = liquid ? (field ? "#b8c3c6" : "#7d8a8f") : deep(color);
   const [l1, l2] = splitName(label);
-  const display = { fontFamily: "var(--font-funnel-display), system-ui, sans-serif" };
-  const mono = { fontFamily: "var(--font-geist-mono), ui-monospace, monospace" };
+  const display = { fontFamily: "var(--font-schibsted), system-ui, sans-serif" };
+  const mono = { fontFamily: "var(--font-fragment-mono), ui-monospace, monospace" };
   const data = [lot ? `LOTE ${lot}` : "", format ?? ""].filter(Boolean);
   return (
     <svg viewBox="38 38 124 278" className={className} role="img" aria-label={`Vial de ${label}`}>
       <ellipse cx="100" cy="306" rx="56" ry="5" fill="#0b0f10" opacity={field ? 0.2 : 0.14} />
       <rect
         x="50" y="116" width="100" height="186" rx="14"
-        fill="#ffffff" fillOpacity={field ? 0.2 : 0.55}
-        stroke={field ? "#ffffff" : "#0b0f10"} strokeOpacity={field ? 0.8 : 0.35} strokeWidth="2"
+        fill="#ffffff" fillOpacity={field ? 0.07 : 0.55}
+        stroke={field ? "#ffffff" : "#0b0f10"} strokeOpacity={field ? 0.55 : 0.35} strokeWidth="2"
       />
       <rect
         x="74" y="94" width="52" height="28" rx="4"
-        fill="#ffffff" fillOpacity={field ? 0.2 : 0.55}
-        stroke={field ? "#ffffff" : "#0b0f10"} strokeOpacity={field ? 0.8 : 0.35} strokeWidth="2"
+        fill="#ffffff" fillOpacity={field ? 0.07 : 0.55}
+        stroke={field ? "#ffffff" : "#0b0f10"} strokeOpacity={field ? 0.55 : 0.35} strokeWidth="2"
       />
-      <rect x="57" y="122" width="6" height="170" rx="3" fill="#ffffff" opacity={field ? 0.45 : 0.6} />
+      <rect x="57" y="122" width="6" height="170" rx="3" fill="#ffffff" opacity={field ? 0.22 : 0.6} />
       {liquid ? (
         <rect x="58" y="214" width="84" height="82" rx="8" fill={field ? "#ffffff" : color} fillOpacity={field ? 0.3 : 0.28} />
       ) : (

@@ -15,10 +15,10 @@ export function QuickAdd({ variantId, name, className = "" }: { variantId: strin
         setTimeout(() => setDone(false), 1400);
       }}
       aria-label={done ? `${name} agregado al carrito` : `Agregar ${name} al carrito`}
-      className={`${className} ${done ? "bg-fg text-bg" : ""}`}
+      className={`${className} ${done ? "!bg-fg !text-bg" : ""}`}
     >
-      <span aria-hidden="true">{done ? "✓" : "+"}</span>
       {done ? "Agregado" : "Agregar"}
+      <span aria-hidden="true" className="font-mono">{done ? "✓" : "+"}</span>
     </button>
   );
 }

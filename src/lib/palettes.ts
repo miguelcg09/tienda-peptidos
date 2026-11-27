@@ -25,20 +25,22 @@ export type Palette = { id: string; name: string; blurb: string; light: Tokens; 
 
 export const palettes: Palette[] = [
   {
+    // Conserva el id "vitrina" para que la tienda que ya la tenía guardada en Ajustes pase sola al diseño nuevo.
+    // Solo claro: el mismo tono para quien usa modo claro o modo oscuro.
     id: "vitrina",
-    name: "Vitrina",
-    blurb: "Hielo y tinta, con el color de cada producto como único acento. Moderna y silenciosa.",
+    name: "Señal",
+    blurb: "Blanco cálido, líneas finas negras y verde esmeralda para las acciones. Técnica y moderna.",
     light: {
-      bg: "#f4f6f6", surface: "#ffffff", surface2: "#e9eeee", line: "rgb(11 15 16 / 0.12)",
-      fg: "#0b0f10", muted: "#5b676b", accent: "#0b0f10", accent2: "#2e5aac", badge: "#2e5aac",
-      tint: "#0b0f10", onAccent: "#f4f6f6", glow: "11 15 16", grain: "0",
-      btnFrom: "#0b0f10", btnTo: "#0b0f10", rCard: "0.375rem", rBtn: "0.25rem",
+      bg: "#f4f4f1", surface: "#ffffff", surface2: "#ecece8", line: "rgb(14 15 12 / 0.12)",
+      fg: "#0e0f0c", muted: "#5d625a", accent: "#046c4e", accent2: "#046c4e", badge: "#046c4e",
+      tint: "#0e0f0c", onAccent: "#ffffff", glow: "4 108 78", grain: "0",
+      btnFrom: "#046c4e", btnTo: "#046c4e", rCard: "0.25rem", rBtn: "0.1875rem",
     },
     dark: {
-      bg: "#0b0f10", surface: "#151b1d", surface2: "#1c2326", line: "rgb(244 246 246 / 0.14)",
-      fg: "#f4f6f6", muted: "#9aa7ab", accent: "#f4f6f6", accent2: "#7fa4e8", badge: "#7fa4e8",
-      tint: "#f4f6f6", onAccent: "#0b0f10", glow: "244 246 246", grain: "0",
-      btnFrom: "#f4f6f6", btnTo: "#f4f6f6", rCard: "0.375rem", rBtn: "0.25rem",
+      bg: "#f4f4f1", surface: "#ffffff", surface2: "#ecece8", line: "rgb(14 15 12 / 0.12)",
+      fg: "#0e0f0c", muted: "#5d625a", accent: "#046c4e", accent2: "#046c4e", badge: "#046c4e",
+      tint: "#0e0f0c", onAccent: "#ffffff", glow: "4 108 78", grain: "0",
+      btnFrom: "#046c4e", btnTo: "#046c4e", rCard: "0.25rem", rBtn: "0.1875rem",
     },
   },
   {
@@ -98,7 +100,7 @@ export const palettes: Palette[] = [
     blurb: "Verdes con esmeralda y dorado. La paleta anterior.",
     light: {
       bg: "#cfdccf", surface: "#ffffff", surface2: "#e3ebe1", line: "rgb(20 50 32 / 0.18)",
-      fg: "#132019", muted: "#4c5f54", accent: "#059669", accent2: "#c28a12", badge: "#047857",
+      fg: "#132019", muted: "#4c5f54", accent: "#059669", accent2: "#c28a12", badge: "#046c4e",
       tint: "#132019", onAccent: "#ffffff", glow: "5 150 105", grain: "0.05",
       btnFrom: "var(--accent)", btnTo: "var(--accent-2)", rCard: "1.5rem", rBtn: "9999px",
     },

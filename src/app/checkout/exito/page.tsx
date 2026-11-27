@@ -103,7 +103,7 @@ function Exito() {
   return (
     <div className="animate-fade mx-auto max-w-xl px-4 py-20 text-center">
       <div className={`mx-auto grid h-16 w-16 place-items-center rounded-full text-3xl ${failed ? "bg-red-500/15 text-red-500" : "bg-lime/15 text-lime"}`}>
-        {failed ? "✕" : transfer && !paid ? "🏦" : pending ? "⏳" : "✓"}
+        {failed ? "✕" : transfer && !paid ? "$" : pending ? "…" : "✓"}
       </div>
       <h1 className="t-page mt-6">{title}</h1>
       {failed && (

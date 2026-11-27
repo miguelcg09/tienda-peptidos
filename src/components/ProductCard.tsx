@@ -1,65 +1,83 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { formatCLP, type Product } from "@/lib/products";
-import { tint, tintHover } from "@/lib/colors";
+import { tint } from "@/lib/colors";
 import { ProductImage } from "./ProductImage";
 import { QuickAdd } from "./QuickAdd";
 import { Stars } from "./Stars";
 
-// Acción de la tarjeta: misma forma para "Agregar" y "Ver presentaciones", del ancho de la tarjeta si es angosta
-const cta = "inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-btn border border-fg px-4 text-sm font-semibold transition-colors hover:bg-fg hover:text-bg @min-[22rem]:w-auto @min-[22rem]:min-w-[10.5rem]";
+// Acción de la tarjeta: botón lleno del ancho de la tarjeta, igual para "Agregar" y "Elegir presentación"
+const cta = "btn-ghost !min-h-11 w-full !justify-between !px-4 !text-sm hover:!border-accent hover:!bg-accent hover:!text-on-accent";
 
-// Tarjeta de pieza: panel con el tono claro del color del producto, nombre, línea, precio y "+".
+// Tarjeta de pieza como ficha técnica: stock sobre la foto, categoría sobre el nombre, presentaciones en regleta,
+// precio en caja verde clara y un botón.
 export function ProductCard({ product, index, headingLevel = 3 }: { product: Product; index?: number; headingLevel?: 2 | 3 }) {
   const Heading = headingLevel === 2 ? "h2" : "h3";
   const from = Math.min(...product.variants.map((v) => v.price));
+  const compare = product.variants.find((v) => v.price === from)?.compareAt ?? null;
   const soldOut = product.variants.every((v) => v.stock === 0);
   const quick = product.variants.length === 1 ? product.variants.find((v) => v.stock !== 0) : undefined;
   const lowStock = product.variants.reduce<number | null>((m, v) => (v.stock !== null && v.stock > 0 && v.stock <= 5 && (m === null || v.stock < m) ? v.stock : m), null);
-  const vars = { "--card-bg": tint(product.color), "--card-hover": tintHover(product.color) } as CSSProperties;
+  const status = soldOut ? { dot: "bg-[#9ca3af]", text: "Agotado" } : lowStock !== null ? { dot: "bg-[#f59e0b]", text: `Últimas ${lowStock}` } : { dot: "bg-[#4ade80]", text: "En stock" };
   return (
-    <article className="group/card flex h-full min-w-0 flex-col gap-4" style={vars}>
+    <article data-reveal={index ?? 0} className="reveal-inner group/card flex h-full min-w-0 flex-col bg-surface" style={{ "--card-tint": tint(product.color) } as CSSProperties}>
       {/* La imagen también es un enlace para quien usa mouse o toque; el enlace del nombre es el que leen los lectores de pantalla y el teclado */}
       <Link
         href={`/productos/${product.slug}`}
         aria-hidden="true"
         tabIndex={-1}
-        className="relative block aspect-square rounded-card bg-[var(--card-bg)] text-[#0b0f10] outline-2 outline-offset-2 transition-colors duration-300 hover:bg-[var(--card-hover)] group-has-[h2_a:focus-visible,h3_a:focus-visible]/card:outline sm:aspect-[4/5]"
+        className="relative block aspect-[5/4] overflow-hidden outline-offset-[-2px] group-has-[h2_a:focus-visible,h3_a:focus-visible]/card:outline-2 group-has-[h2_a:focus-visible,h3_a:focus-visible]/card:outline-solid"
       >
-        {index !== undefined && <span className="absolute left-5 top-4 font-mono text-xs tracking-widest">{String(index + 1).padStart(2, "0")}</span>}
-        {soldOut && <span className="absolute right-4 top-4 rounded-btn bg-[#0b0f10] px-2.5 py-1 text-xs font-semibold text-[#f4f6f6]">Agotado</span>}
-        {!soldOut && lowStock !== null && <span className="absolute right-4 top-4 rounded-btn bg-[#0b0f10] px-2.5 py-1 text-xs font-semibold text-[#f4f6f6]">Últimas {lowStock}</span>}
-        <span className="absolute inset-x-0 inset-y-[11%] flex justify-center">
-          <ProductImage product={product} className="h-full w-auto max-w-[80%]" />
+        {/* Al pasar el mouse el fondo toma el tono del producto desde abajo y el vial se levanta y se inclina */}
+        <span aria-hidden="true" className="absolute inset-0 origin-bottom scale-y-0 bg-[var(--card-tint)] transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover/card:scale-y-100" />
+        {/* Estado de stock sobre la foto */}
+        <span className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full bg-fg px-2.5 py-1 font-mono text-xs font-semibold uppercase tracking-[0.06em] text-bg"><span aria-hidden="true" className={`h-2 w-2 rounded-full ${status.dot}`} />{status.text}</span>
+        <span className="absolute inset-x-0 bottom-[6%] top-[8%] flex justify-center">
+          <ProductImage product={product} className="h-full w-auto max-w-[70%] transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover/card:-translate-y-2 group-hover/card:-rotate-6 group-hover/card:scale-105" />
         </span>
       </Link>
-      <div className="flex flex-1 flex-col gap-1.5">
-        <Heading className="break-words font-display text-2xl font-medium leading-tight tracking-tight">
-          <Link href={`/productos/${product.slug}`} className="underline-offset-[5px] hover:underline focus-visible:outline-none focus-visible:underline">{product.name}</Link>
-        </Heading>
-        <p className="text-sm text-muted">{product.category}</p>
-        <p className="break-words font-mono text-xs text-muted">{product.variants.map((v) => v.label).join(" / ")} · {product.form}</p>
+      <div className="flex flex-1 flex-col gap-3 border-t px-4 pb-4 pt-4">
+        {/* Nombre grande y apretado, con una línea corta en texto normal debajo para que se lea como titular y bajada */}
+        <div className="flex flex-col gap-1.5">
+          <p className="flex items-center gap-2 font-mono text-[0.8rem] font-bold uppercase tracking-[0.1em] text-accent">
+            <span aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-[2px]" style={{ background: product.color }} />
+            <span className="min-w-0 truncate">{product.category}</span>
+            <span className="sr-only">, {status.text}</span>
+          </p>
+          <Heading className="t-label break-words text-[1.7rem] tracking-[-0.04em] transition-colors duration-200 group-hover/card:text-accent">
+            <Link href={`/productos/${product.slug}`} className="underline-offset-[5px] focus-visible:outline-none focus-visible:underline">{product.name}</Link>
+          </Heading>
+          {product.short && <p className="line-clamp-2 text-[0.95rem] leading-snug text-muted">{product.short}</p>}
+        </div>
+        {/* Presentaciones como pastillas y la forma al lado, en vez de una tabla */}
+        <div className="flex flex-wrap items-center gap-y-1.5">
+          {product.variants.map((v) => (
+            <span key={v.id} className="-ml-px border border-fg px-3 py-1.5 font-mono text-sm font-bold tabular-nums first:ml-0">{v.label}</span>
+          ))}
+          <span className="ml-2 text-sm text-muted">{product.form}</span>
+        </div>
         {product.rating && (
           <p className="flex items-center gap-1.5 text-xs text-muted">
             <Stars value={product.rating.avg} className="text-sm" />
             {product.rating.avg.toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ({product.rating.count})
           </p>
         )}
-        {/* Precio y acción siempre abajo y alineados entre tarjetas: en una fila si la tarjeta es ancha, apilados si es angosta */}
-        <div className="@container mt-auto pt-4">
-          <div className="flex flex-col gap-3 @min-[22rem]:flex-row @min-[22rem]:items-center @min-[22rem]:justify-between">
-            <p className="text-lg font-semibold">
-              {product.variants.length > 1 && <span className="text-sm font-normal text-muted">Desde </span>}
-              {formatCLP(from)}
-            </p>
-            {quick ? (
-              <QuickAdd variantId={quick.id} name={product.name} className={cta} />
-            ) : (
-              !soldOut && product.variants.length > 1 && (
-                <Link href={`/productos/${product.slug}`} className={cta}>Ver presentaciones</Link>
-              )
-            )}
-          </div>
+        {/* Precio y acción siempre abajo y alineados entre tarjetas */}
+        <div className="mt-auto flex flex-col gap-3 pt-2">
+          <p className="flex flex-wrap items-baseline gap-x-2 self-start rounded-[0.1875rem] border border-accent bg-[#e6f2ee] px-3 py-2 tabular-nums text-accent">
+            {product.variants.length > 1 && <span className="font-mono text-xs uppercase tracking-[0.1em]">Desde</span>}
+            <span className="text-2xl font-bold leading-none tracking-[-0.03em]">{formatCLP(from)}</span>
+            {compare && compare > from && <s className="text-sm text-muted">{formatCLP(compare)}</s>}
+          </p>
+          {quick ? (
+            <QuickAdd variantId={quick.id} name={product.name} className={cta} />
+          ) : soldOut ? (
+            <Link href={`/productos/${product.slug}`} className="btn-ghost !min-h-11 w-full !px-4 !text-sm">Avísame cuando vuelva</Link>
+          ) : (
+            product.variants.length > 1 && (
+              <Link href={`/productos/${product.slug}`} className={cta}>Elegir presentación <span aria-hidden="true" className="font-mono transition-transform duration-200 group-hover/card:translate-x-1">→</span></Link>
+            )
+          )}
         </div>
       </div>
     </article>

@@ -130,7 +130,7 @@ export default function Checkout() {
                 <label className={`cursor-pointer rounded-card border p-4 text-sm transition ${method === "transferencia" ? "border-accent ring-2 ring-accent/30" : "hover:border-accent"}`}>
                   <span className="flex items-center gap-2 font-semibold">
                     <input type="radio" name="paymentMethod" value="transferencia" checked={method === "transferencia"} onChange={() => setMethod("transferencia")} />
-                    🏦 Transferencia bancaria
+                    Transferencia bancaria
                   </span>
                   <span className="mt-1 block text-xs text-muted">Te mostramos los datos al confirmar. Despachamos apenas veamos el abono.</span>
                 </label>
@@ -139,7 +139,7 @@ export default function Checkout() {
                 <label className={`cursor-pointer rounded-card border p-4 text-sm transition ${method === "tarjeta" ? "border-accent ring-2 ring-accent/30" : "hover:border-accent"}`}>
                   <span className="flex items-center gap-2 font-semibold">
                     <input type="radio" name="paymentMethod" value="tarjeta" checked={method === "tarjeta"} onChange={() => setMethod("tarjeta")} />
-                    💳 Tarjeta o Webpay{payments.test && " (modo de prueba)"}
+                    Tarjeta o Webpay{payments.test && " (modo de prueba)"}
                   </span>
                   <span className="mt-1 block text-xs text-muted">Crédito, débito y otros medios en la pasarela segura.</span>
                 </label>

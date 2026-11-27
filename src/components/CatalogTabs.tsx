@@ -37,8 +37,8 @@ export function CatalogTabs({ products }: { products: Product[] }) {
 
   return (
     <div className="flex flex-col gap-10">
-      <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-5 border-b border-fg/15 pb-4">
-        <ul className="flex flex-wrap gap-x-7 gap-y-2">
+      <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-5">
+        <ul className="flex flex-wrap gap-2">
           {(["Todos", ...present] as const).map((c) => {
             const on = c === active;
             return (
@@ -46,11 +46,12 @@ export function CatalogTabs({ products }: { products: Product[] }) {
                 <button
                   onClick={() => setActive(c)}
                   aria-pressed={on}
-                  className={`min-h-11 text-base font-medium underline-offset-[10px] transition-colors ${
-                    on ? "text-fg underline decoration-2" : "text-muted hover:text-fg"
+                  className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-semibold transition-colors ${
+                    on ? "border-accent bg-accent text-on-accent" : "bg-surface hover:border-fg/40"
                   }`}
                 >
                   {c}
+                  <span className={`font-mono text-xs ${on ? "opacity-70" : "text-muted"}`} aria-hidden="true">{c === "Todos" ? products.length : products.filter((p) => p.category === c).length}</span>
                 </button>
               </li>
             );
@@ -68,7 +69,7 @@ export function CatalogTabs({ products }: { products: Product[] }) {
         {active !== "Todos" && <> en {active}. {lineDesc[active]}</>}
       </p>
       {list.length === 0 && <p className="text-muted">No hay productos en esta línea por ahora. Escríbenos y te avisamos cuando lleguen.</p>}
-      <div key={`${active}-${sort}`} className="animate-fade grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3" data-testid="catalogo-portada">
+      <div key={`${active}-${sort}`} className="animate-fade grid gap-px overflow-hidden rounded-card border bg-line sm:grid-cols-2 lg:grid-cols-3" data-testid="catalogo-portada">
         {list.map((p, i) => <ProductCard key={p.slug} product={p} index={i} />)}
       </div>
     </div>

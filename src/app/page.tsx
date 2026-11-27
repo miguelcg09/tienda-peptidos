@@ -3,7 +3,7 @@ import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { CatalogTabs } from "@/components/CatalogTabs";
 import { HomeHero, type HeroItem } from "@/components/HomeHero";
-import { field, onColor } from "@/lib/colors";
+import { Ticker } from "@/components/Ticker";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductImage } from "@/components/ProductImage";
 import { Stars } from "@/components/Stars";
@@ -19,8 +19,8 @@ const HERO_MAX = 6;
 
 const words = ["Cero", "Un", "Dos", "Tres", "Cuatro", "Cinco", "Seis", "Siete", "Ocho", "Nueve", "Diez"];
 
-const eyebrow = "text-sm font-medium text-muted";
-const h2 = "mt-3 font-display text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-[-0.03em]";
+const eyebrow = "eyebrow";
+const h2 = "mt-4 font-display text-[clamp(1.9rem,3.8vw,3rem)] font-semibold leading-[1.02] tracking-[-0.035em]";
 
 // Pasos del seguimiento que ve el comprador (ejemplo ilustrativo).
 const tracking = [
@@ -74,7 +74,6 @@ export default async function Home() {
     ["Embalaje", "Viales sellados, en un embalaje protector y discreto. Refrigéralos al recibir."],
   ];
   const closing = hero[0];
-  const closingColor = field(closing.color);
   const totalReviews = Object.values(ratings).reduce((n, r) => n + r.count, 0);
   const avgReviews = totalReviews ? Object.values(ratings).reduce((n, r) => n + r.avg * r.count, 0) / totalReviews : 0;
 
@@ -106,15 +105,16 @@ export default async function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }} />
 
       <HomeHero items={items} />
+      <Ticker products={products} />
 
       {/* Cuatro hechos de compra, cada uno con su enlace */}
-      <section aria-labelledby="titulo-datos" className="border-b border-fg/15">
+      <section aria-labelledby="titulo-datos" className="border-b bg-surface">
         <h2 id="titulo-datos" className="sr-only">Cómo compras</h2>
         <ul className="mx-auto grid max-w-[1280px] px-4 sm:grid-cols-2 md:px-12 lg:grid-cols-4">
           {proofs.map((x, i) => (
-            <li key={x.title} className={`flex flex-col items-start gap-3 py-10 lg:py-12 ${i > 0 ? "lg:border-l lg:border-fg/15 lg:pl-8" : ""} ${i < 3 ? "lg:pr-8" : ""} ${i % 2 === 1 ? "sm:pl-8 lg:pl-8" : "sm:pr-8"}`}>
-              <p className="text-sm font-medium text-muted">{x.label}</p>
-              <h3 className="font-display text-3xl font-medium tracking-tight">{x.title}</h3>
+            <li key={x.title} data-reveal={i} className={`flex flex-col items-start gap-3 py-10 lg:py-12 ${i > 0 ? "lg:border-l lg:pl-8" : ""} ${i < 3 ? "lg:pr-8" : ""} ${i % 2 === 1 ? "sm:pl-8 lg:pl-8" : "sm:pr-8"}`}>
+              <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted"><span className="mr-2">{String(i + 1).padStart(2, "0")}</span>{x.label}</p>
+              <h3 className="font-display text-2xl font-semibold tracking-tight">{x.title}</h3>
               <p className="text-muted">{x.text}</p>
               <Link href={x.href} className="mt-auto inline-flex min-h-11 items-center text-sm font-medium u-link">{x.link}</Link>
             </li>
@@ -125,7 +125,7 @@ export default async function Home() {
       {/* La colección: todas las piezas juntas */}
       <section id="coleccion" aria-labelledby="titulo-coleccion" className="scroll-mt-4">
         <div className="mx-auto flex max-w-[1280px] flex-col gap-14 px-4 py-24 md:px-12 md:py-28">
-          <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
+          <div data-reveal className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
             <div>
               <p className={eyebrow}>Catálogo</p>
               <h2 id="titulo-coleccion" className={`${h2} max-w-[22ch]`}>
@@ -137,11 +137,11 @@ export default async function Home() {
           {products.length > SHOW_ALL_UP_TO ? (
             <CatalogTabs products={products} />
           ) : (
-            <div className="grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3" data-testid="catalogo-portada">
+            <div className="grid gap-px overflow-hidden rounded-card border bg-line sm:grid-cols-2 lg:grid-cols-3" data-testid="catalogo-portada">
               {products.map((p, i) => <ProductCard key={p.slug} product={p} index={i} />)}
             </div>
           )}
-          <Link href="/productos" className="self-start text-base font-medium u-link">Ver {n === 1 ? "el producto" : `los ${n} productos`}</Link>
+          <Link href="/productos" className="btn-ghost self-start">Ver {n === 1 ? "el producto" : `los ${n} productos`}</Link>
         </div>
       </section>
 
@@ -161,7 +161,7 @@ export default async function Home() {
           </div>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {reviews.slice(0, 3).map((r) => (
-              <figure key={r.id} className="flex h-full flex-col rounded-card bg-surface p-6">
+              <figure key={r.id} className="flex h-full flex-col rounded-card border bg-surface p-6">
                 <Stars value={r.rating} className="text-lg" />
                 <blockquote className="mt-3 grow text-base text-muted">“{r.body}”</blockquote>
                 <figcaption className="mt-5 text-sm">
@@ -174,74 +174,74 @@ export default async function Home() {
       )}
 
       {/* Después de comprar: qué pasa tras el pago */}
-      <section id="despacho" data-field aria-labelledby="titulo-despacho" className="scroll-mt-4 bg-[#0b0f10] text-[#f4f6f6] dark:border-y dark:border-white/10">
+      <section id="despacho" data-field aria-labelledby="titulo-despacho" className="scroll-mt-4 border-y bg-surface text-ink-fg">
         <div className="mx-auto flex max-w-[1280px] flex-col gap-16 px-4 py-24 md:px-12 md:py-28">
           <div className="flex flex-col gap-6">
-            <p className="text-sm font-medium text-[#9aa7ab]">Después de comprar</p>
-            <h2 id="titulo-despacho" className="font-display text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-[-0.03em]">
+            <p className="eyebrow !text-ink-muted">Después de comprar</p>
+            <h2 id="titulo-despacho" className="font-display text-[clamp(1.9rem,3.8vw,3rem)] font-semibold leading-[1.02] tracking-[-0.035em]">
               Qué pasa después de pagar
             </h2>
-            <p className="text-lg text-[#c4ced1]">Tres pasos. Sin cuenta. Con seguimiento.</p>
+            <p className="text-lg text-ink-fg/80">Tres pasos. Sin cuenta. Con seguimiento.</p>
           </div>
 
           <ol className="grid gap-10 md:grid-cols-3 md:gap-8" data-testid="pasos-compra">
             {steps.map((st, i) => (
-              <li key={st.title} className="relative flex flex-col gap-4 border-t border-[#2a3336] pt-7">
-                <span aria-hidden="true" className="absolute -top-px left-0 h-0.5 w-14 bg-[#f4f6f6]" />
-                <p className="font-display text-5xl font-light leading-none tracking-tight"><span className="sr-only">Paso </span>{i + 1}</p>
-                <h3 className="text-2xl font-medium leading-snug tracking-tight">{st.title}</h3>
-                <p className="max-w-[44ch] text-[#c4ced1]">{st.text}</p>
+              <li key={st.title} data-reveal={i} className="relative flex flex-col gap-4 border-t border-ink-line pt-7">
+                <span aria-hidden="true" className="absolute -top-px left-0 h-0.5 w-14 bg-mark" />
+                <p className="font-mono text-sm font-medium tracking-[0.12em] text-mark"><span className="sr-only">Paso </span>{String(i + 1).padStart(2, "0")}</p>
+                <h3 className="text-2xl font-semibold leading-snug tracking-tight">{st.title}</h3>
+                <p className="max-w-[44ch] text-ink-fg/80">{st.text}</p>
               </li>
             ))}
           </ol>
 
           <div className="grid gap-x-16 gap-y-14 lg:grid-cols-[1.1fr_1fr]">
             <div className="flex min-w-0 flex-col gap-8">
-              <dl className="border-t border-[#2a3336]">
+              <dl className="border-t border-ink-line">
                 {facts.map(([k, v]) => (
-                  <div key={k} className="grid gap-x-6 gap-y-1 border-b border-[#2a3336] py-4 sm:grid-cols-[8rem_1fr]">
-                    <dt className="text-sm font-medium text-[#9aa7ab]">{k}</dt>
+                  <div key={k} className="grid gap-x-6 gap-y-1 border-b border-ink-line py-4 sm:grid-cols-[8rem_1fr]">
+                    <dt className="text-sm font-medium text-ink-muted">{k}</dt>
                     <dd>{v}</dd>
                   </div>
                 ))}
               </dl>
-              <div className="flex flex-col gap-3 text-[#c4ced1]">
+              <div className="flex flex-col gap-3 text-ink-fg/80">
                 <p>
-                  <span className="font-medium text-[#f4f6f6]">¿Llegó dañado?</span> Escríbenos dentro de 48 horas con tu número de pedido. Los reembolsos se hacen por el mismo medio de pago.{" "}
-                  <Link href="/envios" className="text-[#f4f6f6] u-link">Ver envíos y devoluciones</Link>
+                  <span className="font-medium text-ink-fg">¿Llegó dañado?</span> Escríbenos dentro de 48 horas con tu número de pedido. Los reembolsos se hacen por el mismo medio de pago.{" "}
+                  <Link href="/envios" className="text-ink-fg u-link">Ver envíos y devoluciones</Link>
                 </p>
                 {(wa || realEmail) && (
                   <p>
-                    ¿Dudas antes de pagar? Escríbenos por {wa ? <>WhatsApp al <a href={wa} className="text-[#f4f6f6] u-link">{settings.whatsapp}</a></> : null}
+                    ¿Dudas antes de pagar? Escríbenos por {wa ? <>WhatsApp al <a href={wa} className="text-ink-fg u-link">{settings.whatsapp}</a></> : null}
                     {wa && realEmail ? " o a " : null}
-                    {realEmail ? <a href={`mailto:${realEmail}`} className="text-[#f4f6f6] u-link">{realEmail}</a> : null}.
+                    {realEmail ? <a href={`mailto:${realEmail}`} className="text-ink-fg u-link">{realEmail}</a> : null}.
                   </p>
                 )}
               </div>
             </div>
 
             <div className="flex min-w-0 flex-col gap-8">
-              <div className="w-full rounded-card bg-[#151b1d] p-7 pb-8" role="group" aria-label="Ejemplo de seguimiento de un pedido">
+              <div className="w-full rounded-card border border-ink-line bg-ink-2 p-7 pb-8" role="group" aria-label="Ejemplo de seguimiento de un pedido">
                 <div className="flex items-center justify-between gap-3">
                   <span className="font-mono text-sm tracking-wider">PEDIDO HX-10482</span>
-                  <span className="rounded-[3px] bg-[#f4f6f6] px-2.5 py-1 font-mono text-xs tracking-widest text-[#0b0f10]">EJEMPLO</span>
+                  <span className="chip bg-mark text-mark-fg">EJEMPLO</span>
                 </div>
                 <ol className="mt-7 flex flex-col">
                   {tracking.map((t, i) => {
                     const last = i === tracking.length - 1;
-                    const line = t.state === "done" ? "border-[#f4f6f6]" : t.state === "now" ? "border-[#3a4548]" : "border-transparent";
+                    const line = t.state === "done" ? "border-mark" : t.state === "now" ? "border-ink-line" : "border-transparent";
                     return (
                       <li key={t.label} className={`relative border-l-2 pl-6 ${last ? "" : "pb-7"} ${line}`} aria-current={t.state === "now" ? "step" : undefined}>
                         <span
                           aria-hidden="true"
                           className={`absolute rounded-full ${
-                            t.state === "now" ? "-left-[9px] top-0.5 h-4 w-4 border-[3px] border-[#f4f6f6] bg-[#0b0f10]"
-                            : t.state === "done" ? "-left-[7px] top-1 h-3 w-3 bg-[#f4f6f6]"
-                            : "-left-[7px] top-1 h-3 w-3 border-2 border-[#5e6a6e]"
+                            t.state === "now" ? "-left-[9px] top-0.5 h-4 w-4 border-[3px] border-mark bg-ink"
+                            : t.state === "done" ? "-left-[7px] top-1 h-3 w-3 bg-mark"
+                            : "-left-[7px] top-1 h-3 w-3 border-2 border-ink-muted"
                           }`}
                         />
-                        <p className={`text-lg ${t.state === "now" ? "font-semibold" : "font-medium"} ${t.state === "next" ? "text-[#9aa7ab]" : ""}`}>{t.label}</p>
-                        {"note" in t && <p className="pt-1.5 font-mono text-xs text-[#c4ced1]">{t.note}</p>}
+                        <p className={`text-lg ${t.state === "now" ? "font-semibold" : "font-medium"} ${t.state === "next" ? "text-ink-muted" : ""}`}>{t.label}</p>
+                        {"note" in t && <p className="pt-1.5 font-mono text-xs text-ink-fg/80">{t.note}</p>}
                       </li>
                     );
                   })}
@@ -249,7 +249,7 @@ export default async function Home() {
               </div>
 
               <form action="/pedido" method="get" className="flex flex-col gap-3" data-testid="seguir-pedido">
-                <label htmlFor="seguir-orden" className="text-sm font-medium text-[#9aa7ab]">Número de pedido</label>
+                <label htmlFor="seguir-orden" className="text-sm font-medium text-ink-muted">Número de pedido</label>
                 <div className="flex flex-wrap gap-3">
                   <input
                     id="seguir-orden"
@@ -257,11 +257,11 @@ export default async function Home() {
                     required
                     autoComplete="off"
                     placeholder="Ej.: HX-10482"
-                    className="min-h-14 min-w-0 flex-1 basis-48 rounded-btn border border-[#3a4548] bg-[#151b1d] px-4 text-base text-[#f4f6f6] placeholder:text-[#9aa7ab]"
+                    className="min-h-14 min-w-0 flex-1 basis-48 rounded-btn border border-ink-line bg-ink-2 px-4 text-base text-ink-fg placeholder:text-ink-muted"
                   />
-                  <button className="inline-flex min-h-14 items-center rounded-btn bg-[#f4f6f6] px-8 text-base font-semibold text-[#0b0f10] transition-opacity hover:opacity-90">Seguir mi pedido</button>
+                  <button className="btn-primary !min-h-14 !px-8">Seguir mi pedido</button>
                 </div>
-                <p className="text-sm text-[#c4ced1]">Con tu correo ves también el número de seguimiento del courier.</p>
+                <p className="text-sm text-ink-fg/80">Con tu correo ves también el número de seguimiento del courier.</p>
               </form>
             </div>
           </div>
@@ -278,12 +278,12 @@ export default async function Home() {
             <a href={contactHref} className="inline-block py-1.5 font-medium text-fg u-link">¿Otra duda? Escríbenos</a>
           </p>
         </div>
-        <div className="divide-y self-start rounded-card bg-surface" data-testid="faq-portada">
+        <div data-reveal className="divide-y self-start rounded-card border bg-surface" data-testid="faq-portada">
           {faqs.map((f, i) => (
             <details key={f.q} open={i === 0} className="group px-6 py-5 transition-colors hover:bg-surface-2">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-medium">
                 {f.q}
-                <span className="font-mono text-xl transition group-open:rotate-45" aria-hidden>+</span>
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-btn border font-mono text-lg transition group-open:rotate-45 group-open:border-accent group-open:bg-accent group-open:text-on-accent" aria-hidden>+</span>
               </summary>
               <p className="mt-2 text-muted">{f.a}</p>
             </details>
@@ -292,24 +292,24 @@ export default async function Home() {
       </section>
 
       {/* Cierre: una acción para quien decidió y una salida suave para quien aún no compra */}
-      <section aria-labelledby="titulo-cierre" data-field style={{ backgroundColor: closingColor, color: onColor(closingColor) }}>
+      <section aria-labelledby="titulo-cierre" className="border-t">
         <div className="mx-auto grid max-w-[1280px] items-center gap-x-16 gap-y-10 px-4 pb-14 pt-24 md:grid-cols-[1.2fr_0.8fr] md:px-12 md:pt-28">
           <div className="flex min-w-0 flex-col items-start gap-7">
-            <h2 id="titulo-cierre" className="font-display text-[clamp(2.25rem,4.6vw,4rem)] font-light leading-[1.02] tracking-[-0.03em]">
+            <h2 id="titulo-cierre" className="font-display text-[clamp(2rem,3.6vw,3rem)] font-semibold leading-[1.04] tracking-[-0.035em]">
               Péptidos de investigación, en pesos y con seguimiento a todo Chile.
             </h2>
-            <p className="max-w-[44ch] text-xl">Elige tu compuesto, paga en pesos y sigue tu pedido con su número de seguimiento.</p>
-            <a href="#coleccion" className="inline-flex min-h-14 items-center rounded-btn px-8 text-base font-semibold transition-opacity hover:opacity-90" style={{ backgroundColor: onColor(closingColor), color: closingColor }}>
-              Ver catálogo
+            <p className="max-w-[44ch] text-xl text-muted">Elige tu compuesto, paga en pesos y sigue tu pedido con su número de seguimiento.</p>
+            <a href="#coleccion" className="btn-primary !min-h-14 !px-8">
+              Ver catálogo <span aria-hidden="true">→</span>
             </a>
           </div>
-          <div className="flex justify-center">
-            <ProductImage product={closing} tone="field" className="h-[300px] w-auto max-w-full md:h-[400px]" />
+          <div data-reveal className="frame-ticks flex justify-center rounded-card border bg-bg py-10">
+            <ProductImage product={closing} className="animate-float h-[280px] w-auto max-w-full md:h-[360px]" />
           </div>
         </div>
         <div className="wrap">
-          <p className="border-t border-current/30 py-8 pb-24 text-sm md:pb-28">
-            ¿No ves el compuesto que buscas? <a href={contactHref} className="font-medium u-link">Escríbenos</a> y vemos si podemos incluirlo.
+          <p className="border-t py-8 text-muted pb-24 text-sm md:pb-28">
+            ¿No ves el compuesto que buscas? <a href={contactHref} className="font-medium text-fg u-link">Escríbenos</a> y vemos si podemos incluirlo.
           </p>
         </div>
       </section>

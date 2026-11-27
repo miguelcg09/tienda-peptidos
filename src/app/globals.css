@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* El diseño Señal es solo claro: las variantes dark: no se aplican nunca, aunque el sistema esté en modo oscuro */
+@custom-variant dark (&:where(.solo-oscuro-nunca, .solo-oscuro-nunca *));
+
 /* Paleta: los tokens cambian solos según el tema claro/oscuro del sistema del visitante */
 @theme {
   --color-bg: var(--bg);
@@ -13,11 +16,19 @@
   --color-lime: var(--badge);
   --color-tint: var(--tint);
   --color-on-accent: var(--on-accent);
-  --font-sans: var(--font-funnel-sans), system-ui, sans-serif;
-  --font-display: var(--font-funnel-display), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --font-weight-semibold: 500;
-  --font-weight-bold: 600;
+  --font-sans: var(--font-schibsted), system-ui, sans-serif;
+  --font-display: var(--font-schibsted), system-ui, sans-serif;
+  --font-mono: var(--font-fragment-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --color-ok: var(--ok);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-line: var(--ink-line);
+  --color-ink-fg: var(--ink-fg);
+  --color-ink-muted: var(--ink-muted);
+  --color-mark: var(--mark);
+  --color-mark-fg: var(--mark-fg);
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
   --radius-card: var(--r-card);
   --radius-btn: var(--r-btn);
 
@@ -48,51 +59,41 @@
 }
 
 :root {
+  /* Señal claro: blanco cálido, líneas finas negras y un color de acción. Solo claro, también con el sistema en oscuro. */
   color-scheme: light;
-  --bg: #f4f6f6;
+  --bg: #f4f4f1;
   --surface: #ffffff;
-  --surface-2: #e9eeee;
-  --line: rgb(11 15 16 / 0.12);
-  --fg: #0b0f10;
-  --muted: #5b676b;
-  --accent: #0b0f10;
-  --accent-2: #2e5aac;
-  --badge: #2e5aac;
-  --tint: #0b0f10;
-  --on-accent: #f4f6f6;
-  --glow: 11 15 16;
-  /* Color de las barras de los gráficos del panel (azul validado para claro y oscuro) */
-  --series: #2a78d6;
+  --surface-2: #ecece8;
+  --line: rgb(14 15 12 / 0.12);
+  --fg: #0e0f0c;
+  --muted: #5d625a;
+  --accent: #046c4e;
+  --accent-2: #046c4e;
+  --badge: #046c4e;
+  --tint: #0e0f0c;
+  --on-accent: #ffffff;
+  --glow: 4 108 78;
+  /* Color de las barras de los gráficos del panel */
+  --series: #046c4e;
   --grain: 0;
-  --btn-from: #0b0f10;
-  --btn-to: #0b0f10;
-  --r-card: 0.375rem;
-  --r-btn: 0.25rem;
+  --btn-from: #046c4e;
+  --btn-to: #046c4e;
+  --r-card: 0.25rem;
+  --r-btn: 0.1875rem;
+  /* Portada y bandas: el mismo fondo claro con su línea */
+  --ink: #f4f4f1;
+  --ink-2: #ffffff;
+  --ink-line: rgb(14 15 12 / 0.12);
+  --ink-fg: #0e0f0c;
+  --ink-muted: #5d625a;
+  --mark: #046c4e;
+  --mark-fg: #ffffff;
+  /* Punto de estado "en stock" */
+  --ok: #16a34a;
   /* Alto de la barra fija con el aviso de uso: lo usan el encabezado fijo y los anclajes */
   --bar-h: 2.125rem;
 }
 @media (min-width: 40rem) { :root { --bar-h: 2.375rem; } }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --bg: #0b0f10;
-    --surface: #151b1d;
-    --surface-2: #1c2326;
-    --line: rgb(244 246 246 / 0.14);
-    --fg: #f4f6f6;
-    --muted: #9aa7ab;
-    --accent: #f4f6f6;
-    --accent-2: #7fa4e8;
-    --badge: #7fa4e8;
-    --tint: #f4f6f6;
-    --on-accent: #0b0f10;
-    --glow: 244 246 246;
-    --series: #3987e5;
-    --btn-from: #f4f6f6;
-    --btn-to: #f4f6f6;
-  }
-}
 
 /* Barras de los gráficos del panel */
 .viz-bar { background: var(--series); }
@@ -105,7 +106,7 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
 @layer base {
   *, ::before, ::after { border-color: var(--color-line); }
   /* Los títulos respiran: reparto parejo de líneas y espacio justo entre letras */
-  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; letter-spacing: -0.02em; }
+  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; letter-spacing: -0.035em; }
   p, li { text-wrap: pretty; }
   :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
   /* Sobre fondos de color (portada, despacho, cierre) el anillo de foco toma el color del texto: blanco o tinta, el de más contraste */
@@ -123,8 +124,15 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
   /* Un solo sistema para toda la tienda: el mismo ancho de contenido que el encabezado y la misma escala de títulos */
   .wrap { margin-inline: auto; width: 100%; max-width: 1280px; padding-inline: 1rem; }
   @media (min-width: 48rem) { .wrap { padding-inline: 3rem; } }
-  .t-page { font-family: var(--font-display); font-weight: 300; font-size: clamp(2.25rem, 4.6vw, 3.5rem); line-height: 1.04; letter-spacing: -0.03em; }
-  .t-h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1.12; letter-spacing: -0.02em; }
+  .t-page { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.125rem, 4.4vw, 3.375rem); line-height: 1.02; letter-spacing: -0.035em; }
+  .t-h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1.1; letter-spacing: -0.025em; }
+  /* Nombre de producto: Geist apretada, como el nombre de un modelo en una ficha técnica */
+  .t-label { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
+  /* Antetítulo de sección: mono chico en mayúsculas con un punto verde delante */
+  .eyebrow { display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-muted); }
+  .eyebrow::before { content: ""; width: 0.375rem; height: 0.375rem; border-radius: 1px; background: var(--accent); }
+  /* Ficha chica de datos (categoría, stock, presentaciones) */
+  .chip { display: inline-flex; align-items: center; gap: 0.4rem; border-radius: 0.1875rem; padding: 0.2rem 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.4; }
   .glass {
     background: var(--color-surface);
     border: 1px solid var(--color-line);
@@ -141,9 +149,10 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
     font-weight: 600;
     color: var(--on-accent);
     background: var(--btn-from);
-    transition: opacity 0.2s;
+    transition: background-color 0.2s, transform 0.15s;
   }
-  .btn-primary:hover { opacity: 0.86; }
+  .btn-primary:hover { background: color-mix(in oklab, var(--btn-from) 82%, #fff); }
+  .btn-primary:active { transform: translateY(1px); }
   .btn-primary:disabled { opacity: 0.6; }
   .btn-ghost {
     display: inline-flex;
@@ -151,8 +160,8 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
     justify-content: center;
     border-radius: var(--r-btn);
     padding: 0.8rem 1.6rem;
-    font-weight: 500;
-    border: 1px solid color-mix(in oklab, var(--fg) 18%, transparent);
+    font-weight: 600;
+    border: 1px solid color-mix(in oklab, var(--fg) 22%, transparent);
     transition: border-color 0.2s, background 0.2s;
   }
   .btn-ghost:hover { border-color: var(--color-accent); background: rgb(var(--glow) / 0.06); }
@@ -170,6 +179,12 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
   .field:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 }
 
+/* Marco técnico: cuatro esquinas marcadas alrededor de una pieza (portada, ficha) */
+.frame-ticks { position: relative; }
+.frame-ticks::before, .frame-ticks::after { content: ""; position: absolute; width: 14px; height: 14px; border-color: var(--accent); pointer-events: none; }
+.frame-ticks::before { left: -1px; top: -1px; border-left: 2px solid; border-top: 2px solid; }
+.frame-ticks::after { right: -1px; bottom: -1px; border-right: 2px solid; border-bottom: 2px solid; }
+
 /* Bandas de sección: un tono apenas distinto del fondo, separadas por una línea */
 .band { background: var(--color-surface-2); border-top: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); }
 
@@ -181,13 +196,32 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
 .animate-fade { animation: fade-in 0.25s ease-out; }
 .animate-slide { animation: slide-up 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
 
+/* Movimiento del diseño Señal (todo se apaga con "menos movimiento", ver abajo) */
+@keyframes vial-in { from { opacity: 0; transform: translateY(28px) rotate(-7deg) scale(0.94); } to { opacity: 1; transform: none; } }
+.animate-vial-in { animation: vial-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.hero-progress { animation-name: progress; animation-timing-function: linear; animation-fill-mode: both; }
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.ticker-track { animation: ticker 48s linear infinite; }
+.ticker:hover .ticker-track { animation-play-state: paused; }
+@keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-10px) rotate(-1.5deg); } }
+.animate-float { animation: float 6s ease-in-out infinite; }
+/* Entrada de titulares: cada línea sube desde abajo */
+@keyframes rise { from { opacity: 0; transform: translateY(0.4em); } to { opacity: 1; transform: none; } }
+.rise { animation: rise 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
 /* Aparición al hacer scroll (ver Reveal.tsx) */
 .reveal { transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.reveal.reveal-pending { opacity: 0; transform: translateY(24px); }
+.reveal.reveal-pending, [data-reveal].reveal-pending { opacity: 0; transform: translateY(28px); }
+[data-reveal] { transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+/* En las grillas con líneas pegadas se mueve el contenido de la celda, no la celda: así la línea nunca queda al descubierto */
+.reveal-inner.reveal-pending { opacity: 1; transform: none; }
+.reveal-inner > * { transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: inherit; }
+.reveal-inner.reveal-pending > * { opacity: 0; transform: translateY(24px); }
 
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after { animation: none !important; transition: none !important; }
-  .reveal.reveal-pending { opacity: 1; transform: none; }
+  .reveal.reveal-pending, [data-reveal].reveal-pending, .reveal-inner.reveal-pending > * { opacity: 1; transform: none; }
 }
 
 /* Mapa del checkout (Leaflet): marcador arrastrable en el color de acento */
