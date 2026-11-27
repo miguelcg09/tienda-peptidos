@@ -7,7 +7,7 @@ import { Ticker } from "@/components/Ticker";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductImage } from "@/components/ProductImage";
 import { Stars } from "@/components/Stars";
-import { faqs } from "@/lib/faqs";
+import { faqsFrom, tx } from "@/lib/copy";
 import { latestPublished, ratingSummary } from "@/lib/reviews";
 import { whatsappLink } from "@/lib/whatsapp";
 import { publicUrl } from "@/lib/site";
@@ -56,17 +56,20 @@ export default async function Home() {
   const realEmail = settings.email && !settings.email.endsWith("@ejemplo.cl") ? settings.email : "";
   const n = products.length;
   const countWord = words[n] ?? String(n);
+  const t = (key: string, vars?: Record<string, string | number>) => tx(settings.textos, key, vars);
   const proofs: { label: string; title: string; text: string; href: string; link: string }[] = [
-    { label: "Envío", title: "Con seguimiento", text: "Cada pedido sale con número de seguimiento a todo Chile.", href: "/pedido", link: "Seguir mi pedido" },
-    { label: "Pago", title: "En pesos", text: "Pagas en pesos chilenos, por transferencia bancaria.", href: "/guias#como-comprar", link: "Cómo comprar" },
-    { label: "Despacho", title: "Mismo día hábil", text: `${dispatch}. Envío gratis sobre ${formatCLP(settings.freeShippingFrom)}.`, href: "/envios", link: "Envíos y devoluciones" },
-    { label: "Si llega dañado", title: "48 horas", text: "Si tu pedido llega dañado, escríbenos dentro de 48 horas con tu número de pedido.", href: "/envios", link: "Envíos y devoluciones" },
-  ];
-  const steps: { title: string; text: string }[] = [
-    { title: "Elige y agrega al carrito.", text: "No necesitas crear una cuenta. Pedimos nombre, RUT, contacto y dirección de despacho." },
-    { title: "Paga en pesos.", text: "Por transferencia bancaria: te mostramos los datos al confirmar y guardamos tu pedido 48 horas mientras transfieres." },
-    { title: "Recibe con seguimiento.", text: "Cuando despachamos, te enviamos el número de seguimiento por correo. También lo ves en “Seguir mi pedido”." },
-  ];
+    { href: "/pedido", link: "Seguir mi pedido" },
+    { href: "/guias#como-comprar", link: "Cómo comprar" },
+    { href: "/envios", link: "Envíos y devoluciones" },
+    { href: "/envios", link: "Envíos y devoluciones" },
+  ].map((x, i) => ({
+    ...x,
+    label: t(`inicio.p${i + 1}.etiqueta`),
+    title: t(`inicio.p${i + 1}.titulo`),
+    text: t(`inicio.p${i + 1}.texto`, { despacho: dispatch, monto: formatCLP(settings.freeShippingFrom) }),
+  }));
+  const steps: { title: string; text: string }[] = [1, 2, 3].map((k) => ({ title: t(`inicio.paso${k}.titulo`), text: t(`inicio.paso${k}.texto`) }));
+  const faqs = faqsFrom(settings.textos);
   const facts = [
     ["Despacho", dispatch],
     ["Entrega", "1 a 3 días hábiles en la Región Metropolitana. 2 a 6 en regiones."],
@@ -127,12 +130,12 @@ export default async function Home() {
         <div className="mx-auto flex max-w-[1280px] flex-col gap-14 px-4 py-24 md:px-12 md:py-28">
           <div data-reveal className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
             <div>
-              <p className={eyebrow}>Catálogo</p>
+              <p className={eyebrow}>{t("inicio.catalogo.antetitulo")}</p>
               <h2 id="titulo-coleccion" className={`${h2} max-w-[22ch]`}>
-                {n === 1 ? "Un compuesto de investigación" : `${countWord} compuestos de investigación`}, con su precio a la vista.
+                {n === 1 && !settings.textos?.["inicio.catalogo.titulo"] ? "Un compuesto de investigación, con su precio a la vista." : t("inicio.catalogo.titulo", { cantidad: countWord })}
               </h2>
             </div>
-            <p className="max-w-[34ch] text-lg text-muted">Todos los precios incluyen IVA. Si algo se agota, lo marcamos.</p>
+            <p className="max-w-[34ch] text-lg text-muted">{t("inicio.catalogo.texto")}</p>
           </div>
           {products.length > SHOW_ALL_UP_TO ? (
             <CatalogTabs products={products} />
@@ -177,11 +180,11 @@ export default async function Home() {
       <section id="despacho" data-field aria-labelledby="titulo-despacho" className="scroll-mt-4 border-y bg-surface text-ink-fg">
         <div className="mx-auto flex max-w-[1280px] flex-col gap-16 px-4 py-24 md:px-12 md:py-28">
           <div className="flex flex-col gap-6">
-            <p className="eyebrow !text-ink-muted">Después de comprar</p>
+            <p className="eyebrow !text-ink-muted">{t("inicio.pasos.antetitulo")}</p>
             <h2 id="titulo-despacho" className="font-display text-[clamp(1.9rem,3.8vw,3rem)] font-semibold leading-[1.02] tracking-[-0.035em]">
-              Qué pasa después de pagar
+              {t("inicio.pasos.titulo")}
             </h2>
-            <p className="text-lg text-ink-fg/80">Tres pasos. Sin cuenta. Con seguimiento.</p>
+            <p className="text-lg text-ink-fg/80">{t("inicio.pasos.texto")}</p>
           </div>
 
           <ol className="grid gap-10 md:grid-cols-3 md:gap-8" data-testid="pasos-compra">
@@ -271,9 +274,9 @@ export default async function Home() {
       {/* Preguntas frecuentes: la primera abierta */}
       <section id="faq" aria-labelledby="titulo-faq" className="wrap grid scroll-mt-4 gap-x-16 gap-y-10 py-24 md:py-28 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <div>
-          <p className={eyebrow}>Preguntas frecuentes</p>
-          <h2 id="titulo-faq" className={h2}>Lo que más preguntan antes de comprar</h2>
-          <p className="mt-4 text-lg text-muted">Respuestas cortas. Si falta la tuya, escríbenos.</p>
+          <p className={eyebrow}>{t("inicio.faq.antetitulo")}</p>
+          <h2 id="titulo-faq" className={h2}>{t("inicio.faq.titulo")}</h2>
+          <p className="mt-4 text-lg text-muted">{t("inicio.faq.texto")}</p>
           <p className="mt-6 text-sm">
             <a href={contactHref} className="inline-block py-1.5 font-medium text-fg u-link">¿Otra duda? Escríbenos</a>
           </p>
@@ -296,11 +299,11 @@ export default async function Home() {
         <div className="mx-auto grid max-w-[1280px] items-center gap-x-16 gap-y-10 px-4 pb-14 pt-24 md:grid-cols-[1.2fr_0.8fr] md:px-12 md:pt-28">
           <div className="flex min-w-0 flex-col items-start gap-7">
             <h2 id="titulo-cierre" className="font-display text-[clamp(2rem,3.6vw,3rem)] font-semibold leading-[1.04] tracking-[-0.035em]">
-              Péptidos de investigación, en pesos y con seguimiento a todo Chile.
+              {t("inicio.cierre.titulo")}
             </h2>
-            <p className="max-w-[44ch] text-xl text-muted">Elige tu compuesto, paga en pesos y sigue tu pedido con su número de seguimiento.</p>
+            <p className="max-w-[44ch] text-xl text-muted">{t("inicio.cierre.texto")}</p>
             <a href="#coleccion" className="btn-primary !min-h-14 !px-8">
-              Ver catálogo <span aria-hidden="true">→</span>
+              {t("portada.boton")} <span aria-hidden="true">→</span>
             </a>
           </div>
           <div data-reveal className="frame-ticks flex justify-center rounded-card border bg-bg py-10">

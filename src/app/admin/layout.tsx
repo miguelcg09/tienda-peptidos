@@ -14,6 +14,7 @@ const nav = [
   { href: "/admin/cupones", label: "Cupones" },
   { href: "/admin/resenas", label: "Reseñas" },
   { href: "/admin/suscriptores", label: "Suscriptores" },
+  { href: "/admin/textos", label: "Textos" },
   { href: "/admin/ajustes", label: "Ajustes" },
   { href: "/admin/usuarios", label: "Equipo" },
   { href: "/admin/auditoria", label: "Auditoría" },

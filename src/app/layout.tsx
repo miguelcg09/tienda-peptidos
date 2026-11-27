@@ -11,6 +11,7 @@ import { getSettings } from "@/lib/settings";
 import { formatCLP } from "@/lib/products";
 import { getPalette, paletteCss } from "@/lib/palettes";
 import { hasBankData, toStoreSettings } from "@/lib/config";
+import { tx } from "@/lib/copy";
 import { cardProviderName } from "@/lib/payments";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { RevealAll } from "@/components/RevealAll";
@@ -66,8 +67,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* Aviso de uso: fijo arriba en todas las páginas, también en la portada. En celular, versión corta de una línea */}
         <section aria-label="Aviso de uso y envío" className="sticky top-0 z-40 flex h-[var(--bar-h)] items-center justify-center gap-x-8 overflow-hidden whitespace-nowrap bg-fg px-4 text-center font-mono text-xs uppercase tracking-[0.1em] text-bg/80">
           <span className="sm:hidden">Solo investigación · +18</span>
-          <span className="hidden sm:inline">Solo para uso en investigación · Mayores de 18 años</span>
-          <span className="hidden lg:inline">Envío gratis sobre {formatCLP(settings.freeShippingFrom)}</span>
+          <span className="hidden sm:inline">{tx(settings.textos, "barra.aviso")}</span>
+          <span className="hidden lg:inline">{tx(settings.textos, "barra.envio", { monto: formatCLP(settings.freeShippingFrom) })}</span>
         </section>
         <StoreProvider catalog={catalog} settings={storeSettings}>
           <Header />
