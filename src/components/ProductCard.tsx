@@ -39,15 +39,20 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
         </span>
       </Link>
       <div className="flex flex-1 flex-col gap-3 border-t px-4 pb-4 pt-4">
-        <Heading className="t-label break-words text-[1.4rem]">
-          <Link href={`/productos/${product.slug}`} className="underline-offset-[5px] hover:underline focus-visible:outline-none focus-visible:underline">{product.name}</Link>
-        </Heading>
-        <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 font-mono text-xs">
-          <dt className="uppercase tracking-[0.08em] text-muted">Formato</dt>
-          <dd className="min-w-0 break-words">{product.variants.map((v) => v.label).join(" / ")}</dd>
-          <dt className="uppercase tracking-[0.08em] text-muted">Forma</dt>
-          <dd className="min-w-0 break-words">{product.form}</dd>
-        </dl>
+        {/* Nombre grande y apretado, con una línea corta en texto normal debajo para que se lea como titular y bajada */}
+        <div className="flex flex-col gap-1.5">
+          <Heading className="t-label break-words text-[1.7rem] tracking-[-0.04em] transition-colors duration-200 group-hover/card:text-accent">
+            <Link href={`/productos/${product.slug}`} className="underline-offset-[5px] focus-visible:outline-none focus-visible:underline">{product.name}</Link>
+          </Heading>
+          {product.short && <p className="line-clamp-2 text-[0.95rem] leading-snug text-muted">{product.short}</p>}
+        </div>
+        {/* Presentaciones como pastillas y la forma al lado, en vez de una tabla */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          {product.variants.map((v) => (
+            <span key={v.id} className="rounded-[0.1875rem] border px-2 py-0.5 font-mono text-xs tabular-nums">{v.label}</span>
+          ))}
+          <span className="ml-1 text-xs text-muted">{product.form}</span>
+        </div>
         {product.rating && (
           <p className="flex items-center gap-1.5 text-xs text-muted">
             <Stars value={product.rating.avg} className="text-sm" />
