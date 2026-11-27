@@ -191,7 +191,7 @@ export default async function Home() {
           <ol className="grid gap-10 md:grid-cols-3 md:gap-8" data-testid="pasos-compra">
             {steps.map((st, i) => (
               <li key={st.title} data-reveal={i} className="relative flex flex-col gap-4 border-t border-ink-line pt-7">
-                <span aria-hidden="true" className="absolute -top-px left-0 h-0.5 w-14 bg-mark" />
+                <span aria-hidden="true" className="absolute -top-px left-0 h-0.5 w-14 bg-signal" />
                 <p className="font-mono text-sm font-medium tracking-[0.12em] text-mark"><span className="sr-only">Paso </span>{String(i + 1).padStart(2, "0")}</p>
                 <h3 className="text-2xl font-semibold leading-snug tracking-tight">{st.title}</h3>
                 <p className="max-w-[44ch] text-ink-fg/80">{st.text}</p>
