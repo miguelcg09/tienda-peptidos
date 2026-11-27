@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getProduct, getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
-import { faqsFrom } from "@/lib/copy";
+import { catLabel, faqsFrom } from "@/lib/copy";
+import { categoryHref, isSupply } from "@/lib/products";
 import { showCertificates } from "@/lib/features";
 import { ProductStage } from "@/components/ProductStage";
 import { ProductCard } from "@/components/ProductCard";
@@ -58,7 +59,8 @@ export default async function ProductPage({ params }: Props) {
   if (!product) notFound();
   const [products, settings, reviews] = await Promise.all([getProducts(), getSettings(), listPublished(product.slug)]);
   const related = products.filter((p) => p.slug !== product.slug).sort((a, b) => (a.category === product.category ? -1 : 1) - (b.category === product.category ? -1 : 1)).slice(0, 6);
-  const isAccessory = product.category === "Accesorios";
+  const isAccessory = isSupply(product);
+  const catName = catLabel(settings.textos, product.category);
 
   // El certificado y la pureza se muestran solo con documentos reales (ver src/lib/features.ts)
   const certs = showCertificates();
@@ -66,7 +68,7 @@ export default async function ProductPage({ params }: Props) {
   const off = hasCert ? 0 : -1; // si no hay sección de certificado, las demás suben un número
 
   const specs = [
-    ["Mecanismo", product.mechanism ?? product.category],
+    ["Mecanismo", product.mechanism ?? catName],
     ...(certs ? [["Pureza", product.purity]] : []),
     ["Forma", product.form],
     ["CAS", product.cas ?? "—"],
@@ -89,7 +91,7 @@ export default async function ProductPage({ params }: Props) {
     "@type": "Product",
     name: product.name,
     description: product.short,
-    category: product.category,
+    category: catName,
     ...(product.imageUrl ? { image: product.imageUrl } : {}),
     brand: { "@type": "Brand", name: settings.name },
     ...(product.rating ? { aggregateRating: { "@type": "AggregateRating", ratingValue: Number(product.rating.avg.toFixed(1)), reviewCount: product.rating.count } } : {}),
@@ -110,7 +112,7 @@ export default async function ProductPage({ params }: Props) {
       <nav aria-label="Ruta de navegación" className="mb-5 flex flex-wrap gap-2 text-sm text-muted">
         <Link href="/" className="inline-block py-1 hover:text-accent">Inicio</Link>
         <span aria-hidden="true">/</span>
-        <Link href={`/productos?categoria=${encodeURIComponent(product.category)}`} className="inline-block py-1 hover:text-accent">{product.category}</Link>
+        <Link href={categoryHref(product.category)} className="inline-block py-1 hover:text-accent">{catName}</Link>
         <span aria-hidden="true">/</span>
         <span className="min-w-0 text-fg [overflow-wrap:anywhere]" aria-current="page">{product.name}</span>
       </nav>

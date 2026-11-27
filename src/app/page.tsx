@@ -7,11 +7,11 @@ import { Ticker } from "@/components/Ticker";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductImage } from "@/components/ProductImage";
 import { Stars } from "@/components/Stars";
-import { faqsFrom, tx } from "@/lib/copy";
+import { catLabel, faqsFrom, tx } from "@/lib/copy";
 import { latestPublished, ratingSummary } from "@/lib/reviews";
 import { whatsappLink } from "@/lib/whatsapp";
 import { publicUrl } from "@/lib/site";
-import { formatCLP } from "@/lib/products";
+import { formatCLP, isSupply } from "@/lib/products";
 
 // Con pocos productos se muestran todos juntos; con más, se agrega el filtro por línea de investigación.
 const SHOW_ALL_UP_TO = 8;
@@ -40,7 +40,8 @@ export default async function Home() {
   const items: HeroItem[] = hero.map((p) => ({
     slug: p.slug,
     name: p.name,
-    category: p.category,
+    category: catLabel(settings.textos, p.category),
+    supply: isSupply(p),
     color: p.color,
     imageUrl: p.imageUrl,
     lot: p.lot,

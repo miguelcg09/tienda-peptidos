@@ -5,11 +5,14 @@ import { ProductImage } from "@/components/ProductImage";
 import { removeProduct, toggleProductVisible } from "../actions";
 import { ConfirmButton } from "../ConfirmButton";
 import { requirePage } from "@/lib/admin";
+import { getSettings } from "@/lib/settings";
+import { catLabel } from "@/lib/copy";
 
 export const dynamic = "force-dynamic";
 
 export default async function Productos() {
   await requirePage();
+  const { textos } = await getSettings();
   const products = await getProducts({ includeHidden: true });
 
   return (
@@ -34,7 +37,7 @@ export default async function Productos() {
                 {p.featured && <span className="ml-2 rounded-full bg-accent-2/15 px-2 py-0.5 text-[0.8125rem] font-semibold uppercase text-accent-2">Destacado</span>}
                 {!p.visible && <span className="ml-2 rounded-full bg-tint/10 px-2 py-0.5 text-[0.8125rem] font-semibold uppercase text-muted">Oculto</span>}
               </p>
-              <p className="text-xs text-muted">{p.category} · orden {p.sort}</p>
+              <p className="text-xs text-muted">{catLabel(textos, p.category)} · orden {p.sort}</p>
               <p className="mt-1 text-sm text-muted">
                 {p.variants.map((v) => `${v.label} ${formatCLP(v.price)}${v.stock != null ? ` (stock ${v.stock})` : ""}`).join(" · ")}
               </p>

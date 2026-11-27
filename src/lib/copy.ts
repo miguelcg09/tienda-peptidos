@@ -2,6 +2,7 @@
 // Cada texto tiene un valor por defecto; en la base solo se guardan los que alguien cambió (ajuste "textos").
 // Las marcas {n}, {monto}, etc. se reemplazan al mostrar el texto.
 import { faqs as faqsDefault } from "./faqs";
+import { categories, categoryMeta, type Category } from "./products";
 
 type Entry = { label: string; def: string; long?: boolean; hint?: string };
 type Group = { id: string; title: string; note?: string; items: Record<string, Entry> };
@@ -43,6 +44,12 @@ export const COPY_GROUPS: Group[] = [
       "ficha.ultimas": { label: "Pocas unidades", def: "Últimas {n}", hint: "{n} = unidades que quedan" },
       "ficha.agotado": { label: "Sin stock", def: "Agotado" },
     },
+  },
+  {
+    id: "categorias",
+    title: "Categorías",
+    note: "Nombre visible de cada categoría en las etiquetas de las fichas, los filtros y el catálogo. La dirección de la página (/productos?categoria=...) no cambia.",
+    items: Object.fromEntries(categories.map((c) => [`categoria.${c}`, { label: categoryMeta[c].blurb, def: categoryMeta[c].name }])),
   },
   {
     id: "inicio",
@@ -102,6 +109,9 @@ export function tx(textos: Textos | undefined, key: string, vars?: Record<string
   if (vars) for (const [k, v] of Object.entries(vars)) s = s.split(`{${k}}`).join(String(v));
   return s;
 }
+
+// Nombre visible de una categoría (editable en /admin/textos > Categorías).
+export const catLabel = (textos: Textos | undefined, c: Category) => tx(textos, `categoria.${c}`);
 
 // Preguntas frecuentes con los cambios guardados. Una pregunta guardada como "-" se oculta.
 export function faqsFrom(textos: Textos | undefined) {

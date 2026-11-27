@@ -1,11 +1,11 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { formatCLP, type Product } from "@/lib/products";
+import { categoryHref, formatCLP, type Product } from "@/lib/products";
 import { tint } from "@/lib/colors";
 import { ProductImage } from "./ProductImage";
 import { QuickAdd } from "./QuickAdd";
 import { Stars } from "./Stars";
-import { T } from "./T";
+import { CatName, T } from "./T";
 
 // Acción de la tarjeta: botón lleno del ancho de la tarjeta, igual para "Agregar" y "Elegir presentación"
 const cta = "btn-ghost !min-h-11 w-full !justify-between !px-4 !text-sm hover:!border-accent hover:!bg-accent hover:!text-on-accent";
@@ -40,9 +40,15 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
       <div className="flex flex-1 flex-col gap-3 border-t px-4 pb-4 pt-4">
         {/* Nombre grande y apretado, con una línea corta en texto normal debajo para que se lea como titular y bajada */}
         <div className="flex flex-col gap-1.5">
-          <p className="flex items-center gap-2 font-mono text-[0.8rem] font-bold uppercase tracking-[0.1em] text-accent">
-            <span aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-[2px]" style={{ background: product.color }} />
-            <span className="min-w-0 truncate">{product.category}</span>
+          {/* Etiqueta de categoría: lleva al catálogo filtrado por esa categoría */}
+          <p className="flex min-w-0 items-center">
+            <Link
+              href={categoryHref(product.category)}
+              className="inline-flex min-h-7 min-w-0 items-center gap-2 rounded-full border border-accent/30 px-2.5 font-mono text-[0.8rem] font-bold uppercase tracking-[0.1em] text-accent transition-colors hover:border-accent hover:bg-accent hover:text-on-accent"
+            >
+              <span aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-[2px]" style={{ background: product.color }} />
+              <span className="min-w-0 truncate"><CatName c={product.category} /></span>
+            </Link>
             <span className="sr-only">, {status.text}</span>
           </p>
           <Heading className="t-label break-words text-[1.7rem] tracking-[-0.04em] transition-colors duration-200 group-hover/card:text-accent">

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { categories, type Category, type Product } from "@/lib/products";
+import { categories, categoryMeta, type Category, type Product } from "@/lib/products";
+import { useT } from "./T";
 import { ProductCard } from "./ProductCard";
 
 type Sort = "destacados" | "precio-asc" | "precio-desc" | "nombre";
@@ -11,20 +12,14 @@ const sorts: { id: Sort; label: string }[] = [
   { id: "precio-desc", label: "Precio: mayor a menor" },
   { id: "nombre", label: "Nombre A–Z" },
 ];
-// Qué es cada línea, en una frase: lo que se estudia en laboratorio, sin prometer efectos.
-const lineDesc: Record<Category, string> = {
-  "Reparación tisular": "Péptidos que se estudian en modelos preclínicos de reparación de tejidos.",
-  Metabolismo: "Agonistas de los receptores GLP-1 y GIP.",
-  "Hormona de crecimiento": "Compuestos que actúan sobre el eje GH / IGF-1 en modelos de laboratorio.",
-  Cognición: "Neuropéptidos estudiados en modelos animales.",
-  Accesorios: "Agua bacteriostática y material para reconstituir en laboratorio.",
-};
 const minPrice = (p: Product) => Math.min(...p.variants.map((v) => v.price));
 
 // Colección con filtro por línea de investigación y orden, en la misma sección (sin ir a otra página).
 export function CatalogTabs({ products }: { products: Product[] }) {
   const [active, setActive] = useState<Category | "Todos">("Todos");
   const [sort, setSort] = useState<Sort>("destacados");
+  const t = useT();
+  const name = (c: Category | "Todos") => (c === "Todos" ? c : t(`categoria.${c}`));
 
   const present = categories.filter((c) => products.some((p) => p.category === c));
   const filtered = active === "Todos" ? products : products.filter((p) => p.category === active);
@@ -50,7 +45,7 @@ export function CatalogTabs({ products }: { products: Product[] }) {
                     on ? "border-accent bg-accent text-on-accent" : "bg-surface hover:border-fg/40"
                   }`}
                 >
-                  {c}
+                  {name(c)}
                   <span className={`font-mono text-xs ${on ? "opacity-70" : "text-muted"}`} aria-hidden="true">{c === "Todos" ? products.length : products.filter((p) => p.category === c).length}</span>
                 </button>
               </li>
@@ -66,7 +61,7 @@ export function CatalogTabs({ products }: { products: Product[] }) {
       </div>
       <p className="-mt-4 text-sm text-muted" aria-live="polite">
         <span className="font-semibold text-fg">{list.length}</span> {list.length === 1 ? "producto" : "productos"}
-        {active !== "Todos" && <> en {active}. {lineDesc[active]}</>}
+        {active !== "Todos" && <> en {name(active)}. {categoryMeta[active].desc}</>}
       </p>
       {list.length === 0 && <p className="text-muted">No hay productos en esta línea por ahora. Escríbenos y te avisamos cuando lleguen.</p>}
       <div key={`${active}-${sort}`} className="animate-fade grid gap-px overflow-hidden rounded-card border bg-line sm:grid-cols-2 lg:grid-cols-3" data-testid="catalogo-portada">

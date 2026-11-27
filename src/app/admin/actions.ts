@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/admin";
-import { categories, formatCLP, slugify, type Category, type Product, type Variant } from "@/lib/products";
+import { categories, formatCLP, slugify, toCategory, type Product, type Variant } from "@/lib/products";
 import { decrementStock, deleteProduct, getProduct, releaseStock, setProductVisible, setVariants, upsertProduct } from "@/lib/catalog";
 import { deleteOrder, getOrder, markPaid, markShipped, setOrderNote } from "@/lib/orders";
 import { getSettings, saveSettings } from "@/lib/settings";
@@ -50,9 +50,7 @@ export async function saveProduct(form: FormData) {
   const name = str(form, "name");
   if (!name) throw new Error("El nombre es obligatorio");
   const slug = original || slugify(str(form, "slug") || name);
-  const category = (categories as readonly string[]).includes(str(form, "category"))
-    ? (str(form, "category") as Category)
-    : categories[0];
+  const category = toCategory(str(form, "category")) ?? categories[0];
 
   const product: Omit<Product, "variants"> = {
     slug,

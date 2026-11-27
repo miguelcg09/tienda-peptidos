@@ -4,6 +4,7 @@ import { getProduct } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { getPalette } from "@/lib/palettes";
 import { formatCLP } from "@/lib/products";
+import { catLabel } from "@/lib/copy";
 
 // Imagen de vista previa al compartir la ficha (WhatsApp, redes, Google).
 export const alt = "Producto";
@@ -27,7 +28,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           <span style={{ color: pal.muted }}>Solo para investigación</span>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <span style={{ fontSize: 26, letterSpacing: 6, textTransform: "uppercase", color: pal.accent }}>{product?.category ?? ""}</span>
+          <span style={{ fontSize: 26, letterSpacing: 6, textTransform: "uppercase", color: pal.accent }}>{product ? catLabel(settings.textos, product.category) : ""}</span>
           <span style={{ fontSize: 96, fontWeight: 800, lineHeight: 1 }}>{product?.name ?? "Producto"}</span>
           <span style={{ fontSize: 34, color: pal.muted }}>{product?.short ?? ""}</span>
         </div>

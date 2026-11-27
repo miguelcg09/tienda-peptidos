@@ -1,6 +1,7 @@
 "use client";
 
-import { tx } from "@/lib/copy";
+import { catLabel, tx } from "@/lib/copy";
+import type { Category } from "@/lib/products";
 import { useStore } from "./CartProvider";
 
 // Textos editables desde /admin/textos, para componentes de cliente y para tarjetas que se usan en ambos lados.
@@ -11,4 +12,9 @@ export function useT() {
 
 export function T({ k, vars }: { k: string; vars?: Record<string, string | number> }) {
   return <>{useT()(k, vars)}</>;
+}
+
+export function CatName({ c }: { c: Category }) {
+  const { settings } = useStore();
+  return <>{catLabel(settings.textos, c)}</>;
 }

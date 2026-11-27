@@ -4,19 +4,20 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useId, useMemo, useRef, useState } from "react";
 import { formatCLP, type Product } from "@/lib/products";
-import { useCart } from "./CartProvider";
+import { useCart, useStore } from "./CartProvider";
+import { catLabel } from "@/lib/copy";
 import { Icon } from "./Icon";
 
 const plain = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 
 // Busca por nombre, línea, CAS o resumen. Los que empiezan igual que lo escrito van primero.
-function find(catalog: Product[], q: string) {
+function find(catalog: Product[], q: string, label: (p: Product) => string) {
   const t = plain(q);
   if (!t) return [];
   return catalog
     .map((p) => {
       const name = plain(p.name);
-      const rest = plain([p.category, p.cas ?? "", p.short, p.slug].join(" "));
+      const rest = plain([label(p), p.cas ?? "", p.short, p.slug].join(" "));
       const score = name.startsWith(t) ? 0 : name.includes(t) ? 1 : rest.includes(t) ? 2 : -1;
       return { p, score };
     })
@@ -29,6 +30,9 @@ function find(catalog: Product[], q: string) {
 // cae a la página /productos?q=. variant "header": compacto, para la barra; "hero": con etiqueta y botón.
 export function ProductSearch({ variant = "header", className = "", label = "Buscar un producto" }: { variant?: "header" | "hero"; className?: string; label?: string }) {
   const { catalog } = useCart();
+  const { settings } = useStore();
+  const textos = settings.textos;
+  const catOf = (p: Product) => catLabel(textos, p.category);
   const router = useRouter();
   const uid = useId();
   const inputId = `${uid}-q`;
@@ -39,7 +43,7 @@ export function ProductSearch({ variant = "header", className = "", label = "Bus
   const [active, setActive] = useState(-1);
   const hero = variant === "hero";
 
-  const results = useMemo(() => find(catalog, q).slice(0, 5), [catalog, q]);
+  const results = useMemo(() => find(catalog, q, (p) => catLabel(textos, p.category)).slice(0, 5), [catalog, q, textos]);
   const showPanel = open && q.trim().length > 0;
   const optionId = (i: number) => `${uid}-op-${i}`;
 
@@ -125,7 +129,7 @@ export function ProductSearch({ variant = "header", className = "", label = "Bus
                   >
                     <span className="min-w-0">
                       <span className="block font-medium">{p.name}</span>
-                      <span className="block text-sm text-muted">{p.category}</span>
+                      <span className="block text-sm text-muted">{catOf(p)}</span>
                     </span>
                     <span className="shrink-0 text-sm">{p.variants.length > 1 ? "Desde " : ""}{formatCLP(Math.min(...p.variants.map((v) => v.price)))}</span>
                   </li>

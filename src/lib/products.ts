@@ -31,22 +31,42 @@ export type Product = {
   sort: number;
 };
 
-export const categories = [
-  "Reparación tisular",
-  "Metabolismo",
-  "Hormona de crecimiento",
-  "Cognición",
-  "Accesorios",
-] as const;
+// Categorías por objetivo de estudio: son las etiquetas navegables de cada ficha (/productos?categoria=<id>).
+// El id es fijo (se guarda en la base y va en la URL); el nombre visible se cambia en /admin/textos > Categorías
+// (claves "categoria.<id>" en copy.ts), así se puede renombrar sin tocar código ni productos.
+export const categories = ["regeneracion", "metabolico", "eje-gh", "cognicion", "insumos"] as const;
 export type Category = (typeof categories)[number];
 
-export const categoryMeta: Record<Category, { icon: string; blurb: string; color: string }> = {
-  "Reparación tisular": { icon: "🧬", blurb: "Regeneración y matriz celular", color: "#34d399" },
-  Metabolismo: { icon: "🔥", blurb: "Señalización GLP-1 y GIP", color: "#f5c451" },
-  "Hormona de crecimiento": { icon: "💪", blurb: "Eje GH / IGF-1", color: "#fb923c" },
-  Cognición: { icon: "🧠", blurb: "Neuropéptidos", color: "#f472b6" },
-  Accesorios: { icon: "🧪", blurb: "Diluyentes y reconstitución", color: "#94a3b8" },
+export const categoryMeta: Record<Category, { name: string; icon: string; blurb: string; color: string; desc: string }> = {
+  regeneracion: { name: "Regeneración", icon: "🧬", blurb: "Reparación de tejidos y matriz celular", color: "#34d399", desc: "Péptidos que se estudian en modelos preclínicos de reparación de tejidos." },
+  metabolico: { name: "Composición corporal", icon: "🔥", blurb: "Señalización GLP-1 y GIP", color: "#f5c451", desc: "Agonistas de los receptores GLP-1 y GIP estudiados en modelos metabólicos." },
+  "eje-gh": { name: "Vitalidad", icon: "⚡", blurb: "Eje GH / IGF-1", color: "#fb923c", desc: "Compuestos que actúan sobre el eje GH / IGF-1 en modelos de laboratorio." },
+  cognicion: { name: "Enfoque", icon: "🧠", blurb: "Neuropéptidos", color: "#f472b6", desc: "Neuropéptidos estudiados en modelos animales." },
+  insumos: { name: "Insumos", icon: "🧪", blurb: "Diluyentes y reconstitución", color: "#94a3b8", desc: "Agua bacteriostática y material para reconstituir en laboratorio." },
 };
+
+// Nombres que se guardaban antes en la base de datos: se leen como el id nuevo sin migrar filas.
+const legacyCategories: Record<string, Category> = {
+  "reparacion tisular": "regeneracion",
+  metabolismo: "metabolico",
+  "hormona de crecimiento": "eje-gh",
+  cognicion: "cognicion",
+  accesorios: "insumos",
+};
+
+const plainText = (t: string) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
+
+// Acepta el id, el nombre por defecto o un nombre anterior (con o sin tildes). Devuelve undefined si no calza.
+export function toCategory(value: string | null | undefined): Category | undefined {
+  if (!value) return undefined;
+  const v = plainText(value);
+  if ((categories as readonly string[]).includes(v)) return v as Category;
+  for (const c of categories) if (plainText(categoryMeta[c].name) === v) return c;
+  return legacyCategories[v];
+}
+
+export const categoryHref = (c: Category) => `/productos?categoria=${c}`;
+export const isSupply = (p: { category: string }) => toCategory(p.category) === "insumos";
 
 // Catálogo inicial: se carga en la base de datos la primera vez y desde ahí se edita en /admin/productos.
 export const seedProducts: Product[] = [
@@ -56,7 +76,7 @@ export const seedProducts: Product[] = [
     reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
     research: "Se estudia en modelos de cicatrización de tendón, músculo y mucosa gástrica, con interés en angiogénesis y señalización de factores de crecimiento.",
     name: "BPC-157",
-    category: "Reparación tisular",
+    category: "regeneracion",
     short: "Pentadecapéptido derivado de una proteína gástrica.",
     description:
       "Péptido sintético de 15 aminoácidos estudiado en modelos preclínicos de reparación de tejidos. Se entrega liofilizado en vial sellado.",
@@ -78,7 +98,7 @@ export const seedProducts: Product[] = [
     reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
     research: "Investigado por su papel en la regulación de actina, la migración de células endoteliales y la formación de nuevos vasos en modelos animales.",
     name: "TB-500",
-    category: "Reparación tisular",
+    category: "regeneracion",
     short: "Fragmento sintético de timosina beta-4.",
     description:
       "Análogo sintético de la región activa de la timosina beta-4, utilizado en investigación sobre migración celular y angiogénesis.",
@@ -99,7 +119,7 @@ export const seedProducts: Product[] = [
     reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
     research: "Permite estudiar de forma comparativa el efecto conjunto de ambos péptidos en modelos de daño tisular.",
     name: "BPC-157 + TB-500",
-    category: "Reparación tisular",
+    category: "regeneracion",
     short: "Mezcla en un solo vial para protocolos combinados.",
     description:
       "Combinación de BPC-157 y TB-500 en proporción 1:1, pensada para estudios comparativos de reparación tisular.",
@@ -116,7 +136,7 @@ export const seedProducts: Product[] = [
     reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
     research: "Se utiliza en investigación sobre secreción de insulina dependiente de glucosa, vaciamiento gástrico y regulación del apetito en modelos animales.",
     name: "Semaglutide",
-    category: "Metabolismo",
+    category: "metabolico",
     short: "Análogo del receptor GLP-1.",
     description:
       "Análogo del péptido similar al glucagón tipo 1 (GLP-1) usado en investigación metabólica y de señalización de insulina.",
@@ -138,7 +158,7 @@ export const seedProducts: Product[] = [
     reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
     research: "Investigado en modelos de metabolismo de glucosa y lípidos, con interés en la acción simultánea sobre dos receptores de incretinas.",
     name: "Tirzepatide",
-    category: "Metabolismo",
+    category: "metabolico",
     short: "Agonista dual de receptores GIP y GLP-1.",
     description: "Péptido agonista dual GIP/GLP-1 estudiado en modelos de metabolismo de glucosa y lípidos.",
     purity: "≥ 99% (HPLC)",
@@ -158,7 +178,7 @@ export const seedProducts: Product[] = [
     reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
     research: "Combinación usada en estudios de pulsatilidad de GH y su relación con IGF-1 en modelos preclínicos.",
     name: "CJC-1295 + Ipamorelin",
-    category: "Hormona de crecimiento",
+    category: "eje-gh",
     short: "Combinación de análogo de GHRH y secretagogo selectivo.",
     description:
       "Mezcla de CJC-1295 (sin DAC) e Ipamorelin, usada en estudios del eje de la hormona de crecimiento.",
@@ -175,7 +195,7 @@ export const seedProducts: Product[] = [
     reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
     research: "Investigado por su selectividad sobre el receptor de grelina sin efecto relevante sobre cortisol o prolactina en los modelos estudiados.",
     name: "Ipamorelin",
-    category: "Hormona de crecimiento",
+    category: "eje-gh",
     short: "Pentapéptido secretagogo de GH.",
     description:
       "Secretagogo selectivo del receptor de grelina, estudiado por su especificidad sobre la liberación de GH.",
@@ -192,7 +212,7 @@ export const seedProducts: Product[] = [
     reconstitution: "Deja el vial a temperatura ambiente 10 minutos. Inyecta el agua bacteriostática lentamente por la pared del vial, sin apuntar al polvo. No agites: gira suavemente hasta disolver. Una vez reconstituido, refrigera entre 2 y 8 °C y protege de la luz.",
     research: "Estudiado en modelos de neuroprotección, memoria y expresión de BDNF en roedores.",
     name: "Semax",
-    category: "Cognición",
+    category: "cognicion",
     short: "Heptapéptido análogo de ACTH(4-10).",
     description: "Análogo sintético de un fragmento de ACTH, investigado en modelos de neuroprotección.",
     purity: "≥ 98% (HPLC)",
@@ -208,7 +228,7 @@ export const seedProducts: Product[] = [
     storage: "Temperatura ambiente, sin luz",
     research: "Diluyente estándar para preparar soluciones de péptidos liofilizados. El alcohol bencílico al 0,9% inhibe el crecimiento bacteriano y permite extracciones múltiples del mismo vial.",
     name: "Agua bacteriostática",
-    category: "Accesorios",
+    category: "insumos",
     short: "Diluyente estéril con 0,9% de alcohol bencílico.",
     description:
       "Agua estéril con alcohol bencílico al 0,9% para la reconstitución de péptidos liofilizados en laboratorio.",

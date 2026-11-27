@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
+import { catLabel } from "@/lib/copy";
+import { isSupply } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Certificados de análisis por lote",
@@ -17,7 +19,7 @@ export default async function Certificados({ searchParams }: { searchParams: Pro
   const [products, settings] = await Promise.all([getProducts(), getSettings()]);
   const term = q.trim().toLowerCase();
   const list = products
-    .filter((p) => p.category !== "Accesorios")
+    .filter((p) => !isSupply(p))
     .filter((p) => !term || p.name.toLowerCase().includes(term) || (p.lot ?? "").toLowerCase().includes(term) || (p.cas ?? "").includes(term));
 
   return (
@@ -46,7 +48,7 @@ export default async function Certificados({ searchParams }: { searchParams: Pro
               <li key={p.slug} className="grid grid-cols-[minmax(0,1fr)] gap-3 p-5 text-sm sm:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-center [&>div]:min-w-0 [&_a]:[overflow-wrap:anywhere] [&_p]:[overflow-wrap:anywhere]">
                 <div>
                   <Link href={`/productos/${p.slug}`} className="font-display text-lg font-semibold hover:text-accent">{p.name}</Link>
-                  <p className="text-xs text-muted">{p.category} · {p.variants.map((v) => v.label).join(" / ")}</p>
+                  <p className="text-xs text-muted">{catLabel(settings.textos, p.category)} · {p.variants.map((v) => v.label).join(" / ")}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted">Lote</p>

@@ -5,6 +5,8 @@ import { categories, type Product } from "@/lib/products";
 import { ProductImage } from "@/components/ProductImage";
 import { saveProduct } from "../../actions";
 import { requirePage } from "@/lib/admin";
+import { getSettings } from "@/lib/settings";
+import { catLabel } from "@/lib/copy";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +27,7 @@ const empty: Product = {
 
 export default async function EditarProducto({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ error?: string; slug?: string }> }) {
   await requirePage();
+  const { textos } = await getSettings();
   const { slug } = await params;
   const { error, slug: clash } = await searchParams;
   const isNew = slug === "nuevo";
@@ -51,7 +54,7 @@ export default async function EditarProducto({ params, searchParams }: { params:
           <label className="text-sm">Nombre<input name="name" required defaultValue={product.name} className="field" /></label>
           <label className="text-sm">Categoría
             <select name="category" defaultValue={product.category} className="field">
-              {categories.map((c) => <option key={c} className="bg-surface">{c}</option>)}
+              {categories.map((c) => <option key={c} value={c} className="bg-surface">{catLabel(textos, c)}</option>)}
             </select>
           </label>
           <label className="text-sm sm:col-span-2">Descripción corta (en la tarjeta)<input name="short" defaultValue={product.short} className="field" /></label>

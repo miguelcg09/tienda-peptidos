@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { formatCLP, type Product } from "@/lib/products";
+import Link from "next/link";
+import { categoryHref, formatCLP, type Product } from "@/lib/products";
 import type { Settings } from "@/lib/config";
 import { useCart } from "./CartProvider";
+import { CatName } from "./T";
 import { ProductImage } from "./ProductImage";
 import { Newsletter } from "./Newsletter";
 import { Stars } from "./Stars";
@@ -68,7 +70,7 @@ export function ProductStage({
         <div>
         <div className="relative grid gap-6 p-6 md:grid-cols-[minmax(0,1fr)_10rem] md:gap-8 md:px-12 md:py-9 lg:grid-cols-[1.1fr_1fr]">
           <div className="flex min-w-0 flex-col justify-center">
-            <p className="eyebrow">{product.category}</p>
+            <p className="eyebrow"><Link href={categoryHref(product.category)} className="hover:underline"><CatName c={product.category} /></Link></p>
             <h1 className="t-label mt-4 break-words text-[clamp(2.2rem,10vw,3rem)] tracking-[-0.05em] md:text-[clamp(2.75rem,5.4vw,4.75rem)]">{product.name}</h1>
             <p className="mt-5 max-w-md text-lg text-muted">{product.short}</p>
             <ul className="mt-6 flex flex-wrap gap-2 text-xs font-medium">

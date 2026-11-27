@@ -12,6 +12,7 @@ export type HeroItem = {
   slug: string;
   name: string;
   category: string;
+  supply: boolean;
   color: string;
   imageUrl?: string;
   lot?: string;
@@ -98,7 +99,7 @@ export function HomeHero({ items }: { items: HeroItem[] }) {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={cur.imageUrl} alt={cur.name} className="max-h-[360px] w-auto max-w-[70%] object-contain" />
               ) : (
-                <Vial color={cur.color} label={cur.name} tone="light" lot={cur.lot} format={cur.format} kind={cur.category === "Accesorios" ? "liquid" : "powder"} className="h-[280px] w-auto max-w-full lg:h-[340px]" />
+                <Vial color={cur.color} label={cur.name} tone="light" lot={cur.lot} format={cur.format} kind={cur.supply ? "liquid" : "powder"} className="h-[280px] w-auto max-w-full lg:h-[340px]" />
               )}
               </div>
               <p key={`lote-${cur.slug}`} className="animate-fade absolute bottom-3.5 left-4 font-mono text-xs tracking-[0.1em] text-muted">{cur.lot ? `LOTE ${cur.lot}` : cur.format.toUpperCase()}</p>

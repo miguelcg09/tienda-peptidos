@@ -1,6 +1,6 @@
 import "server-only";
 import { query } from "./db";
-import { seedProducts, type Category, type Product, type Variant } from "./products";
+import { seedProducts, toCategory, type Product, type Variant } from "./products";
 import { ratingSummary } from "./reviews";
 import { showCertificates } from "./features";
 
@@ -67,7 +67,7 @@ function toProduct(r: ProductRow, variants: VariantRow[], rating?: { avg: number
     ...(rating ? { rating } : {}),
     slug: r.slug,
     name: r.name,
-    category: r.category as Category,
+    category: toCategory(r.category) ?? "regeneracion",
     short: r.short,
     description: r.description,
     purity: r.purity,
