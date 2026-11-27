@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import { categoryHref, formatCLP, type Product } from "@/lib/products";
 import { tint } from "@/lib/colors";
 import { ProductImage } from "./ProductImage";
@@ -14,11 +16,13 @@ const cta = "btn-ghost !min-h-11 w-full !justify-between !px-4 !text-sm hover:!b
 // precio en caja verde clara y un botón.
 export function ProductCard({ product, index, headingLevel = 3 }: { product: Product; index?: number; headingLevel?: 2 | 3 }) {
   const Heading = headingLevel === 2 ? "h2" : "h3";
-  const from = Math.min(...product.variants.map((v) => v.price));
-  const compare = product.variants.find((v) => v.price === from)?.compareAt ?? null;
-  const soldOut = product.variants.every((v) => v.stock === 0);
-  const quick = product.variants.length === 1 ? product.variants.find((v) => v.stock !== 0) : undefined;
-  const lowStock = product.variants.reduce<number | null>((m, v) => (v.stock !== null && v.stock > 0 && v.stock <= 5 && (m === null || v.stock < m) ? v.stock : m), null);
+  const multi = product.variants.length > 1;
+  // Presentación elegida en la tarjeta: parte en la más barata con stock (o la más barata si todo está agotado)
+  const byPrice = [...product.variants].sort((a, b) => a.price - b.price);
+  const [selId, setSelId] = useState(() => (byPrice.find((v) => v.stock !== 0) ?? byPrice[0])?.id);
+  const sel = product.variants.find((v) => v.id === selId) ?? byPrice[0];
+  const soldOut = sel ? sel.stock === 0 : true;
+  const lowStock = sel && sel.stock !== null && sel.stock > 0 && sel.stock <= 5 ? sel.stock : null;
   const status = soldOut ? { dot: "bg-[#9ca3af]", text: <T k="ficha.agotado" /> } : lowStock !== null ? { dot: "bg-[#f59e0b]", text: <T k="ficha.ultimas" vars={{ n: lowStock }} /> } : { dot: "bg-[#4ade80]", text: <T k="ficha.enStock" /> };
   return (
     <article data-reveal={index ?? 0} className="reveal-inner group/card flex h-full min-w-0 flex-col bg-surface" style={{ "--card-tint": tint(product.color) } as CSSProperties}>
@@ -34,7 +38,7 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
         {/* Estado de stock sobre la foto */}
         <span className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full bg-fg px-2.5 py-1 font-mono text-xs font-semibold uppercase tracking-[0.06em] text-bg"><span aria-hidden="true" className={`h-2 w-2 rounded-full ${status.dot}`} />{status.text}</span>
         <span className="absolute inset-x-0 bottom-[6%] top-[8%] flex justify-center">
-          <ProductImage product={product} className="h-full w-auto max-w-[70%] transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover/card:-translate-y-2 group-hover/card:-rotate-6 group-hover/card:scale-105" />
+          <ProductImage product={product} format={sel?.label} className="h-full w-auto max-w-[70%] transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover/card:-translate-y-2 group-hover/card:-rotate-6 group-hover/card:scale-105" />
         </span>
       </Link>
       <div className="flex flex-1 flex-col gap-3 border-t px-4 pb-4 pt-4">
@@ -56,11 +60,33 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
           </Heading>
           {product.short && <p className="line-clamp-2 text-[0.95rem] leading-snug text-muted">{product.short}</p>}
         </div>
-        {/* Presentaciones como pastillas y la forma al lado, en vez de una tabla */}
+        {/* Presentaciones: con más de una, son un selector que cambia precio, stock y botón de la tarjeta */}
         <div className="flex flex-wrap items-center gap-y-1.5">
-          {product.variants.map((v) => (
-            <span key={v.id} className="-ml-px border border-fg px-3 py-1.5 font-mono text-sm font-bold tabular-nums first:ml-0">{v.label}</span>
-          ))}
+          {multi ? (
+            <div role="radiogroup" aria-label={`Presentación de ${product.name}`} className="flex flex-wrap">
+              {product.variants.map((v) => {
+                const on = v.id === sel?.id;
+                return (
+                  <button
+                    key={v.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={on}
+                    onClick={() => setSelId(v.id)}
+                    className={`-ml-px min-h-10 border border-fg px-3 py-1.5 font-mono text-sm font-bold tabular-nums transition-colors first:ml-0 ${
+                      on ? "relative z-[1] bg-fg text-bg" : "hover:bg-[var(--card-tint)]"
+                    } ${v.stock === 0 ? "line-through decoration-1 opacity-60" : ""}`}
+                  >
+                    {v.label}
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            product.variants.map((v) => (
+              <span key={v.id} className="border border-fg px-3 py-1.5 font-mono text-sm font-bold tabular-nums">{v.label}</span>
+            ))
+          )}
           <span className="ml-2 text-sm text-muted">{product.form}</span>
         </div>
         {product.rating && (
@@ -71,19 +97,15 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
         )}
         {/* Precio y acción siempre abajo y alineados entre tarjetas */}
         <div className="mt-auto flex flex-col gap-3 pt-2">
-          <p className="flex flex-wrap items-baseline gap-x-2 self-start rounded-[0.1875rem] border border-accent bg-[#e6f2ee] px-3 py-2 tabular-nums text-accent">
-            {product.variants.length > 1 && <span className="font-mono text-xs uppercase tracking-[0.1em]"><T k="ficha.desde" /></span>}
-            <span className="text-2xl font-bold leading-none tracking-[-0.03em]">{formatCLP(from)}</span>
-            {compare && compare > from && <s className="text-sm text-muted">{formatCLP(compare)}</s>}
+          <p aria-live="polite" className="flex flex-wrap items-baseline gap-x-2 self-start rounded-[0.1875rem] border border-accent bg-[#e6f2ee] px-3 py-2 tabular-nums text-accent">
+            {multi && sel && <span className="font-mono text-xs uppercase tracking-[0.1em]">{sel.label}</span>}
+            <span className="text-2xl font-bold leading-none tracking-[-0.03em]">{sel ? formatCLP(sel.price) : ""}</span>
+            {sel?.compareAt && sel.compareAt > sel.price && <s className="text-sm text-muted">{formatCLP(sel.compareAt)}</s>}
           </p>
-          {quick ? (
-            <QuickAdd variantId={quick.id} name={product.name} className={cta} />
-          ) : soldOut ? (
+          {soldOut ? (
             <Link href={`/productos/${product.slug}`} className="btn-ghost !min-h-11 w-full !px-4 !text-sm"><T k="ficha.avisame" /></Link>
           ) : (
-            product.variants.length > 1 && (
-              <Link href={`/productos/${product.slug}`} className={cta}><T k="ficha.elegir" /> <span aria-hidden="true" className="font-mono transition-transform duration-200 group-hover/card:translate-x-1">→</span></Link>
-            )
+            sel && <QuickAdd variantId={sel.id} name={multi ? `${product.name} ${sel.label}` : product.name} className={cta} />
           )}
         </div>
       </div>
