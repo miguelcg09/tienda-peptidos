@@ -18,7 +18,7 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
   const lowStock = product.variants.reduce<number | null>((m, v) => (v.stock !== null && v.stock > 0 && v.stock <= 5 && (m === null || v.stock < m) ? v.stock : m), null);
   const status = soldOut ? { dot: "bg-muted", text: "Agotado" } : lowStock !== null ? { dot: "bg-accent", text: `Últimas ${lowStock}` } : { dot: "bg-ok", text: "En stock" };
   return (
-    <article className="group/card flex h-full min-w-0 flex-col bg-surface transition-colors duration-200 hover:bg-[#14171b]">
+    <article className="group/card flex h-full min-w-0 flex-col bg-surface transition-colors duration-200 hover:bg-surface-2">
       <p className="flex items-center justify-between gap-3 border-b px-4 py-2.5 font-mono text-xs uppercase tracking-[0.08em] text-muted">
         <span className="min-w-0 truncate">{index !== undefined && <span className="mr-2 text-fg">{String(index + 1).padStart(2, "0")}</span>}{product.category}</span>
         <span className="flex shrink-0 items-center gap-1.5"><span aria-hidden="true" className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />{status.text}</span>

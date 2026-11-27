@@ -61,34 +61,34 @@
 :root {
   /* Señal: casi negro, líneas finas y un solo color de señal. Solo oscuro, también para quien usa modo claro. */
   color-scheme: dark;
-  --bg: #0a0b0d;
-  --surface: #111317;
-  --surface-2: #171a1f;
+  --bg: #0b0c0a;
+  --surface: #121411;
+  --surface-2: #181b17;
   --line: rgb(255 255 255 / 0.10);
-  --fg: #ecedef;
-  --muted: #8f969e;
-  --accent: #ff5b1f;
-  --accent-2: #ff5b1f;
-  --badge: #ff7a45;
-  --tint: #ecedef;
-  --on-accent: #0a0b0d;
-  --glow: 255 91 31;
+  --fg: #eceee8;
+  --muted: #8e9489;
+  --accent: #c8f031;
+  --accent-2: #c8f031;
+  --badge: #c8f031;
+  --tint: #eceee8;
+  --on-accent: #0b0c0a;
+  --glow: 200 240 49;
   /* Color de las barras de los gráficos del panel */
-  --series: #ff7a45;
+  --series: #c8f031;
   --grain: 0;
-  --btn-from: #ff5b1f;
-  --btn-to: #ff5b1f;
+  --btn-from: #c8f031;
+  --btn-to: #c8f031;
   --r-card: 0.25rem;
   --r-btn: 0.1875rem;
-  /* Portada y bandas: el mismo negro con su línea; señal naranja y verde de "en stock" */
-  --ink: #0a0b0d;
-  --ink-2: #171a1f;
+  /* Portada y bandas: el mismo negro con su línea; señal lima para acciones y "en stock" */
+  --ink: #0b0c0a;
+  --ink-2: #181b17;
   --ink-line: rgb(255 255 255 / 0.10);
-  --ink-fg: #ecedef;
-  --ink-muted: #8f969e;
-  --mark: #ff5b1f;
-  --mark-fg: #0a0b0d;
-  --ok: #3ddc84;
+  --ink-fg: #eceee8;
+  --ink-muted: #8e9489;
+  --mark: #c8f031;
+  --mark-fg: #0b0c0a;
+  --ok: #c8f031;
   /* Alto de la barra fija con el aviso de uso: lo usan el encabezado fijo y los anclajes */
   --bar-h: 2.125rem;
 }

@@ -29,18 +29,18 @@ export const palettes: Palette[] = [
     // Solo oscuro: el mismo tono para quien usa modo claro o modo oscuro.
     id: "vitrina",
     name: "Señal",
-    blurb: "Casi negro, líneas finas y un solo color de señal naranja. Técnica y moderna.",
+    blurb: "Casi negro, líneas finas y un solo color de señal lima. Técnica y moderna.",
     light: {
-      bg: "#0a0b0d", surface: "#111317", surface2: "#171a1f", line: "rgb(255 255 255 / 0.10)",
-      fg: "#ecedef", muted: "#8f969e", accent: "#ff5b1f", accent2: "#ff5b1f", badge: "#ff7a45",
-      tint: "#ecedef", onAccent: "#0a0b0d", glow: "255 91 31", grain: "0",
-      btnFrom: "#ff5b1f", btnTo: "#ff5b1f", rCard: "0.25rem", rBtn: "0.1875rem",
+      bg: "#0b0c0a", surface: "#121411", surface2: "#181b17", line: "rgb(255 255 255 / 0.10)",
+      fg: "#eceee8", muted: "#8e9489", accent: "#c8f031", accent2: "#c8f031", badge: "#c8f031",
+      tint: "#eceee8", onAccent: "#0b0c0a", glow: "200 240 49", grain: "0",
+      btnFrom: "#c8f031", btnTo: "#c8f031", rCard: "0.25rem", rBtn: "0.1875rem",
     },
     dark: {
-      bg: "#0a0b0d", surface: "#111317", surface2: "#171a1f", line: "rgb(255 255 255 / 0.10)",
-      fg: "#ecedef", muted: "#8f969e", accent: "#ff5b1f", accent2: "#ff5b1f", badge: "#ff7a45",
-      tint: "#ecedef", onAccent: "#0a0b0d", glow: "255 91 31", grain: "0",
-      btnFrom: "#ff5b1f", btnTo: "#ff5b1f", rCard: "0.25rem", rBtn: "0.1875rem",
+      bg: "#0b0c0a", surface: "#121411", surface2: "#181b17", line: "rgb(255 255 255 / 0.10)",
+      fg: "#eceee8", muted: "#8e9489", accent: "#c8f031", accent2: "#c8f031", badge: "#c8f031",
+      tint: "#eceee8", onAccent: "#0b0c0a", glow: "200 240 49", grain: "0",
+      btnFrom: "#c8f031", btnTo: "#c8f031", rCard: "0.25rem", rBtn: "0.1875rem",
     },
   },
   {
