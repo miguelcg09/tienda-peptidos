@@ -27,6 +27,7 @@
   --color-ink-muted: var(--ink-muted);
   --color-mark: var(--mark);
   --color-mark-fg: var(--mark-fg);
+  --color-signal: var(--signal);
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --radius-card: var(--r-card);
@@ -67,17 +68,17 @@
   --line: rgb(14 15 12 / 0.12);
   --fg: #0e0f0c;
   --muted: #5d625a;
-  --accent: #046c4e;
-  --accent-2: #046c4e;
-  --badge: #046c4e;
+  --accent: #1c2f6e;
+  --accent-2: #1c2f6e;
+  --badge: #1c2f6e;
   --tint: #0e0f0c;
   --on-accent: #ffffff;
-  --glow: 4 108 78;
+  --glow: 28 47 110;
   /* Color de las barras de los gráficos del panel */
-  --series: #046c4e;
+  --series: #1c2f6e;
   --grain: 0;
-  --btn-from: #046c4e;
-  --btn-to: #046c4e;
+  --btn-from: #1c2f6e;
+  --btn-to: #1c2f6e;
   --r-card: 0.25rem;
   --r-btn: 0.1875rem;
   /* Portada y bandas: el mismo fondo claro con su línea */
@@ -86,8 +87,10 @@
   --ink-line: rgb(14 15 12 / 0.12);
   --ink-fg: #0e0f0c;
   --ink-muted: #5d625a;
-  --mark: #046c4e;
+  --mark: #1c2f6e;
   --mark-fg: #ffffff;
+  /* Cian de la etiqueta de los frascos: solo en detalles decorativos, nunca de fondo bajo texto */
+  --signal: #2bb3d9;
   /* Punto de estado "en stock" */
   --ok: #16a34a;
   /* Alto de la barra fija con el aviso de uso: lo usan el encabezado fijo y los anclajes */
@@ -130,7 +133,7 @@ body { background: var(--color-bg); color: var(--color-fg); font-size: 1.0625rem
   .t-label { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
   /* Antetítulo de sección: mono chico en mayúsculas con un punto verde delante */
   .eyebrow { display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-muted); }
-  .eyebrow::before { content: ""; width: 0.375rem; height: 0.375rem; border-radius: 1px; background: var(--accent); }
+  .eyebrow::before { content: ""; width: 0.375rem; height: 0.375rem; border-radius: 1px; background: var(--signal); }
   /* Ficha chica de datos (categoría, stock, presentaciones) */
   .chip { display: inline-flex; align-items: center; gap: 0.4rem; border-radius: 0.1875rem; padding: 0.2rem 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.4; }
   .glass {
