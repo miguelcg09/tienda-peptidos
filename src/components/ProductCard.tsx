@@ -5,6 +5,7 @@ import { tint } from "@/lib/colors";
 import { ProductImage } from "./ProductImage";
 import { QuickAdd } from "./QuickAdd";
 import { Stars } from "./Stars";
+import { T } from "./T";
 
 // Acción de la tarjeta: botón lleno del ancho de la tarjeta, igual para "Agregar" y "Elegir presentación"
 const cta = "btn-ghost !min-h-11 w-full !justify-between !px-4 !text-sm hover:!border-accent hover:!bg-accent hover:!text-on-accent";
@@ -18,7 +19,7 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
   const soldOut = product.variants.every((v) => v.stock === 0);
   const quick = product.variants.length === 1 ? product.variants.find((v) => v.stock !== 0) : undefined;
   const lowStock = product.variants.reduce<number | null>((m, v) => (v.stock !== null && v.stock > 0 && v.stock <= 5 && (m === null || v.stock < m) ? v.stock : m), null);
-  const status = soldOut ? { dot: "bg-[#9ca3af]", text: "Agotado" } : lowStock !== null ? { dot: "bg-[#f59e0b]", text: `Últimas ${lowStock}` } : { dot: "bg-[#4ade80]", text: "En stock" };
+  const status = soldOut ? { dot: "bg-[#9ca3af]", text: <T k="ficha.agotado" /> } : lowStock !== null ? { dot: "bg-[#f59e0b]", text: <T k="ficha.ultimas" vars={{ n: lowStock }} /> } : { dot: "bg-[#4ade80]", text: <T k="ficha.enStock" /> };
   return (
     <article data-reveal={index ?? 0} className="reveal-inner group/card flex h-full min-w-0 flex-col bg-surface" style={{ "--card-tint": tint(product.color) } as CSSProperties}>
       {/* La imagen también es un enlace para quien usa mouse o toque; el enlace del nombre es el que leen los lectores de pantalla y el teclado */}
@@ -65,17 +66,17 @@ export function ProductCard({ product, index, headingLevel = 3 }: { product: Pro
         {/* Precio y acción siempre abajo y alineados entre tarjetas */}
         <div className="mt-auto flex flex-col gap-3 pt-2">
           <p className="flex flex-wrap items-baseline gap-x-2 self-start rounded-[0.1875rem] border border-accent bg-[#e6f2ee] px-3 py-2 tabular-nums text-accent">
-            {product.variants.length > 1 && <span className="font-mono text-xs uppercase tracking-[0.1em]">Desde</span>}
+            {product.variants.length > 1 && <span className="font-mono text-xs uppercase tracking-[0.1em]"><T k="ficha.desde" /></span>}
             <span className="text-2xl font-bold leading-none tracking-[-0.03em]">{formatCLP(from)}</span>
             {compare && compare > from && <s className="text-sm text-muted">{formatCLP(compare)}</s>}
           </p>
           {quick ? (
             <QuickAdd variantId={quick.id} name={product.name} className={cta} />
           ) : soldOut ? (
-            <Link href={`/productos/${product.slug}`} className="btn-ghost !min-h-11 w-full !px-4 !text-sm">Avísame cuando vuelva</Link>
+            <Link href={`/productos/${product.slug}`} className="btn-ghost !min-h-11 w-full !px-4 !text-sm"><T k="ficha.avisame" /></Link>
           ) : (
             product.variants.length > 1 && (
-              <Link href={`/productos/${product.slug}`} className={cta}>Elegir presentación <span aria-hidden="true" className="font-mono transition-transform duration-200 group-hover/card:translate-x-1">→</span></Link>
+              <Link href={`/productos/${product.slug}`} className={cta}><T k="ficha.elegir" /> <span aria-hidden="true" className="font-mono transition-transform duration-200 group-hover/card:translate-x-1">→</span></Link>
             )
           )}
         </div>

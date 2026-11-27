@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getProduct, getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
-import { faqs } from "@/lib/faqs";
+import { faqsFrom } from "@/lib/copy";
 import { showCertificates } from "@/lib/features";
 import { ProductStage } from "@/components/ProductStage";
 import { ProductCard } from "@/components/ProductCard";
@@ -214,7 +214,7 @@ export default async function ProductPage({ params }: Props) {
 
         <Section id="preguntas" n={6 + off} title="Preguntas frecuentes">
           <div className="grid gap-3">
-            {faqs.map((f) => (
+            {faqsFrom(settings.textos).map((f) => (
               <details key={f.q} className="group rounded-card border bg-surface p-4">
                 <summary className="flex cursor-pointer list-none items-center justify-between font-semibold">
                   {f.q}

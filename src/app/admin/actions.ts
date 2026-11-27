@@ -14,6 +14,7 @@ import { clearStockWatchers, deleteSubscriber, listSubscribers, stockWatchers } 
 import { deleteReview, listAllReviews, setReviewStatus, type ReviewStatus } from "@/lib/reviews";
 import type { Settings } from "@/lib/config";
 import { getPalette } from "@/lib/palettes";
+import { COPY, cleanTextos } from "@/lib/copy";
 import { logAudit } from "@/lib/audit";
 import { diffProduct, diffSettings, maskEmail, summarizeChanges } from "@/lib/audit-diff";
 
@@ -196,7 +197,7 @@ export async function removeOrder(id: string) {
 export async function saveSettingsAction(form: FormData) {
   const actor = await requireAdmin();
   const before = await getSettings();
-  const patch: Settings = {
+  const patch: Omit<Settings, "textos"> = {
     name: str(form, "name"),
     tagline: str(form, "tagline"),
     email: str(form, "email"),
@@ -229,6 +230,34 @@ export async function saveSettingsAction(form: FormData) {
 }
 
 // Vuelve a los textos legales sugeridos (útil si se guardaron versiones antiguas).
+// Textos fijos del sitio: se guardan solo los que difieren del texto de fábrica.
+export async function saveTextosAction(form: FormData) {
+  const actor = await requireAdmin();
+  const before = (await getSettings()).textos ?? {};
+  const input: Record<string, string> = {};
+  for (const key of Object.keys(COPY)) input[key] = String(form.get(key) ?? "");
+  const next = cleanTextos(input);
+  const changed = Object.keys(COPY).filter((k) => (before[k] ?? "") !== (next[k] ?? ""));
+  if (changed.length > 0) {
+    await saveSettings({ textos: next });
+    const lines = changed.map((k) => `${COPY[k].label}: «${(before[k] ?? COPY[k].def).slice(0, 60)}» → «${(next[k] ?? COPY[k].def).slice(0, 60)}»`);
+    await logAudit(actor, "textos.guardar", { entity: "ajustes", summary: `Cambió textos del sitio: ${summarizeChanges(lines, "")}`, details: lines });
+  }
+  refreshStore();
+  redirect(`/admin/textos?guardado=${changed.length}`);
+}
+
+export async function resetTextosAction() {
+  const actor = await requireAdmin();
+  const before = (await getSettings()).textos ?? {};
+  if (Object.keys(before).length > 0) {
+    await saveSettings({ textos: {} });
+    await logAudit(actor, "textos.restaurar", { entity: "ajustes", summary: `Restauró los ${Object.keys(before).length} textos del sitio a los originales`, details: before });
+  }
+  refreshStore();
+  redirect("/admin/textos?guardado=todos");
+}
+
 export async function resetLegalAction() {
   const actor = await requireAdmin();
   await saveSettings({ terminos: defaultSettings.terminos, envios: defaultSettings.envios, privacidad: defaultSettings.privacidad });

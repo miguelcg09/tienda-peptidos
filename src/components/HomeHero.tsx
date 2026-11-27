@@ -6,6 +6,7 @@ import { formatCLP } from "@/lib/products";
 import { NavBar } from "./Header";
 import { ProductSearch } from "./ProductSearch";
 import { Vial } from "./Vial";
+import { useT } from "./T";
 
 export type HeroItem = {
   slug: string;
@@ -36,6 +37,7 @@ function Row({ label, value }: { label: string; value: string }) {
 const STEP_MS = 5500;
 
 export function HomeHero({ items }: { items: HeroItem[] }) {
+  const t = useT();
   const [sel, setSel] = useState(0);
   // Las piezas avanzan solas; se detienen al pasar el mouse o el foco por la pieza, con el botón de pausa
   // o si el visitante prefiere menos movimiento. Al elegir una a mano, el aviso para lectores de pantalla se activa.
@@ -64,25 +66,25 @@ export function HomeHero({ items }: { items: HeroItem[] }) {
       </header>
       <div className="mx-auto grid w-full max-w-[1280px] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-6 px-4 py-12 md:px-12 md:py-16 lg:border-r lg:py-20 lg:pl-12 lg:pr-14">
-          <p className="eyebrow">Para quienes investigan por su cuenta</p>
+          <p className="eyebrow">{t("portada.antetitulo")}</p>
           <h1 id="titulo-portada" className="font-display text-[clamp(2.75rem,6vw,5.5rem)] font-semibold leading-[0.92] tracking-[-0.055em]">
-            <span className="rise block">Péptidos de investigación.</span>
+            <span className="rise block">{t("portada.titulo")}</span>
             <span style={{ animationDelay: "160ms" }} className="rise mt-5 block text-[clamp(1.3rem,2.2vw,1.9rem)] font-normal leading-[1.15] tracking-[-0.025em] text-muted">
-              Pagas en pesos y <span className="text-fg">sigues tu pedido.</span>
+              {t("portada.bajada")} <span className="text-fg">{t("portada.bajadaDestacada")}</span>
             </span>
           </h1>
           <p className="max-w-[38ch] text-lg leading-relaxed text-ink-fg/85">
-            Despachamos con seguimiento a todo Chile. No necesitas crear una cuenta.
+            {t("portada.texto")}
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <a href="#coleccion" className="btn-primary !min-h-13 !px-7">
-              Ver catálogo <span aria-hidden="true" className="font-mono">→</span>
+              {t("portada.boton")} <span aria-hidden="true" className="font-mono">→</span>
             </a>
             <a href="#despacho" className="btn-ghost !min-h-13">Cómo se despacha</a>
           </div>
           <ProductSearch variant="hero" className="hidden w-full max-w-[34rem] md:block" />
           <p className="max-w-[46ch] border-t pt-5 font-mono text-xs uppercase leading-relaxed tracking-[0.08em] text-muted">
-            Solo para uso en investigación · Mayores de 18 años · No aptos para consumo humano ni animal
+            {t("portada.aviso")}
           </p>
         </div>
 
@@ -104,13 +106,13 @@ export function HomeHero({ items }: { items: HeroItem[] }) {
             <div key={`ficha-${cur.slug}`} data-testid="ficha-pieza" aria-live={manual ? "polite" : "off"} className="animate-slide">
               <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-1 pb-3">
                 <p className="t-label text-[1.9rem] [overflow-wrap:anywhere]"><span className="sr-only">PIEZA {pad(i + 1)} / {pad(n)}: </span>{cur.name}</p>
-                <p className="whitespace-nowrap text-xl font-semibold tabular-nums">{cur.multi ? <span className="mr-1.5 font-mono text-xs font-normal uppercase tracking-[0.1em] text-muted">Desde</span> : null}{formatCLP(cur.from)}</p>
+                <p className="whitespace-nowrap text-xl font-semibold tabular-nums">{cur.multi ? <span className="mr-1.5 font-mono text-xs font-normal uppercase tracking-[0.1em] text-muted">{t("ficha.desde")}</span> : null}{formatCLP(cur.from)}</p>
               </div>
               <dl className="border-b border-line">
                 <Row label="Formato" value={cur.form} />
                 <Row label="Línea" value={cur.category} />
               </dl>
-              <Link href={`/productos/${cur.slug}`} className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-accent hover:underline underline-offset-4">Ver ficha técnica <span aria-hidden="true" className="font-mono">→</span></Link>
+              <Link href={`/productos/${cur.slug}`} className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-accent hover:underline underline-offset-4">{t("portada.verFicha")} <span aria-hidden="true" className="font-mono">→</span></Link>
             </div>
             {n > 1 && (
               <div className="flex flex-col gap-2">

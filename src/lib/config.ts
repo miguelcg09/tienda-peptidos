@@ -1,4 +1,5 @@
 // Valores por defecto de la tienda. Los reales se editan en /admin/ajustes y se guardan en la base de datos.
+import type { Textos } from "./copy";
 import { enviosDefault, legalUpdatedDefault, privacidadDefault, terminosDefault } from "./legal";
 
 export type Settings = {
@@ -26,6 +27,7 @@ export type Settings = {
   bankHolder: string;
   bankRut: string;
   bankEmail: string; // correo al que el cliente envía el comprobante
+  textos: Textos; // textos fijos del sitio cambiados en /admin/textos (solo los que difieren del de fábrica)
 };
 
 // Medios de pago disponibles (se calculan en el servidor a partir del entorno y los ajustes).
@@ -61,6 +63,7 @@ export const defaultSettings: Settings = {
   terminos: terminosDefault,
   envios: enviosDefault,
   privacidad: privacidadDefault,
+  textos: {},
 };
 
 // Compatibilidad con código antiguo: usar getSettings() en el servidor o useStore().settings en el cliente.

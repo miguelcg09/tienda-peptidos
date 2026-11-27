@@ -12,6 +12,8 @@ export const AUDIT_ACTIONS: Record<string, string> = {
   "pedido.nota": "Cambió la nota de un pedido",
   "pedido.anular": "Anuló o eliminó un pedido",
   "ajustes.guardar": "Cambió los ajustes",
+  "textos.guardar": "Cambió textos del sitio",
+  "textos.restaurar": "Restauró los textos del sitio",
   "ajustes.restaurar_textos": "Restauró los textos legales sugeridos",
   "cupon.guardar": "Creó o editó un cupón",
   "cupon.estado": "Activó o desactivó un cupón",
