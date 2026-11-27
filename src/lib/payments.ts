@@ -1,5 +1,6 @@
 import "server-only";
 import { publicUrl } from "@/lib/site";
+import { flowCreatePayment } from "@/lib/flow";
 
 // Capa de pagos intercambiable. Para cambiar de procesador se agrega un
 // proveedor nuevo que implemente PaymentProvider y se elige con PAYMENT_PROVIDER.
@@ -67,17 +68,42 @@ const dlocalGoProvider: PaymentProvider = {
   },
 };
 
+// Flow (flow.cl): Webpay, tarjetas de crédito/débito, prepago y transferencia, liquidado en CLP a una
+// cuenta chilena. El pago se confirma por /api/webhooks/flow, que vuelve a consultar el estado en Flow.
+const flowProvider: PaymentProvider = {
+  async createPayment(req) {
+    const data = await flowCreatePayment({
+      commerceOrder: req.orderId,
+      subject: req.description.slice(0, 200),
+      amount: req.amount,
+      email: req.customer.email,
+      urlConfirmation: `${siteUrl()}/api/webhooks/flow`,
+      urlReturn: `${siteUrl()}/api/pagos/flow/retorno?orden=${encodeURIComponent(req.orderId)}`,
+    });
+    if (!data.url || !data.token) throw new Error("Flow no devolvió url/token");
+    return { redirectUrl: `${data.url}?token=${encodeURIComponent(data.token)}` };
+  },
+};
+
 const providers: Record<string, PaymentProvider> = {
   mock: mockProvider,
   dlocalgo: dlocalGoProvider,
+  flow: flowProvider,
 };
 
-// Pasarela de tarjetas configurada: "dlocalgo" (real), "mock" (pruebas) o ninguna (solo transferencia).
-export function cardProviderName(): "mock" | "dlocalgo" | null {
+type ProviderName = "mock" | "dlocalgo" | "flow";
+
+// Pasarela de tarjetas configurada: "flow" o "dlocalgo" (reales), "mock" (pruebas) o ninguna (solo transferencia).
+// En el sitio de producción "mock" se ignora: marcaría pedidos como pagados sin cobrar nada.
+export function cardProviderName(): ProviderName | null {
   const name = (process.env.PAYMENT_PROVIDER ?? "").trim();
   if (!name || name === "none") return null;
   if (!providers[name]) throw new Error(`Proveedor de pago desconocido: ${name}`);
-  return name as "mock" | "dlocalgo";
+  if (name === "mock" && process.env.VERCEL_ENV === "production") {
+    console.error("PAYMENT_PROVIDER=mock en producción: el pago con tarjeta queda desactivado");
+    return null;
+  }
+  return name as ProviderName;
 }
 
 export function getPaymentProvider(): PaymentProvider {
